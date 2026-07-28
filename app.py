@@ -435,6 +435,7 @@ def ver_invitacion(inv_id):
         color1       = d.get("color1", "#7b1fa2"),
         color2       = d.get("color2", "#4a148c"),
         maps_url     = maps_url,
+        foto         = d.get("foto", None),
     )
 
 
