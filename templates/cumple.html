@@ -656,14 +656,14 @@
     return html;
   }
 
-  function generarInvitacion() {
-    const nombre = document.getElementById('nombre').value.trim();
-    const anos = document.getElementById('anos').value;
-    const mensaje = document.getElementById('mensaje').value.trim();
-    const fecha = document.getElementById('fecha').value;
-    const hora = document.getElementById('hora').value;
-    const direccion = document.getElementById('direccion').value.trim();
-    const salon = document.getElementById('salon').value.trim();
+  async function generarInvitacion() {
+    const nombre   = document.getElementById('nombre').value.trim();
+    const anos     = document.getElementById('anos').value;
+    const mensaje  = document.getElementById('mensaje').value.trim();
+    const fecha    = document.getElementById('fecha').value;
+    const hora     = document.getElementById('hora').value;
+    const direccion= document.getElementById('direccion').value.trim();
+    const salon    = document.getElementById('salon').value.trim();
     const telefono = document.getElementById('telefono').value.trim();
 
     if (!nombre || !anos || !fecha || !hora || !direccion || !telefono) {
@@ -678,7 +678,24 @@
     document.getElementById('step-label').textContent = 'Creando tu invitación...';
     window.scrollTo(0, 0);
 
-    setTimeout(() => construirInvitacion(nombre, anos, mensaje, fecha, hora, direccion, salon, telefono), 1800);
+    try {
+      const resp = await fetch('/cumple/guardar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre, anos, mensaje, fecha, hora, direccion, salon, telefono,
+          emoji: emojiTema, color1: colorPrimario, color2: colorSecundario
+        })
+      });
+      const data = await resp.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert('Hubo un error. Intentá de nuevo.');
+      }
+    } catch(e) {
+      alert('Error de conexión. Intentá de nuevo.');
+    }
   }
 
   function construirInvitacion(nombre, anos, mensaje, fecha, hora, direccion, salon, telefono) {
