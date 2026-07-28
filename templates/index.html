@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Armá tu volante — Imprenta Ruiz</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖨️</text></svg>">
+    <style>
+        /* ===== Reset & Base ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --azul: #003049;
+            --amarillo: #fcbf49;
+            --amarillo-claro: #ffd678;
+            --naranja: #f77f00;
+            --blanco: #ffffff;
+            --gris-fondo: #f4f5f7;
+            --gris-borde: #dde1e6;
+            --gris-texto: #6b7280;
+            --gris-oscuro: #374151;
+            --verde-wpp: #25d366;
+            --azul-tg: #29a5d0;
+            --sombra: 0 2px 12px rgba(0, 0, 0, 0.08);
+            --sombra-btn: 0 4px 14px rgba(0, 48, 73, 0.25);
+            --radio: 14px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--gris-fondo);
+            color: var(--azul);
+            min-height: 100vh;
+            line-height: 1.5;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            background: var(--azul);
+            color: var(--blanco);
+            padding: 18px 16px 14px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .header h1 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .header h1 .icon {
+            font-size: 1.5rem;
+        }
+
+        .header .sub {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin-top: 3px;
+        }
+
+        /* ===== Step Indicator ===== */
+        .steps-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            padding: 14px 16px 8px;
+            background: var(--gris-fondo);
+        }
+
+        .step-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--gris-borde);
+            color: var(--gris-texto);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .step-dot.active {
+            background: var(--azul);
+            color: var(--blanco);
+            transform: scale(1.15);
+            box-shadow: 0 2px 8px rgba(0, 48, 73, 0.3);
+        }
+
+        .step-dot.done {
+            background: var(--amarillo);
+            color: var(--azul);
+        }
+
+        .step-line {
+            width: 12px;
+            height: 2px;
+            background: var(--gris-borde);
+            margin-top: 13px;
+            transition: background 0.3s;
+        }
+
+        .step-line.done {
+            background: var(--amarillo);
+        }
+
+        /* ===== Progress bar ===== */
+        .progress-bar {
+            height: 3px;
+            background: var(--gris-borde);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--azul), var(--amarillo));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 540px;
+            margin: 0 auto;
+            padding: 8px 16px 120px;
+        }
+
+        /* ===== Step sections ===== */
+        .step-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            color: var(--azul);
+        }
+
+        .step-subtitle {
+            font-size: 0.85rem;
+            color: var(--gris-texto);
+            margin-bottom: 20px;
+        }
+
+        /* ===== Form Fields ===== */
+        .field-group {
+            margin-bottom: 18px;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--azul);
+        }
+
+        .field-label .req {
+            color: var(--naranja);
+        }
+
+        .field-hint {
+            font-size: 0.75rem;
+            color: var(--gris-texto);
+            margin-top: 4px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="url"],
+        textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--gris-borde);
+            border-radius: var(--radio);
+            font-size: 1rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--blanco);
+            color: var(--azul);
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        input[type="url"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--amarillo);
+            box-shadow: 0 0 0 3px rgba(252, 191, 73, 0.25);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon .field-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        .input-with-icon input {
+            padding-left: 44px;
+        }
+
+        /* ===== Tipo selector cards ===== */
+        .tipo-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .tipo-card {
+            background: var(--blanco);
+            border: 2px solid var(--gris-borde);
+            border-radius: var(--radio);
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tipo-card:hover {
+            border-color: var(--amarillo);
+            transform: translateY(-2px);
+        }
+
+        .tipo-card.selected {
+            border-color: var(--azul);
+            background: rgba(0, 48, 73, 0.04);
+            box-shadow: 0 0 0 3px rgba(0, 48, 73, 0.12);
+        }
+
+        .tipo-card .tipo-icon {
+            font-size: 2rem;
+        }
+
+        .tipo-card .tipo-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--azul);
+        }
+
+        /* ===== Color selector ===== */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .color-card {
+            background: var(--blanco);
+            border: 2px solid var(--gris-borde);
+            border-radius: var(--radio);
+            padding: 14px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .color-card:hover {
+            border-color: var(--amarillo);
+            transform: translateY(-2px);
+        }
+
+        .color-card.selected {
+            border-color: var(--azul);
+            background: rgba(0, 48, 73, 0.04);
+            box-shadow: 0 0 0 3px rgba(0, 48, 73, 0.12);
+        }
+
+        .color-card .color-icon {
+            font-size: 1.8rem;
+        }
+
+        .color-card .color-label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--azul);
+        }
+
+        /* ===== Logo upload ===== */
+        .upload-box {
+            border: 2px dashed var(--gris-borde);
+            border-radius: var(--radio);
+            padding: 24px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            background: var(--blanco);
+        }
+
+        .upload-box:hover {
+            border-color: var(--amarillo);
+        }
+
+        .upload-box .upload-icon {
+            font-size: 2rem;
+            margin-bottom: 6px;
+        }
+
+        .upload-box .upload-text {
+            font-size: 0.85rem;
+            color: var(--gris-texto);
+        }
+
+        .upload-box .upload-filename {
+            font-size: 0.8rem;
+            color: var(--azul);
+            font-weight: 700;
+            margin-top: 4px;
+        }
+
+        #logo-preview {
+            max-width: 120px;
+            max-height: 120px;
+            margin-top: 10px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        /* ===== Buttons ===== */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: var(--radio);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--azul);
+            color: var(--blanco);
+            box-shadow: var(--sombra-btn);
+        }
+
+        .btn-primary:hover {
+            background: #003a5c;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--blanco);
+            color: var(--azul);
+            border: 2px solid var(--gris-borde);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--azul);
+        }
+
+        .btn-accent {
+            background: var(--amarillo);
+            color: var(--azul);
+            box-shadow: var(--sombra-btn);
+        }
+
+        .btn-accent:hover {
+            background: var(--amarillo-claro);
+            transform: translateY(-1px);
+        }
+
+        .btn-wpp {
+            background: var(--verde-wpp);
+            color: var(--blanco);
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+        }
+
+        .btn-wpp:hover {
+            background: #22c55e;
+            transform: translateY(-1px);
+        }
+
+        .btn-full {
+            flex: 1;
+        }
+
+        /* ===== Step 6: Preview ===== */
+        .preview-section {
+            text-align: center;
+        }
+
+        .preview-placeholder {
+            background: var(--blanco);
+            border: 2px dashed var(--gris-borde);
+            border-radius: var(--radio);
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--gris-texto);
+        }
+
+        .preview-placeholder .icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .preview-placeholder .text {
+            font-size: 0.9rem;
+        }
+
+        #preview-image {
+            width: 100%;
+            border-radius: var(--radio);
+            box-shadow: var(--sombra);
+            display: none;
+        }
+
+        .preview-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .preview-actions .btn {
+            width: 100%;
+        }
+
+        /* ===== Loading Spinner ===== */
+        .spinner-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .spinner-overlay.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(252, 191, 73, 0.3);
+            border-top-color: var(--amarillo);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner-text {
+            color: var(--blanco);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .spinner-sub {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+        }
+
+        /* ===== Error message ===== */
+        .error-msg {
+            display: none;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 12px 16px;
+            border-radius: var(--radio);
+            font-size: 0.85rem;
+            margin-top: 12px;
+        }
+
+        .error-msg.show {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 0.78rem;
+            color: var(--gris-texto);
+        }
+
+        .footer a {
+            color: var(--azul);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        /* ===== WhatsApp link (pre-filled) ===== */
+        .wpp-link-float {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--blanco);
+            padding: 12px 16px;
+            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 50;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        .wpp-link-float .btn {
+            width: 100%;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 400px) {
+            .tipo-grid, .color-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header h1 {
+                font-size: 1.15rem;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== Header ===== -->
+<div class="header">
+    <h1><span class="icon">🖨️</span> Armá tu volante</h1>
+    <div class="sub">Imprenta Ruiz · Chacabuco 470, Salta</div>
+</div>
+
+<!-- ===== Step Indicator ===== -->
+<div class="steps-indicator" id="steps-indicator">
+    <div class="step-dot active" data-step="1">1</div>
+    <div class="step-line"></div>
+    <div class="step-dot" data-step="2">2</div>
+    <div class="step-line"></div>
+    <div class="step-dot" data-step="3">3</div>
+    <div class="step-line"></div>
+    <div class="step-dot" data-step="4">4</div>
+    <div class="step-line"></div>
+    <div class="step-dot" data-step="5">5</div>
+    <div class="step-line"></div>
+    <div class="step-dot" data-step="6">6</div>
+</div>
+<div class="progress-bar">
+    <div class="progress-fill" id="progress-fill"></div>
+</div>
+
+<!-- ===== Main container ===== -->
+<div class="container">
+
+    <!-- ===== Step 1: Tipo de volante ===== -->
+    <div class="step-section active" data-step="1">
+        <h2 class="step-title">¿Qué tipo de volante querés?</h2>
+        <p class="step-subtitle">Elegí la categoría que mejor describe tu negocio</p>
+
+        <div class="tipo-grid" id="tipo-grid">
+            <div class="tipo-card" data-value="comida" data-label="Comida/Delivery">
+                <span class="tipo-icon">🍕</span>
+                <span class="tipo-label">Comida/Delivery</span>
+            </div>
+            <div class="tipo-card" data-value="ropa" data-label="Ropa/Indumentaria">
+                <span class="tipo-icon">👗</span>
+                <span class="tipo-label">Ropa/Indumentaria</span>
+            </div>
+            <div class="tipo-card" data-value="servicios" data-label="Servicios">
+                <span class="tipo-icon">💈</span>
+                <span class="tipo-label">Servicios</span>
+            </div>
+            <div class="tipo-card" data-value="evento" data-label="Evento">
+                <span class="tipo-icon">🎉</span>
+                <span class="tipo-label">Evento</span>
+            </div>
+            <div class="tipo-card" data-value="comercio" data-label="Comercio general">
+                <span class="tipo-icon">🏪</span>
+                <span class="tipo-label">Comercio general</span>
+            </div>
+            <div class="tipo-card" data-value="otro" data-label="Otro">
+                <span class="tipo-icon">✏️</span>
+                <span class="tipo-label">Otro</span>
+            </div>
+        </div>
+
+        <div class="error-msg" id="error-1">Por favor elegí un tipo de volante</div>
+
+        <div class="btn-row">
+            <button class="btn btn-primary btn-full" onclick="nextStep()">Siguiente →</button>
+        </div>
+    </div>
+
+    <!-- ===== Step 2: Datos del negocio ===== -->
+    <div class="step-section" data-step="2">
+        <h2 class="step-title">Datos del negocio</h2>
+        <p class="step-subtitle">Contanos qué querés que diga el volante</p>
+
+        <div class="field-group">
+            <label class="field-label">Nombre del negocio <span class="req">*</span></label>
+            <input type="text" id="nombre" placeholder="Ej: Pizzería Don Mario" maxlength="50">
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Slogan o frase</label>
+            <input type="text" id="slogan" placeholder="Ej: La mejor pizza de Salta" maxlength="80">
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Texto / Productos / Precios</label>
+            <textarea id="productos" placeholder="Ej: Pizza grande $6.000 · Empanadas $600 c/u · Hamburguesas $5.500" maxlength="500" rows="4"></textarea>
+            <div class="field-hint">Anotá los productos, precios o texto que querés que aparezca</div>
+        </div>
+
+        <div class="error-msg" id="error-2">El nombre del negocio es obligatorio</div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="prevStep()">← Atrás</button>
+            <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+        </div>
+    </div>
+
+    <!-- ===== Step 3: Contacto ===== -->
+    <div class="step-section" data-step="3">
+        <h2 class="step-title">Contacto</h2>
+        <p class="step-subtitle">¿Cómo te van a contactar los clientes?</p>
+
+        <div class="field-group">
+            <label class="field-label">WhatsApp <span class="req">*</span></label>
+            <div class="input-with-icon">
+                <span class="field-icon">💬</span>
+                <input type="tel" id="whatsapp" placeholder="Ej: 387 123-4567">
+            </div>
+            <div class="field-hint">Número de WhatsApp de tu negocio</div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Telegram (opcional)</label>
+            <div class="input-with-icon">
+                <span class="field-icon">✈️</span>
+                <input type="text" id="telegram" placeholder="Ej: @mi_negocio">
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Dirección (opcional)</label>
+            <div class="input-with-icon">
+                <span class="field-icon">📍</span>
+                <input type="text" id="direccion" placeholder="Ej: Belgrano 123, Salta">
+            </div>
+        </div>
+
+        <div class="error-msg" id="error-3">El WhatsApp es obligatorio</div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="prevStep()">← Atrás</button>
+            <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+        </div>
+    </div>
+
+    <!-- ===== Step 4: Redes sociales ===== -->
+    <div class="step-section" data-step="4">
+        <h2 class="step-title">Redes sociales</h2>
+        <p class="step-subtitle">Todas son opcionales — completá las que tengas</p>
+
+        <div class="field-group">
+            <label class="field-label">Instagram</label>
+            <div class="input-with-icon">
+                <span class="field-icon">📷</span>
+                <input type="text" id="instagram" placeholder="@usuario">
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Facebook</label>
+            <div class="input-with-icon">
+                <span class="field-icon">👍</span>
+                <input type="text" id="facebook" placeholder="/pagina">
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">TikTok</label>
+            <div class="input-with-icon">
+                <span class="field-icon">🎵</span>
+                <input type="text" id="tiktok" placeholder="@usuario">
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="prevStep()">← Atrás</button>
+            <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+        </div>
+    </div>
+
+    <!-- ===== Step 5: Estilo ===== -->
+    <div class="step-section" data-step="5">
+        <h2 class="step-title">Estilo del volante</h2>
+        <p class="step-subtitle">Elegí el color y subí tu logo si querés</p>
+
+        <div class="field-group">
+            <label class="field-label">Color</label>
+            <div class="color-grid" id="color-grid">
+                <div class="color-card selected" data-value="color">
+                    <span class="color-icon">🎨</span>
+                    <span class="color-label">A color</span>
+                </div>
+                <div class="color-card" data-value="byn">
+                    <span class="color-icon">⚫</span>
+                    <span class="color-label">Blanco y negro</span>
+                </div>
+                <div class="color-card" data-value="combinado">
+                    <span class="color-icon">🎭</span>
+                    <span class="color-label">Combinado</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label class="field-label">Logo / Imagen (opcional)</label>
+            <div class="upload-box" onclick="document.getElementById('logo-input').click()">
+                <div class="upload-icon">📤</div>
+                <div class="upload-text">Tocá para subir tu logo</div>
+                <div class="upload-filename" id="upload-filename"></div>
+                <input type="file" id="logo-input" accept="image/*" style="display:none" onchange="handleLogoUpload(event)">
+                <img id="logo-preview" alt="Logo preview">
+            </div>
+            <div class="field-hint">El logo se incluirá como referencia para el diseño</div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary" onclick="prevStep()">← Atrás</button>
+            <button class="btn btn-primary" onclick="nextStep()">Siguiente →</button>
+        </div>
+    </div>
+
+    <!-- ===== Step 6: Preview + Envío ===== -->
+    <div class="step-section" data-step="6">
+        <h2 class="step-title">¡Generá tu volante! 🤖</h2>
+        <p class="step-subtitle">Vas a ver un preview del volante. Si te gusta, lo mandás a Imprenta Ruiz</p>
+
+        <div class="preview-section">
+            <div class="preview-placeholder" id="preview-placeholder">
+                <div class="icon">🖨️</div>
+                <div class="text">Tocá el botón para generar tu volante con IA</div>
+            </div>
+
+            <img id="preview-image" alt="Volante generado">
+
+            <div class="error-msg" id="error-6">No se pudo generar el volante. Intentá de nuevo.</div>
+
+            <div class="preview-actions">
+                <button class="btn btn-accent" id="btn-generate" onclick="generateFlyer()">
+                    🤖 Generar mi volante
+                </button>
+                <button class="btn btn-secondary" id="btn-regenerar" style="display:none" onclick="generateFlyer()">
+                    🔄 Regenerar
+                </button>
+                <button class="btn btn-wpp" id="btn-enviar" style="display:none" onclick="enviarWhatsApp()">
+                    ✅ Me gusta — Enviá a Imprenta Ruiz
+                </button>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <button class="btn btn-secondary btn-full" onclick="prevStep()">← Atrás</button>
+        </div>
+    </div>
+
+    <!-- Botón foto carnet -->
+    <a href="/carnet" style="display:block; margin:0 0 16px; background:linear-gradient(135deg,#003049,#023e5c); border-radius:14px; padding:18px 16px; text-align:center; text-decoration:none; box-shadow:0 6px 20px rgba(0,48,73,0.4);">
+      <div style="color:#fcbf49; font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px;">📸 Nuevo servicio</div>
+      <div style="color:#fff; font-size:18px; font-weight:900;">📷 Foto Carnet 4×4</div>
+      <div style="color:rgba(255,255,255,0.75); font-size:12px; margin-top:4px;">Fondo celeste automático · Lista para imprimir →</div>
+    </a>
+
+    <!-- Footer -->
+    <div class="footer">
+        Imprenta Ruiz · Chacabuco 470, Salta · WhatsApp 387-210-1274
+    </div>
+</div>
+
+<!-- ===== Loading Spinner ===== -->
+<div class="spinner-overlay" id="spinner">
+    <div class="spinner"></div>
+    <div class="spinner-text">Generando tu volante...</div>
+    <div class="spinner-sub">La IA está creando el diseño, tarda unos segundos</div>
+</div>
+
+<script>
+    // ===== Estado global =====
+    const IMPRENTA_WHATSAPP = '5493872101274';
+    let currentStep = 1;
+    const totalSteps = 6;
+    let formData = {
+        tipo: '',
+        tipo_label: '',
+        nombre: '',
+        slogan: '',
+        productos: '',
+        whatsapp: '',
+        telegram: '',
+        direccion: '',
+        instagram: '',
+        facebook: '',
+        tiktok: '',
+        color: 'color',
+        logo_name: '',
+    };
+    let logoBase64 = null;
+
+    // ===== Step navigation =====
+    function showStep(step) {
+        document.querySelectorAll('.step-section').forEach(s => s.classList.remove('active'));
+        document.querySelector(`.step-section[data-step="${step}"]`).classList.add('active');
+        currentStep = step;
+        updateIndicator();
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateIndicator() {
+        const dots = document.querySelectorAll('.step-dot');
+        const lines = document.querySelectorAll('.step-line');
+        dots.forEach((dot, i) => {
+            const stepNum = i + 1;
+            dot.classList.remove('active', 'done');
+            if (stepNum === currentStep) {
+                dot.classList.add('active');
+            } else if (stepNum < currentStep) {
+                dot.classList.add('done');
+            }
+        });
+        lines.forEach((line, i) => {
+            line.classList.toggle('done', i + 1 < currentStep);
+        });
+    }
+
+    function updateProgress() {
+        const pct = ((currentStep - 1) / (totalSteps - 1)) * 100;
+        document.getElementById('progress-fill').style.width = pct + '%';
+    }
+
+    function nextStep() {
+        if (validateStep(currentStep)) {
+            saveStepData(currentStep);
+            if (currentStep < totalSteps) {
+                showStep(currentStep + 1);
+            }
+        }
+    }
+
+    function prevStep() {
+        if (currentStep > 1) {
+            saveStepData(currentStep);
+            showStep(currentStep - 1);
+        }
+    }
+
+    // ===== Validation =====
+    function validateStep(step) {
+        hideError(step);
+        let valid = true;
+        switch (step) {
+            case 1:
+                if (!formData.tipo) {
+                    showError(1, 'Por favor elegí un tipo de volante');
+                    valid = false;
+                }
+                break;
+            case 2:
+                const nombre = document.getElementById('nombre').value.trim();
+                if (!nombre) {
+                    showError(2, 'El nombre del negocio es obligatorio');
+                    valid = false;
+                }
+                break;
+            case 3:
+                const wpp = document.getElementById('whatsapp').value.trim();
+                if (!wpp) {
+                    showError(3, 'El WhatsApp es obligatorio');
+                    valid = false;
+                }
+                break;
+        }
+        return valid;
+    }
+
+    function showError(step, msg) {
+        const el = document.getElementById(`error-${step}`);
+        if (el) {
+            el.textContent = msg;
+            el.classList.add('show');
+        }
+    }
+
+    function hideError(step) {
+        const el = document.getElementById(`error-${step}`);
+        if (el) el.classList.remove('show');
+    }
+
+    // ===== Save step data =====
+    function saveStepData(step) {
+        switch (step) {
+            case 2:
+                formData.nombre = document.getElementById('nombre').value.trim();
+                formData.slogan = document.getElementById('slogan').value.trim();
+                formData.productos = document.getElementById('productos').value.trim();
+                break;
+            case 3:
+                formData.whatsapp = document.getElementById('whatsapp').value.trim();
+                formData.telegram = document.getElementById('telegram').value.trim();
+                formData.direccion = document.getElementById('direccion').value.trim();
+                break;
+            case 4:
+                formData.instagram = document.getElementById('instagram').value.trim();
+                formData.facebook = document.getElementById('facebook').value.trim();
+                formData.tiktok = document.getElementById('tiktok').value.trim();
+                break;
+            case 5:
+                // Color ya está en formData por el selector
+                break;
+        }
+    }
+
+    // ===== Tipo selector =====
+    document.querySelectorAll('.tipo-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.tipo-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            formData.tipo = this.dataset.value;
+            formData.tipo_label = this.dataset.label;
+            hideError(1);
+        });
+    });
+
+    // ===== Color selector =====
+    document.querySelectorAll('.color-card').forEach(card => {
+        card.addEventListener('click', function() {
+            document.querySelectorAll('.color-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            formData.color = this.dataset.value;
+        });
+    });
+
+    // ===== Logo upload =====
+    function handleLogoUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            logoBase64 = e.target.result;
+            formData.logo_name = file.name;
+            const preview = document.getElementById('logo-preview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            document.getElementById('upload-filename').textContent = file.name;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // ===== Generate flyer =====
+    async function generateFlyer() {
+        // Asegurar que tenemos todos los datos guardados
+        saveStepData(2);
+        saveStepData(3);
+        saveStepData(4);
+
+        if (!formData.nombre || !formData.whatsapp) {
+            showError(6, 'Faltan datos obligatorios (nombre y WhatsApp)');
+            return;
+        }
+
+        // Mostrar spinner
+        document.getElementById('spinner').classList.add('active');
+        document.getElementById('btn-generate').disabled = true;
+        document.getElementById('error-6').classList.remove('show');
+
+        try {
+            const resp = await fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await resp.json();
+
+            if (!resp.ok) {
+                throw new Error(data.error || 'Error al generar el volante');
+            }
+
+            // Mostrar la imagen generada
+            const img = document.getElementById('preview-image');
+            const placeholder = document.getElementById('preview-placeholder');
+
+            if (data.image) {
+                img.src = 'data:image/png;base64,' + data.image;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            } else if (data.image_url) {
+                img.src = data.image_url;
+                img.style.display = 'block';
+                placeholder.style.display = 'none';
+            }
+
+            // Mostrar botones de regenerar y enviar
+            document.getElementById('btn-regenerar').style.display = 'flex';
+            document.getElementById('btn-enviar').style.display = 'flex';
+
+            // Ocultar botón generar inicial
+            document.getElementById('btn-generate').style.display = 'none';
+
+        } catch (err) {
+            showError(6, err.message || 'No se pudo generar el volante. Intentá de nuevo.');
+        } finally {
+            document.getElementById('spinner').classList.remove('active');
+            document.getElementById('btn-generate').disabled = false;
+        }
+    }
+
+    // ===== Enviar a WhatsApp =====
+    async function enviarWhatsApp() {
+        try {
+            const resp = await fetch('/resumen', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData),
+            });
+            const data = await resp.json();
+            const mensaje = data.mensaje || 'Hola Imprenta Ruiz, quiero imprimir mi volante';
+            const wppUrl = `https://wa.me/${IMPRENTA_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+            window.open(wppUrl, '_blank');
+        } catch (err) {
+            // Fallback: mensaje simple
+            const mensaje = `Hola Imprenta Ruiz! Ya aprobé el diseño de mi volante para "${formData.nombre}". Quiero imprimirlo. WhatsApp: ${formData.whatsapp}`;
+            const wppUrl = `https://wa.me/${IMPRENTA_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+            window.open(wppUrl, '_blank');
+        }
+    }
+
+    // ===== Init =====
+    updateIndicator();
+    updateProgress();
+</script>
+
+</body>
+</html>
