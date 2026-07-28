@@ -774,7 +774,8 @@
         body: JSON.stringify({
           nombre, anos, mensaje, fecha, hora, direccion, salon, telefono,
           emoji: emojiTema, color1: colorPrimario, color2: colorSecundario,
-          foto: fotoBase64 || null
+          foto: fotoBase64 || null,
+          tematica: tematica || 'General'
         })
       });
       const data = await resp.json();
