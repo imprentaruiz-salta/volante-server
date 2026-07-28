@@ -4,200 +4,307 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>🎉 Cumpleaños de {{ nombre }}</title>
-
-  <!-- Open Graph para preview bonito en WhatsApp -->
   <meta property="og:title" content="🎉 ¡Cumpleaños de {{ nombre }}!">
   <meta property="og:description" content="{{ nombre }} cumple {{ anos }} años 🎂 · {{ fecha_formato }} · {{ hora_formato }}">
   <meta property="og:type" content="website">
-
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      background: #0d0d0d;
-      color: #fff;
-      min-height: 100vh;
+      background: #0a0a0a; color: #fff; min-height: 100vh;
     }
 
-    /* CABECERA */
-    .inv-header {
-      background: linear-gradient(160deg, {{ color2 }} 0%, {{ color1 }} 100%);
-      padding: 40px 24px 32px;
-      text-align: center;
+    /* ── HERO CON IMAGEN ── */
+    .hero {
       position: relative;
+      min-height: 380px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: flex-end;
       overflow: hidden;
+      background: linear-gradient(160deg, {{ color2 }} 0%, {{ color1 }} 100%);
     }
-    .confetti-bg {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; overflow: hidden;
+    .hero-img {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      opacity: 0.92;
     }
-    @keyframes fall {
-      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    .hero-loading {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(160deg, {{ color2 }} 0%, {{ color1 }} 100%);
+      z-index: 2;
     }
-    .confetti-piece {
-      position: absolute; width: 8px; height: 8px;
-      border-radius: 2px; animation: fall linear infinite;
+    .hero-loading .spinner {
+      width: 44px; height: 44px;
+      border: 4px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 14px;
     }
-    .inv-emoji-grande {
-      font-size: 72px; margin-bottom: 8px; position: relative;
-      animation: pulse 2s ease-in-out infinite;
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hero-loading p { font-size: 13px; color: rgba(255,255,255,0.7); }
+
+    /* Gradiente sobre la imagen para que el texto sea legible */
+    .hero-overlay {
+      position: absolute; bottom: 0; left: 0; width: 100%;
+      height: 65%;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+      z-index: 3;
     }
-    @keyframes pulse {
-      0%,100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+    .hero-content {
+      position: relative; z-index: 4;
+      width: 100%; padding: 0 20px 24px;
+      text-align: center;
     }
-    .inv-te-invita {
-      font-size: 13px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: rgba(255,255,255,0.75);
-      margin-bottom: 8px;
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(8px);
+      border-radius: 20px; padding: 4px 14px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.85); margin-bottom: 10px;
     }
-    .inv-nombre {
-      font-size: 44px; font-weight: 900; line-height: 1.1;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    .hero-nombre {
+      font-size: 48px; font-weight: 900; line-height: 1;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+      letter-spacing: -1px;
     }
-    .inv-anos {
-      font-size: 18px; color: rgba(255,255,255,0.85);
+    .hero-anos {
+      font-size: 17px; color: rgba(255,255,255,0.85);
       margin-top: 6px; font-weight: 600;
     }
-    .inv-mensaje {
-      margin-top: 14px; font-size: 14px; font-style: italic;
-      opacity: 0.85; padding: 0 12px;
+    .hero-mensaje {
+      margin-top: 10px; font-size: 13px; font-style: italic;
+      color: rgba(255,255,255,0.8); padding: 0 8px;
     }
 
-    /* CONTADOR */
+    /* Foto del cumpleañero — medallón */
+    .foto-medallon {
+      position: absolute; top: 16px; right: 16px; z-index: 5;
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      border: 3px solid rgba(255,255,255,0.9);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      object-fit: cover;
+    }
+
+    /* ── MÚSICA ── */
+    .musica-bar {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .btn-musica {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 20px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 30px; color: #fff;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-musica:hover { background: rgba(255,255,255,0.18); }
+    .btn-musica.playing { background: {{ color1 }}; border-color: {{ color1 }}; }
+    .ondas {
+      display: flex; align-items: flex-end; gap: 2px; height: 18px;
+    }
+    .onda {
+      width: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.5);
+      animation: none;
+    }
+    .playing .onda { animation: onda 0.6s ease-in-out infinite alternate; }
+    .onda:nth-child(1) { height: 8px; animation-delay: 0s; }
+    .onda:nth-child(2) { height: 14px; animation-delay: 0.15s; }
+    .onda:nth-child(3) { height: 10px; animation-delay: 0.3s; }
+    .onda:nth-child(4) { height: 16px; animation-delay: 0.1s; }
+    .onda:nth-child(5) { height: 7px; animation-delay: 0.25s; }
+    @keyframes onda {
+      from { transform: scaleY(0.4); }
+      to   { transform: scaleY(1.2); }
+    }
+
+    /* ── CUENTA REGRESIVA ── */
     .contador {
-      margin: 0; padding: 20px 16px;
-      background: rgba(255,255,255,0.05);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 20px 16px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
       text-align: center;
     }
     .contador-label {
-      font-size: 11px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: rgba(255,255,255,0.5);
+      font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
       margin-bottom: 14px;
     }
-    .contador-nums {
-      display: flex; justify-content: center; gap: 16px;
-    }
+    .contador-nums { display: flex; justify-content: center; gap: 10px; }
     .contador-bloque {
-      background: rgba(255,255,255,0.08); border-radius: 12px;
-      padding: 12px 18px; min-width: 70px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 12px 14px; min-width: 68px;
     }
     .contador-num {
-      font-size: 32px; font-weight: 900; line-height: 1;
+      font-size: 30px; font-weight: 900; line-height: 1;
+      color: #fff;
     }
     .contador-txt {
-      font-size: 11px; color: rgba(255,255,255,0.5);
+      font-size: 10px; color: rgba(255,255,255,0.4);
       text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
     }
 
-    /* DATOS */
+    /* ── DATOS ── */
     .inv-datos {
-      padding: 20px 20px 8px;
-      display: flex; flex-direction: column; gap: 12px;
+      padding: 16px 16px 4px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
     }
     .inv-dato {
-      display: flex; align-items: center; gap: 14px;
       background: rgba(255,255,255,0.05);
-      border-radius: 12px; padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 14px;
     }
-    .inv-dato-icono { font-size: 22px; }
+    .inv-dato.full { grid-column: span 2; }
+    .inv-dato-icono { font-size: 20px; margin-bottom: 6px; }
     .inv-dato-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: rgba(255,255,255,0.4);
-      margin-bottom: 2px;
+      font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+      margin-bottom: 3px;
     }
-    .inv-dato-valor { font-size: 16px; font-weight: 700; }
+    .inv-dato-valor { font-size: 15px; font-weight: 700; line-height: 1.2; }
 
-    /* RSVP */
+    /* ── RSVP ── */
     .rsvp-section {
-      margin: 20px 20px 10px;
-      background: rgba(255,255,255,0.05);
-      border-radius: 16px; padding: 20px;
-      text-align: center;
+      margin: 16px 16px 10px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px; padding: 20px; text-align: center;
     }
     .rsvp-label {
-      font-size: 14px; font-weight: 700;
-      color: rgba(255,255,255,0.7); margin-bottom: 14px;
+      font-size: 15px; font-weight: 800; margin-bottom: 14px;
     }
     .rsvp-btns { display: flex; gap: 10px; }
     .btn-voy {
       flex: 1; padding: 14px; background: #22c55e;
       border: none; border-radius: 12px; color: #fff;
       font-size: 15px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(34,197,94,0.35);
     }
     .btn-nopuedo {
       flex: 1; padding: 14px;
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px; color: rgba(255,255,255,0.7);
+      border-radius: 12px; color: rgba(255,255,255,0.65);
       font-size: 15px; font-weight: 700; cursor: pointer;
     }
     .rsvp-confirmado {
       display: none; padding: 14px; border-radius: 12px;
-      font-size: 16px; font-weight: 800; margin-top: 8px;
+      font-size: 16px; font-weight: 800; margin-top: 10px;
     }
     .rsvp-confirmado.visible { display: block; }
 
-    /* MAPA */
-    .mapa-link {
+    /* ── BOTONES ACCIÓN ── */
+    .acciones { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .btn-mapa {
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      margin: 0 20px 10px; padding: 16px;
-      background: linear-gradient(135deg, #1e40af, #1d4ed8);
+      padding: 16px; background: linear-gradient(135deg,#1e40af,#1d4ed8);
       border-radius: 14px; color: #fff; font-weight: 800;
       font-size: 15px; text-decoration: none;
+      box-shadow: 0 4px 16px rgba(29,78,216,0.35);
     }
-
-    /* COMPARTIR */
-    .compartir-section { padding: 0 20px 12px; }
     .btn-compartir {
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      width: 100%; padding: 18px;
-      background: #25d366; border: none; border-radius: 14px;
-      color: #fff; font-size: 16px; font-weight: 800; cursor: pointer;
-      box-shadow: 0 4px 16px rgba(37,211,102,0.4); margin-bottom: 10px;
+      padding: 16px; background: #25d366;
+      border: none; border-radius: 14px; color: #fff;
+      font-size: 15px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.35);
     }
     .btn-nueva {
-      width: 100%; padding: 14px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 14px; color: rgba(255,255,255,0.6);
-      font-size: 14px; font-weight: 700; cursor: pointer;
+      padding: 14px; background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; color: rgba(255,255,255,0.5);
+      font-size: 13px; font-weight: 700; cursor: pointer;
       text-align: center; text-decoration: none; display: block;
     }
 
     .powered {
-      text-align: center; padding: 20px 16px 28px;
-      font-size: 11px; color: rgba(255,255,255,0.25);
+      text-align: center; padding: 20px 16px 32px;
+      font-size: 11px; color: rgba(255,255,255,0.2);
     }
     .powered span { color: #a855f7; font-weight: 700; }
+
+    /* Confetti */
+    @keyframes fall {
+      0%   { transform: translateY(-10px) rotate(0deg); opacity:1; }
+      100% { transform: translateY(420px) rotate(720deg); opacity:0; }
+    }
+    .confetti-piece {
+      position: absolute; width: 7px; height: 7px;
+      border-radius: 2px; animation: fall linear infinite; z-index: 1;
+    }
   </style>
 </head>
 <body>
 
-<!-- CABECERA -->
-<div class="inv-header">
-  <div class="confetti-bg" id="confetti-bg"></div>
-  {% if foto %}
-  <div style="margin-bottom:16px;">
-    <img src="data:image/png;base64,{{ foto }}"
-         style="width:120px;height:120px;border-radius:50%;object-fit:cover;
-                border:4px solid rgba(255,255,255,0.9);
-                box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+<!-- ══ HERO ══ -->
+<div class="hero" id="hero">
+  <!-- Overlay degradé sobre imagen -->
+  <div class="hero-overlay"></div>
+
+  <!-- Loading mientras carga la imagen IA -->
+  {% if not imagen_ia %}
+  <div class="hero-loading" id="hero-loading">
+    <div class="spinner"></div>
+    <p>Generando ilustración con IA...</p>
   </div>
+  {% endif %}
+
+  <!-- Imagen generada por IA -->
+  {% if imagen_ia %}
+  <img class="hero-img" src="data:image/jpeg;base64,{{ imagen_ia }}" alt="{{ tematica }}">
   {% else %}
-  <div class="inv-emoji-grande">{{ emoji }}</div>
+  <img class="hero-img" id="hero-img" src="" alt="" style="display:none">
   {% endif %}
-  <div class="inv-te-invita">🎂 ¡Te invita a su cumpleaños!</div>
-  <div class="inv-nombre">{{ nombre }}</div>
-  <div class="inv-anos">cumple {{ anos }} añitos 🎈</div>
-  {% if mensaje %}
-  <div class="inv-mensaje">"{{ mensaje }}"</div>
+
+  <!-- Confetti -->
+  <div id="confetti-bg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:1;"></div>
+
+  <!-- Foto del cumpleañero (medallón esquina) -->
+  {% if foto %}
+  <img class="foto-medallon" src="data:image/png;base64,{{ foto }}" alt="{{ nombre }}">
   {% endif %}
+
+  <!-- Texto sobre la imagen -->
+  <div class="hero-content">
+    <div class="hero-badge">🎂 Cumpleaños</div>
+    <div class="hero-nombre">{{ nombre }}</div>
+    <div class="hero-anos">cumple {{ anos }} añitos 🎈</div>
+    {% if mensaje %}
+    <div class="hero-mensaje">"{{ mensaje }}"</div>
+    {% endif %}
+  </div>
 </div>
 
-<!-- CONTADOR -->
+<!-- ══ MÚSICA ══ -->
+<div class="musica-bar">
+  <button class="btn-musica" id="btn-musica" onclick="toggleMusica()">
+    <div class="ondas" id="ondas">
+      <div class="onda"></div><div class="onda"></div>
+      <div class="onda"></div><div class="onda"></div>
+      <div class="onda"></div>
+    </div>
+    <span id="lbl-musica">🎵 Escuchar música</span>
+  </button>
+</div>
+<audio id="audio-fondo" loop preload="none">
+  <source src="{{ musica_url }}" type="audio/mpeg">
+</audio>
+
+<!-- ══ CUENTA REGRESIVA ══ -->
 <div class="contador">
   <div class="contador-label">⏰ Faltan</div>
   <div class="contador-nums">
@@ -220,127 +327,144 @@
   </div>
 </div>
 
-<!-- DATOS -->
+<!-- ══ DATOS ══ -->
 <div class="inv-datos">
   <div class="inv-dato">
     <div class="inv-dato-icono">📅</div>
-    <div class="inv-dato-texto">
-      <div class="inv-dato-label">Fecha</div>
-      <div class="inv-dato-valor">{{ fecha_formato }}</div>
-    </div>
+    <div class="inv-dato-label">Fecha</div>
+    <div class="inv-dato-valor">{{ fecha_formato }}</div>
   </div>
   <div class="inv-dato">
     <div class="inv-dato-icono">🕐</div>
-    <div class="inv-dato-texto">
-      <div class="inv-dato-label">Hora</div>
-      <div class="inv-dato-valor">{{ hora_formato }}</div>
-    </div>
+    <div class="inv-dato-label">Hora</div>
+    <div class="inv-dato-valor">{{ hora_formato }}</div>
   </div>
-  <div class="inv-dato">
+  <div class="inv-dato full">
     <div class="inv-dato-icono">📍</div>
-    <div class="inv-dato-texto">
-      <div class="inv-dato-label">{{ salon if salon else 'Lugar' }}</div>
-      <div class="inv-dato-valor">{{ direccion }}</div>
-    </div>
+    <div class="inv-dato-label">{{ salon if salon else 'Lugar' }}</div>
+    <div class="inv-dato-valor">{{ direccion }}</div>
   </div>
-  <div class="inv-dato">
+  <div class="inv-dato full">
     <div class="inv-dato-icono">📞</div>
-    <div class="inv-dato-texto">
-      <div class="inv-dato-label">Consultas</div>
-      <div class="inv-dato-valor">{{ telefono }}</div>
-    </div>
+    <div class="inv-dato-label">Consultas</div>
+    <div class="inv-dato-valor">{{ telefono }}</div>
   </div>
 </div>
 
-<!-- RSVP -->
+<!-- ══ RSVP ══ -->
 <div class="rsvp-section">
   <div class="rsvp-label">¿Podés venir? 🎊</div>
   <div class="rsvp-btns" id="rsvp-btns">
-    <button class="btn-voy" onclick="confirmar(true)">✅ ¡Voy!</button>
+    <button class="btn-voy"     onclick="confirmar(true)">✅ ¡Voy!</button>
     <button class="btn-nopuedo" onclick="confirmar(false)">😔 No puedo</button>
   </div>
   <div class="rsvp-confirmado" id="rsvp-confirmado"></div>
 </div>
 
-<!-- MAPA -->
-<a href="{{ maps_url }}" target="_blank" class="mapa-link">
-  🗺️ Ver cómo llegar
-</a>
-
-<!-- COMPARTIR -->
-<div class="compartir-section">
-  <button class="btn-compartir" onclick="compartirLink()">
-    💬 Compartir esta invitación por WhatsApp
-  </button>
-  <a href="/cumple" class="btn-nueva">🎉 Crear otra invitación gratis</a>
+<!-- ══ ACCIONES ══ -->
+<div class="acciones">
+  <a href="{{ maps_url }}" target="_blank" class="btn-mapa">🗺️ Ver cómo llegar</a>
+  <button class="btn-compartir" onclick="compartirLink()">💬 Compartir por WhatsApp</button>
+  <a href="/cumple" class="btn-nueva">🎉 Crear otra invitación gratis · Imprenta Ruiz</a>
 </div>
 
-<div class="powered">Invitación digital creada con <span>✦ ZAPIA AI</span> · Imprenta Ruiz, Salta</div>
+<div class="powered">Creado con <span>✦ ZAPIA AI</span> · Imprenta Ruiz, Salta</div>
 
 <script>
-  // ---- CONFETTI ----
-  (function() {
+  // ── CONFETTI ──
+  (function(){
     const colors = ['#f59e0b','#ec4899','#a855f7','#22c55e','#ef4444','#3b82f6','#fff'];
     const bg = document.getElementById('confetti-bg');
-    let html = '';
-    for (let i = 0; i < 22; i++) {
+    let h = '';
+    for (let i = 0; i < 18; i++) {
       const c = colors[i % colors.length];
-      const left = Math.random() * 100;
-      const delay = Math.random() * 3;
-      const dur = 2.5 + Math.random() * 2;
-      html += `<div class="confetti-piece" style="left:${left}%;background:${c};animation-delay:${delay}s;animation-duration:${dur}s;"></div>`;
+      const l = Math.random() * 100;
+      const dl= Math.random() * 3;
+      const du= 2.5 + Math.random() * 2;
+      h += `<div class="confetti-piece" style="left:${l}%;background:${c};animation-delay:${dl}s;animation-duration:${du}s;"></div>`;
     }
-    bg.innerHTML = html;
+    bg.innerHTML = h;
   })();
 
-  // ---- CUENTA REGRESIVA EN VIVO ----
-  const TARGET = new Date("{{ fecha_iso }}T{{ hora_raw }}:00");
+  // ── CARGA IMAGEN IA (si no viene pre-generada) ──
+  {% if not imagen_ia %}
+  (async function() {
+    try {
+      const r = await fetch('/i/{{ inv_id }}/imagen');
+      const d = await r.json();
+      if (d.image) {
+        const img = document.getElementById('hero-img');
+        img.src = 'data:image/jpeg;base64,' + d.image;
+        img.style.display = 'block';
+        document.getElementById('hero-loading').style.display = 'none';
+      }
+    } catch(e) {
+      document.getElementById('hero-loading').innerHTML =
+        '<div style="font-size:56px;">{{ emoji }}</div>';
+    }
+  })();
+  {% endif %}
 
+  // ── CUENTA REGRESIVA ──
+  const TARGET = new Date("{{ fecha_iso }}T{{ hora_raw }}:00");
   function tick() {
-    const now = new Date();
-    const diff = TARGET - now;
+    const diff = TARGET - new Date();
     if (diff <= 0) {
       document.querySelector('.contador').innerHTML =
         '<div style="padding:20px;text-align:center;font-size:22px;font-weight:900;">🎂 ¡HOY ES EL GRAN DÍA! 🎂</div>';
       return;
     }
-    const dias  = Math.floor(diff / 86400000);
-    const horas = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000)  / 60000);
-    const segs  = Math.floor((diff % 60000)    / 1000);
-    document.getElementById('cnt-dias').textContent  = dias;
-    document.getElementById('cnt-horas').textContent = String(horas).padStart(2,'0');
-    document.getElementById('cnt-mins').textContent  = String(mins).padStart(2,'0');
-    document.getElementById('cnt-segs').textContent  = String(segs).padStart(2,'0');
+    document.getElementById('cnt-dias').textContent  = Math.floor(diff/86400000);
+    document.getElementById('cnt-horas').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cnt-mins').textContent  = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cnt-segs').textContent  = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
   }
-  tick();
-  setInterval(tick, 1000);
+  tick(); setInterval(tick, 1000);
 
-  // ---- RSVP ----
+  // ── MÚSICA ──
+  let playing = false;
+  const audio = document.getElementById('audio-fondo');
+  function toggleMusica() {
+    const btn = document.getElementById('btn-musica');
+    const lbl = document.getElementById('lbl-musica');
+    const ondas = document.getElementById('ondas');
+    if (!playing) {
+      audio.play().then(() => {
+        playing = true;
+        btn.classList.add('playing');
+        ondas.classList.add('playing');
+        lbl.textContent = '🎵 Pausar música';
+      }).catch(() => { lbl.textContent = '🎵 No disponible'; });
+    } else {
+      audio.pause();
+      playing = false;
+      btn.classList.remove('playing');
+      ondas.classList.remove('playing');
+      lbl.textContent = '🎵 Escuchar música';
+    }
+  }
+
+  // ── RSVP ──
   function confirmar(va) {
     document.getElementById('rsvp-btns').style.display = 'none';
     const el = document.getElementById('rsvp-confirmado');
     el.classList.add('visible');
     if (va) {
-      el.style.background = 'rgba(34,197,94,0.2)';
+      el.style.background = 'rgba(34,197,94,0.15)';
       el.style.border = '1px solid rgba(34,197,94,0.4)';
       el.innerHTML = '🎉 ¡Genial! ¡Los esperamos!';
     } else {
-      el.style.background = 'rgba(255,255,255,0.06)';
-      el.style.border = '1px solid rgba(255,255,255,0.12)';
+      el.style.background = 'rgba(255,255,255,0.05)';
+      el.style.border = '1px solid rgba(255,255,255,0.1)';
       el.innerHTML = '😢 ¡Qué pena! Otra vez será...';
     }
   }
 
-  // ---- COMPARTIR ----
+  // ── COMPARTIR ──
   function compartirLink() {
-    const link = window.location.href;
     const texto = `🎉 ¡Invitación al cumpleaños de {{ nombre }}!\n\n` +
-      `🎂 Cumple {{ anos }} años\n` +
-      `📅 {{ fecha_formato }}\n` +
-      `🕐 {{ hora_formato }}\n` +
-      `📍 {{ direccion }}\n\n` +
-      `¡Mirá la invitación completa acá! 👇\n${link}`;
+      `🎂 Cumple {{ anos }} años\n📅 {{ fecha_formato }}\n🕐 {{ hora_formato }}\n📍 {{ direccion }}\n\n` +
+      `¡Mirá la invitación completa acá! 👇\n${window.location.href}`;
     window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
   }
 </script>
