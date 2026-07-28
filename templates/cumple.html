@@ -544,8 +544,40 @@
   </div>
 </div>
 
-<!-- PASO 3: FECHA, HORA Y LUGAR -->
+<!-- PASO 3: FOTO -->
 <div class="paso" id="paso3">
+  <h2>📸 Foto del cumpleañero/a</h2>
+  <p class="subtitulo">Le sacamos el fondo automáticamente ✨</p>
+
+  <div id="foto-upload-area" style="border:2px dashed rgba(255,255,255,0.2);border-radius:18px;padding:32px 20px;text-align:center;cursor:pointer;margin-bottom:20px;" onclick="document.getElementById('foto-input').click()">
+    <div id="foto-preview-wrap" style="display:none;margin-bottom:16px;">
+      <img id="foto-preview" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:4px solid #a855f7;box-shadow:0 0 24px rgba(168,85,247,0.5);">
+      <div id="foto-estado" style="margin-top:10px;font-size:13px;color:#a855f7;font-weight:700;"></div>
+    </div>
+    <div id="foto-placeholder">
+      <div style="font-size:48px;margin-bottom:10px;">📷</div>
+      <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Tocá para elegir una foto</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.45);">Se le quita el fondo automáticamente</div>
+    </div>
+  </div>
+  <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="procesarFoto(this)">
+
+  <div id="foto-procesando" style="display:none;text-align:center;padding:20px;">
+    <div style="font-size:32px;margin-bottom:10px;">⚙️</div>
+    <div style="font-weight:700;">Procesando foto...</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:4px;">Removiendo fondo con IA</div>
+  </div>
+
+  <p style="font-size:11px;color:rgba(255,255,255,0.35);text-align:center;margin-bottom:20px;">La foto es opcional — podés saltear este paso</p>
+
+  <div class="btns">
+    <button class="btn-atras" onclick="irPaso(2)">← Atrás</button>
+    <button class="btn-siguiente" onclick="irPaso(4)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- PASO 4: FECHA, HORA Y LUGAR -->
+<div class="paso" id="paso4">
   <h2>📍 ¿Cuándo y dónde?</h2>
   <p class="subtitulo">Datos de la fiesta</p>
 
@@ -572,7 +604,7 @@
 
   <button class="btn-generar" onclick="generarInvitacion()">🎉 ¡Crear mi invitación!</button>
   <div class="btns" style="margin-top:12px;">
-    <button class="btn-atras" onclick="irPaso(2)">← Atrás</button>
+    <button class="btn-atras" onclick="irPaso(3)">← Atrás</button>
   </div>
 </div>
 
@@ -589,11 +621,11 @@
 <div class="powered">Invitación digital creada con <span>✦ ZAPIA AI</span> · Imprenta Ruiz, Salta</div>
 
 <script>
-  // Estado
   let tematica = null;
   let colorPrimario = '#7b1fa2';
   let colorSecundario = '#4a148c';
   let emojiTema = '🎉';
+  let fotoBase64 = null; // foto con fondo removido
 
   function elegirTematica(el, emoji, nombre, c1, c2) {
     document.querySelectorAll('.tematica-card').forEach(c => c.classList.remove('selected'));
@@ -608,10 +640,50 @@
   function irPaso(n) {
     document.querySelectorAll('.paso').forEach(p => p.classList.remove('active'));
     document.getElementById('paso' + n).classList.add('active');
-    const pct = (n / 3) * 100;
+    const pct = (n / 4) * 100;
     document.getElementById('progress').style.width = pct + '%';
-    document.getElementById('step-label').textContent = 'Paso ' + n + ' de 3';
+    document.getElementById('step-label').textContent = 'Paso ' + n + ' de 4';
     window.scrollTo(0, 0);
+  }
+
+  async function procesarFoto(input) {
+    if (!input.files || !input.files[0]) return;
+    const file = input.files[0];
+
+    // Mostrar procesando
+    document.getElementById('foto-placeholder').style.display = 'none';
+    document.getElementById('foto-procesando').style.display = 'block';
+    document.getElementById('foto-preview-wrap').style.display = 'none';
+
+    const formData = new FormData();
+    formData.append('foto', file);
+
+    try {
+      const resp = await fetch('/carnet/removebg', { method: 'POST', body: formData });
+      const data = await resp.json();
+      if (data.image) {
+        fotoBase64 = data.image;
+        // Mostrar preview circular
+        document.getElementById('foto-preview').src = 'data:image/png;base64,' + data.image;
+        document.getElementById('foto-preview-wrap').style.display = 'block';
+        document.getElementById('foto-estado').textContent = '✅ Fondo removido con IA';
+        document.getElementById('foto-procesando').style.display = 'none';
+      } else {
+        throw new Error('sin imagen');
+      }
+    } catch(e) {
+      // Fallback: usar foto original sin remover fondo
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const b64 = ev.target.result.split(',')[1];
+        fotoBase64 = b64;
+        document.getElementById('foto-preview').src = ev.target.result;
+        document.getElementById('foto-preview-wrap').style.display = 'block';
+        document.getElementById('foto-estado').textContent = '📷 Foto cargada';
+        document.getElementById('foto-procesando').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   function formatearFecha(fechaStr) {
@@ -684,7 +756,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre, anos, mensaje, fecha, hora, direccion, salon, telefono,
-          emoji: emojiTema, color1: colorPrimario, color2: colorSecundario
+          emoji: emojiTema, color1: colorPrimario, color2: colorSecundario,
+          foto: fotoBase64 || null
         })
       });
       const data = await resp.json();
