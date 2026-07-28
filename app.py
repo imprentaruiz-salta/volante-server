@@ -353,6 +353,12 @@ def resumen():
 # ---------------------------------------------------------------------------
 # Foto carnet 4x4
 # ---------------------------------------------------------------------------
+@app.route("/menu")
+def menu_page():
+    """Página del generador de menú digital profesional."""
+    return render_template("menu.html", imprenta_wpp=IMPRENTA_WHATSAPP)
+
+
 @app.route("/carnet")
 def carnet_page():
     """Página de foto carnet 4x4."""
