@@ -655,35 +655,52 @@
     document.getElementById('foto-procesando').style.display = 'block';
     document.getElementById('foto-preview-wrap').style.display = 'none';
 
-    const formData = new FormData();
-    formData.append('foto', file);
+    // Leer foto original como base64 (siempre, de forma segura)
+    const originalB64 = await new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = ev => resolve(ev.target.result.split(',')[1]);
+      reader.readAsDataURL(file);
+    });
 
+    // Comprimir foto para no exceder límites del servidor
+    const comprimidaB64 = await new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX = 600;
+        let w = img.width, h = img.height;
+        if (w > h) { if (w > MAX) { h = h * MAX / w; w = MAX; } }
+        else { if (h > MAX) { w = w * MAX / h; h = MAX; } }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.85).split(',')[1]);
+      };
+      img.src = 'data:image/jpeg;base64,' + originalB64;
+    });
+
+    // Intentar Remove.bg
     try {
+      const formData = new FormData();
+      formData.append('foto', file);
       const resp = await fetch('/carnet/removebg', { method: 'POST', body: formData });
       const data = await resp.json();
       if (data.image) {
         fotoBase64 = data.image;
-        // Mostrar preview circular
         document.getElementById('foto-preview').src = 'data:image/png;base64,' + data.image;
-        document.getElementById('foto-preview-wrap').style.display = 'block';
         document.getElementById('foto-estado').textContent = '✅ Fondo removido con IA';
-        document.getElementById('foto-procesando').style.display = 'none';
       } else {
         throw new Error('sin imagen');
       }
     } catch(e) {
-      // Fallback: usar foto original sin remover fondo
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const b64 = ev.target.result.split(',')[1];
-        fotoBase64 = b64;
-        document.getElementById('foto-preview').src = ev.target.result;
-        document.getElementById('foto-preview-wrap').style.display = 'block';
-        document.getElementById('foto-estado').textContent = '📷 Foto cargada';
-        document.getElementById('foto-procesando').style.display = 'none';
-      };
-      reader.readAsDataURL(file);
+      // Fallback: foto comprimida sin remover fondo
+      fotoBase64 = comprimidaB64;
+      document.getElementById('foto-preview').src = 'data:image/jpeg;base64,' + comprimidaB64;
+      document.getElementById('foto-estado').textContent = '📷 Foto cargada';
     }
+
+    // Mostrar preview siempre
+    document.getElementById('foto-preview-wrap').style.display = 'block';
+    document.getElementById('foto-procesando').style.display = 'none';
   }
 
   function formatearFecha(fechaStr) {
