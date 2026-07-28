@@ -241,78 +241,30 @@ def generate():
     if not whatsapp:
         return jsonify({"error": "El WhatsApp es obligatorio"}), 400
 
-    if not TOGETHER_API_KEY:
-        return jsonify({
-            "error": "El servidor no tiene configurada la API key de Together AI. "
-                     "Contactá a Imprenta Ruiz."
-        }), 500
-
     prompt = construir_prompt(datos)
 
-    # FLUX.1-schnell usa width/height; soporta hasta 4 steps
-    # Si se cambia a FLUX.2-flex/dev, se puede agregar "steps": 28
-    payload = {
-        "model": FLUX_MODEL,
-        "prompt": prompt,
-        "width": IMG_WIDTH,
-        "height": IMG_HEIGHT,
-        "n": 1,
-        "response_format": "b64_json",
-        "steps": 4,
-    }
-
-    headers = {
-        "Authorization": f"Bearer {TOGETHER_API_KEY}",
-        "Content-Type": "application/json",
-    }
+    # ---------------------------------------------------------------------------
+    # Generación de imagen via Pollinations.AI (gratuito, sin API key)
+    # GET https://image.pollinations.ai/prompt/{prompt}?width=W&height=H&model=flux&nologo=true
+    # ---------------------------------------------------------------------------
+    import urllib.parse
+    prompt_encoded = urllib.parse.quote(prompt)
+    pollinations_url = (
+        f"https://image.pollinations.ai/prompt/{prompt_encoded}"
+        f"?width={IMG_WIDTH}&height={IMG_HEIGHT}&model=flux&nologo=true&seed={hash(prompt) % 99999}"
+    )
 
     try:
-        resp = requests.post(
-            TOGETHER_IMAGE_URL,
-            json=payload,
-            headers=headers,
-            timeout=90,
-        )
+        resp = requests.get(pollinations_url, timeout=90, stream=True)
     except requests.exceptions.Timeout:
         return jsonify({"error": "La generación de la imagen tardó demasiado. Intentá de nuevo."}), 504
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Error de conexión con el servicio de IA: {str(e)}"}), 502
 
     if resp.status_code != 200:
-        try:
-            err_body = resp.json()
-            # Together AI error format: {"error": {"message": "..."}}
-            err_obj = err_body.get("error", {})
-            if isinstance(err_obj, dict):
-                err_msg = err_obj.get("message", "") or err_obj.get("type", "")
-            else:
-                err_msg = str(err_obj) or err_body.get("message", "")
-        except Exception:
-            err_msg = resp.text[:300]
-        return jsonify({
-            "error": f"Error del servicio de IA (HTTP {resp.status_code}): {err_msg}"
-        }), 502
+        return jsonify({"error": f"Error del servicio de IA (HTTP {resp.status_code}). Intentá de nuevo."}), 502
 
-    data = resp.json()
-
-    # Together AI devuelve {"data": [{"b64_json": "..."}]} para imágenes
-    image_b64 = None
-    if isinstance(data.get("data"), list) and len(data["data"]) > 0:
-        item = data["data"][0]
-        image_b64 = item.get("b64_json") or item.get("url")
-
-    if not image_b64:
-        return jsonify({"error": "La IA no devolvió una imagen. Intentá nuevamente."}), 502
-
-    # Si vino como URL, descargar y convertir a base64
-    if image_b64.startswith("http"):
-        try:
-            img_resp = requests.get(image_b64, timeout=30)
-            img_resp.raise_for_status()
-            image_b64 = base64.b64encode(img_resp.content).decode("utf-8")
-        except Exception:
-            # Si no podemos descargar, devolver la URL tal cual
-            return jsonify({"image_url": image_b64, "prompt": prompt})
+    image_b64 = base64.b64encode(resp.content).decode("utf-8")
 
     return jsonify({
         "image": image_b64,
