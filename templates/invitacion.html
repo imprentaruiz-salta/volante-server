@@ -85,14 +85,25 @@
     }
 
     /* Foto del cumpleañero — medallón */
-    .foto-medallon {
-      position: absolute; top: 16px; right: 16px; z-index: 5;
-      width: 80px; height: 80px;
-      border-radius: 50%;
-      border: 3px solid rgba(255,255,255,0.9);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      object-fit: cover;
+    .foto-medallon-wrap {
+      position: absolute;
+      bottom: -44px; left: 50%; transform: translateX(-50%);
+      z-index: 10; text-align: center;
     }
+    .foto-medallon {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      border: 4px solid #fff;
+      box-shadow: 0 0 0 4px {{ color1 }}, 0 8px 32px rgba(0,0,0,0.6);
+      object-fit: cover;
+      display: block;
+    }
+    .foto-medallon-label {
+      margin-top: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1px;
+      color: rgba(255,255,255,0.85); text-transform: uppercase;
+    }
+    .hero-content.con-foto { padding-bottom: 60px; }
 
     /* ── MÚSICA ── */
     .musica-bar {
@@ -134,6 +145,7 @@
     /* ── CUENTA REGRESIVA ── */
     .contador {
       padding: 20px 16px;
+      padding-top: 56px; /* espacio para el medallón */
       background: rgba(255,255,255,0.04);
       border-bottom: 1px solid rgba(255,255,255,0.07);
       text-align: center;
@@ -273,13 +285,8 @@
   <!-- Confetti -->
   <div id="confetti-bg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:1;"></div>
 
-  <!-- Foto del cumpleañero (medallón esquina) -->
-  {% if foto %}
-  <img class="foto-medallon" src="data:image/png;base64,{{ foto }}" alt="{{ nombre }}">
-  {% endif %}
-
   <!-- Texto sobre la imagen -->
-  <div class="hero-content">
+  <div class="hero-content {% if foto %}con-foto{% endif %}">
     <div class="hero-badge">🎂 Cumpleaños</div>
     <div class="hero-nombre">{{ nombre }}</div>
     <div class="hero-anos">cumple {{ anos }} añitos 🎈</div>
@@ -287,6 +294,14 @@
     <div class="hero-mensaje">"{{ mensaje }}"</div>
     {% endif %}
   </div>
+
+  <!-- Foto del cumpleañero — medallón centrado en el borde inferior -->
+  {% if foto %}
+  <div class="foto-medallon-wrap">
+    <img class="foto-medallon" src="data:image/png;base64,{{ foto }}" alt="{{ nombre }}">
+    <div class="foto-medallon-label">⭐ {{ nombre }}</div>
+  </div>
+  {% endif %}
 </div>
 
 <!-- ══ MÚSICA ══ -->
