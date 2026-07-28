@@ -9,15 +9,94 @@
   <meta property="og:type" content="website">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      background: #0a0a0a; color: #fff; min-height: 100vh;
+      background: #080808; color: #fff; min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* ── HERO CON IMAGEN ── */
+    /* ══ PANTALLA DE INTRO (SOBRE) ══ */
+    #intro {
+      position: fixed; inset: 0; z-index: 999;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(160deg, {{ color2 }} 0%, {{ color1 }} 100%);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    #intro.out { opacity: 0; transform: scale(1.06); pointer-events: none; }
+    .intro-sobre {
+      width: 200px; height: 160px; position: relative; margin-bottom: 28px;
+      cursor: pointer; user-select: none;
+    }
+    /* Cuerpo del sobre */
+    .sobre-body {
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 120px;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.35);
+      border-radius: 0 0 18px 18px;
+      backdrop-filter: blur(10px);
+    }
+    /* Solapa inferior del sobre */
+    .sobre-flap-bottom {
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 0 0 18px 18px;
+      clip-path: polygon(0 100%, 50% 0, 100% 100%);
+    }
+    /* Solapa superior (se abre) */
+    .sobre-flap-top {
+      position: absolute; top: 0; left: 0; width: 100%; height: 80px;
+      background: rgba(255,255,255,0.2);
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform-origin: top center;
+      transition: transform 0.5s ease;
+      border-radius: 10px 10px 0 0;
+    }
+    .intro-sobre:hover .sobre-flap-top,
+    .intro-sobre.abierto .sobre-flap-top {
+      transform: rotateX(160deg);
+    }
+    /* Carta saliendo */
+    .sobre-carta {
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+      width: 130px; height: 90px;
+      background: #fff; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+      transition: transform 0.5s ease 0.2s, opacity 0.4s ease 0.2s;
+      z-index: -1;
+    }
+    .intro-sobre.abierto .sobre-carta {
+      transform: translateX(-50%) translateY(-60px);
+    }
+    .intro-titulo {
+      font-size: 26px; font-weight: 900; text-align: center;
+      line-height: 1.1; text-shadow: 0 2px 16px rgba(0,0,0,0.4);
+    }
+    .intro-sub {
+      margin-top: 10px; font-size: 14px; font-weight: 600;
+      color: rgba(255,255,255,0.75); text-align: center;
+    }
+    .intro-tap {
+      margin-top: 28px; font-size: 13px; font-weight: 700;
+      color: rgba(255,255,255,0.6); letter-spacing: 1.5px;
+      text-transform: uppercase; animation: pulso 1.4s ease-in-out infinite;
+    }
+    @keyframes pulso {
+      0%,100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* ══ CONTENIDO PRINCIPAL ══ */
+    #contenido { display: none; }
+    #contenido.visible { display: block; animation: fadeIn 0.6s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; } }
+
+    /* ── HERO ── */
     .hero {
-      position: relative;
-      min-height: 380px;
+      position: relative; min-height: 420px;
       display: flex; flex-direction: column;
       align-items: center; justify-content: flex-end;
       overflow: hidden;
@@ -27,7 +106,8 @@
       position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
       object-fit: cover; object-position: center top;
-      opacity: 0.92;
+      opacity: 0.9;
+      transition: opacity 0.5s ease;
     }
     .hero-loading {
       position: absolute; top: 0; left: 0;
@@ -40,103 +120,103 @@
     .hero-loading .spinner {
       width: 44px; height: 44px;
       border: 4px solid rgba(255,255,255,0.2);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin-bottom: 14px;
+      border-top-color: #fff; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin-bottom: 14px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
     .hero-loading p { font-size: 13px; color: rgba(255,255,255,0.7); }
 
-    /* Gradiente sobre la imagen para que el texto sea legible */
     .hero-overlay {
-      position: absolute; bottom: 0; left: 0; width: 100%;
-      height: 65%;
-      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 70%;
+      background: linear-gradient(to top, rgba(0,0,0,0.88) 0%, transparent 100%);
       z-index: 3;
     }
     .hero-content {
       position: relative; z-index: 4;
-      width: 100%; padding: 0 20px 24px;
+      width: 100%; padding: 0 20px 28px;
       text-align: center;
     }
+    .hero-content.con-foto { padding-bottom: 64px; }
     .hero-badge {
       display: inline-block;
       background: rgba(255,255,255,0.15);
       border: 1px solid rgba(255,255,255,0.3);
       backdrop-filter: blur(8px);
-      border-radius: 20px; padding: 4px 14px;
+      border-radius: 20px; padding: 5px 16px;
       font-size: 10px; font-weight: 700;
-      letter-spacing: 2px; text-transform: uppercase;
-      color: rgba(255,255,255,0.85); margin-bottom: 10px;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.9); margin-bottom: 10px;
     }
     .hero-nombre {
-      font-size: 48px; font-weight: 900; line-height: 1;
-      text-shadow: 0 2px 20px rgba(0,0,0,0.6);
-      letter-spacing: -1px;
+      font-size: 52px; font-weight: 900; line-height: 1;
+      text-shadow: 0 2px 24px rgba(0,0,0,0.7);
+      letter-spacing: -1.5px;
     }
     .hero-anos {
       font-size: 17px; color: rgba(255,255,255,0.85);
-      margin-top: 6px; font-weight: 600;
+      margin-top: 8px; font-weight: 600;
     }
     .hero-mensaje {
       margin-top: 10px; font-size: 13px; font-style: italic;
-      color: rgba(255,255,255,0.8); padding: 0 8px;
+      color: rgba(255,255,255,0.75); padding: 0 8px;
     }
 
-    /* Foto del cumpleañero — medallón */
+    /* Medallón foto */
     .foto-medallon-wrap {
       position: absolute;
-      bottom: -44px; left: 50%; transform: translateX(-50%);
+      bottom: -46px; left: 50%; transform: translateX(-50%);
       z-index: 10; text-align: center;
     }
     .foto-medallon {
-      width: 88px; height: 88px;
-      border-radius: 50%;
+      width: 92px; height: 92px; border-radius: 50%;
       border: 4px solid #fff;
-      box-shadow: 0 0 0 4px {{ color1 }}, 0 8px 32px rgba(0,0,0,0.6);
-      object-fit: cover;
-      display: block;
+      box-shadow: 0 0 0 4px {{ color1 }}, 0 8px 32px rgba(0,0,0,0.65);
+      object-fit: cover; display: block;
     }
     .foto-medallon-label {
-      margin-top: 6px;
-      font-size: 11px; font-weight: 700; letter-spacing: 1px;
-      color: rgba(255,255,255,0.85); text-transform: uppercase;
+      margin-top: 6px; font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; color: rgba(255,255,255,0.9);
+      text-transform: uppercase;
     }
-    .hero-content.con-foto { padding-bottom: 60px; }
+
+    /* Confetti */
+    @keyframes fall {
+      0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(440px) rotate(720deg); opacity: 0; }
+    }
+    .confetti-piece {
+      position: absolute; width: 7px; height: 7px;
+      border-radius: 2px; animation: fall linear infinite; z-index: 1;
+    }
 
     /* ── MÚSICA ── */
     .musica-bar {
-      display: flex; align-items: center; justify-content: center; gap: 12px;
-      padding: 12px 20px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 14px 20px;
       background: rgba(255,255,255,0.04);
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
     .btn-musica {
       display: flex; align-items: center; gap: 8px;
-      padding: 8px 20px;
+      padding: 10px 22px;
       background: rgba(255,255,255,0.1);
       border: 1px solid rgba(255,255,255,0.2);
       border-radius: 30px; color: #fff;
       font-size: 13px; font-weight: 700; cursor: pointer;
       transition: background 0.2s;
     }
-    .btn-musica:hover { background: rgba(255,255,255,0.18); }
-    .btn-musica.playing { background: {{ color1 }}; border-color: {{ color1 }}; }
-    .ondas {
-      display: flex; align-items: flex-end; gap: 2px; height: 18px;
-    }
+    .btn-musica.playing { background: {{ color1 }}; border-color: transparent; }
+    .ondas { display: flex; align-items: flex-end; gap: 2px; height: 18px; }
     .onda {
       width: 3px; border-radius: 2px;
-      background: rgba(255,255,255,0.5);
-      animation: none;
+      background: rgba(255,255,255,0.6);
     }
     .playing .onda { animation: onda 0.6s ease-in-out infinite alternate; }
-    .onda:nth-child(1) { height: 8px; animation-delay: 0s; }
+    .onda:nth-child(1) { height: 8px;  animation-delay: 0s; }
     .onda:nth-child(2) { height: 14px; animation-delay: 0.15s; }
     .onda:nth-child(3) { height: 10px; animation-delay: 0.3s; }
     .onda:nth-child(4) { height: 16px; animation-delay: 0.1s; }
-    .onda:nth-child(5) { height: 7px; animation-delay: 0.25s; }
+    .onda:nth-child(5) { height: 7px;  animation-delay: 0.25s; }
     @keyframes onda {
       from { transform: scaleY(0.4); }
       to   { transform: scaleY(1.2); }
@@ -145,14 +225,15 @@
     /* ── CUENTA REGRESIVA ── */
     .contador {
       padding: 20px 16px;
-      padding-top: 56px; /* espacio para el medallón */
-      background: rgba(255,255,255,0.04);
+      padding-top: 60px;
+      background: rgba(255,255,255,0.03);
       border-bottom: 1px solid rgba(255,255,255,0.07);
       text-align: center;
     }
+    .contador.sin-foto { padding-top: 24px; }
     .contador-label {
       font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-      text-transform: uppercase; color: rgba(255,255,255,0.4);
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
       margin-bottom: 14px;
     }
     .contador-nums { display: flex; justify-content: center; gap: 10px; }
@@ -161,12 +242,9 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 14px; padding: 12px 14px; min-width: 68px;
     }
-    .contador-num {
-      font-size: 30px; font-weight: 900; line-height: 1;
-      color: #fff;
-    }
+    .contador-num { font-size: 30px; font-weight: 900; }
     .contador-txt {
-      font-size: 10px; color: rgba(255,255,255,0.4);
+      font-size: 10px; color: rgba(255,255,255,0.35);
       text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
     }
 
@@ -184,110 +262,205 @@
     .inv-dato-icono { font-size: 20px; margin-bottom: 6px; }
     .inv-dato-label {
       font-size: 9px; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: rgba(255,255,255,0.35);
+      text-transform: uppercase; color: rgba(255,255,255,0.3);
       margin-bottom: 3px;
     }
     .inv-dato-valor { font-size: 15px; font-weight: 700; line-height: 1.2; }
 
     /* ── RSVP ── */
     .rsvp-section {
-      margin: 16px 16px 10px;
+      margin: 16px 16px 4px;
       background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px; padding: 20px; text-align: center;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px; padding: 22px; text-align: center;
     }
-    .rsvp-label {
-      font-size: 15px; font-weight: 800; margin-bottom: 14px;
+    .rsvp-titulo {
+      font-size: 16px; font-weight: 900; margin-bottom: 6px;
     }
-    .rsvp-btns { display: flex; gap: 10px; }
+    .rsvp-sub {
+      font-size: 12px; color: rgba(255,255,255,0.45);
+      margin-bottom: 16px;
+    }
+    .rsvp-btns { display: flex; gap: 10px; margin-bottom: 14px; }
     .btn-voy {
-      flex: 1; padding: 14px; background: #22c55e;
-      border: none; border-radius: 12px; color: #fff;
+      flex: 1; padding: 15px; background: #22c55e;
+      border: none; border-radius: 14px; color: #fff;
       font-size: 15px; font-weight: 800; cursor: pointer;
-      box-shadow: 0 4px 14px rgba(34,197,94,0.35);
+      box-shadow: 0 4px 18px rgba(34,197,94,0.4);
+      transition: transform 0.15s;
     }
+    .btn-voy:active { transform: scale(0.96); }
     .btn-nopuedo {
-      flex: 1; padding: 14px;
+      flex: 1; padding: 15px;
       background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 12px; color: rgba(255,255,255,0.65);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 14px; color: rgba(255,255,255,0.6);
       font-size: 15px; font-weight: 700; cursor: pointer;
     }
-    .rsvp-confirmado {
-      display: none; padding: 14px; border-radius: 12px;
-      font-size: 16px; font-weight: 800; margin-top: 10px;
-    }
-    .rsvp-confirmado.visible { display: block; }
 
-    /* ── BOTONES ACCIÓN ── */
-    .acciones { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    /* Cuántos vienen */
+    .rsvp-cuantos {
+      display: none;
+      margin-top: 2px;
+    }
+    .rsvp-cuantos.visible { display: block; animation: fadeIn 0.3s ease; }
+    .rsvp-cuantos-label {
+      font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 10px;
+    }
+    .rsvp-counter {
+      display: flex; align-items: center; justify-content: center; gap: 18px;
+    }
+    .counter-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; font-size: 22px; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
+    }
+    .counter-btn:active { background: {{ color1 }}; }
+    .counter-num {
+      font-size: 36px; font-weight: 900; min-width: 50px; text-align: center;
+    }
+    .btn-confirmar-final {
+      margin-top: 16px; width: 100%; padding: 14px;
+      background: linear-gradient(135deg, {{ color1 }}, {{ color2 }});
+      border: none; border-radius: 14px; color: #fff;
+      font-size: 15px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.3);
+    }
+    .rsvp-confirmado {
+      display: none; padding: 16px; border-radius: 14px;
+      font-size: 16px; font-weight: 800; margin-top: 4px;
+    }
+    .rsvp-confirmado.visible { display: block; animation: fadeIn 0.4s ease; }
+
+    /* ── MURO DE SALUDOS ── */
+    .muro-section {
+      margin: 12px 16px 4px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 20px; padding: 22px;
+    }
+    .muro-titulo {
+      font-size: 15px; font-weight: 900; text-align: center;
+      margin-bottom: 4px;
+    }
+    .muro-sub {
+      font-size: 12px; color: rgba(255,255,255,0.4);
+      text-align: center; margin-bottom: 16px;
+    }
+    .muro-input-wrap {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .muro-nombre-input, .muro-texto-input {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.13);
+      border-radius: 12px; padding: 12px 14px;
+      color: #fff; font-size: 14px; outline: none;
+      font-family: inherit; width: 100%;
+      transition: border-color 0.2s;
+    }
+    .muro-nombre-input:focus, .muro-texto-input:focus {
+      border-color: {{ color1 }};
+    }
+    .muro-nombre-input::placeholder, .muro-texto-input::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+    .muro-texto-input { min-height: 80px; resize: none; }
+    .btn-enviar-saludo {
+      padding: 13px; background: linear-gradient(135deg, {{ color1 }}, {{ color2 }});
+      border: none; border-radius: 12px; color: #fff;
+      font-size: 14px; font-weight: 800; cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .btn-enviar-saludo:active { transform: scale(0.97); }
+    .muro-lista { margin-top: 18px; display: flex; flex-direction: column; gap: 10px; }
+    .muro-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 14px;
+      animation: fadeIn 0.4s ease;
+    }
+    .muro-card-nombre {
+      font-size: 12px; font-weight: 800;
+      color: {{ color1 }}; margin-bottom: 5px;
+      letter-spacing: 0.5px;
+    }
+    .muro-card-texto { font-size: 14px; line-height: 1.5; }
+    .muro-vacio {
+      text-align: center; padding: 14px;
+      font-size: 13px; color: rgba(255,255,255,0.3);
+    }
+
+    /* ── ACCIONES ── */
+    .acciones { padding: 12px 16px 20px; display: flex; flex-direction: column; gap: 10px; }
     .btn-mapa {
       display: flex; align-items: center; justify-content: center; gap: 8px;
-      padding: 16px; background: linear-gradient(135deg,#1e40af,#1d4ed8);
+      padding: 16px; background: linear-gradient(135deg,#1e3a8a,#1d4ed8);
       border-radius: 14px; color: #fff; font-weight: 800;
       font-size: 15px; text-decoration: none;
-      box-shadow: 0 4px 16px rgba(29,78,216,0.35);
+      box-shadow: 0 4px 18px rgba(29,78,216,0.3);
     }
     .btn-compartir {
       display: flex; align-items: center; justify-content: center; gap: 8px;
       padding: 16px; background: #25d366;
       border: none; border-radius: 14px; color: #fff;
       font-size: 15px; font-weight: 800; cursor: pointer;
-      box-shadow: 0 4px 16px rgba(37,211,102,0.35);
+      box-shadow: 0 4px 18px rgba(37,211,102,0.3);
     }
     .btn-nueva {
-      padding: 14px; background: rgba(255,255,255,0.06);
+      padding: 14px; background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 14px; color: rgba(255,255,255,0.5);
+      border-radius: 14px; color: rgba(255,255,255,0.45);
       font-size: 13px; font-weight: 700; cursor: pointer;
       text-align: center; text-decoration: none; display: block;
     }
-
     .powered {
-      text-align: center; padding: 20px 16px 32px;
-      font-size: 11px; color: rgba(255,255,255,0.2);
+      text-align: center; padding: 16px 16px 36px;
+      font-size: 11px; color: rgba(255,255,255,0.18);
     }
-    .powered span { color: #a855f7; font-weight: 700; }
-
-    /* Confetti */
-    @keyframes fall {
-      0%   { transform: translateY(-10px) rotate(0deg); opacity:1; }
-      100% { transform: translateY(420px) rotate(720deg); opacity:0; }
-    }
-    .confetti-piece {
-      position: absolute; width: 7px; height: 7px;
-      border-radius: 2px; animation: fall linear infinite; z-index: 1;
-    }
+    .powered span { color: {{ color1 }}; font-weight: 800; }
   </style>
 </head>
 <body>
 
-<!-- ══ HERO ══ -->
+<!-- ══ INTRO: SOBRE ══ -->
+<div id="intro" onclick="abrirInvitacion()">
+  <div class="intro-sobre" id="sobre">
+    <div class="sobre-body"></div>
+    <div class="sobre-flap-bottom"></div>
+    <div class="sobre-carta">🎉</div>
+    <div class="sobre-flap-top"></div>
+  </div>
+  <div class="intro-titulo">¡Tenés una<br>invitación!</div>
+  <div class="intro-sub">{{ nombre }} cumple {{ anos }} añitos 🎂</div>
+  <div class="intro-tap">Tocá para abrir ✉️</div>
+</div>
+
+<!-- ══ CONTENIDO PRINCIPAL ══ -->
+<div id="contenido">
+
+<!-- ── HERO ── -->
 <div class="hero" id="hero">
-  <!-- Overlay degradé sobre imagen -->
   <div class="hero-overlay"></div>
 
-  <!-- Loading mientras carga la imagen IA -->
   {% if not imagen_ia %}
   <div class="hero-loading" id="hero-loading">
     <div class="spinner"></div>
-    <p>Generando ilustración con IA...</p>
+    <p>Generando con IA...</p>
   </div>
   {% endif %}
 
-  <!-- Imagen generada por IA -->
   {% if imagen_ia %}
   <img class="hero-img" src="data:image/jpeg;base64,{{ imagen_ia }}" alt="{{ tematica }}">
   {% else %}
   <img class="hero-img" id="hero-img" src="" alt="" style="display:none">
   {% endif %}
 
-  <!-- Confetti -->
   <div id="confetti-bg" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;overflow:hidden;z-index:1;"></div>
 
-  <!-- Texto sobre la imagen -->
   <div class="hero-content {% if foto %}con-foto{% endif %}">
-    <div class="hero-badge">🎂 Cumpleaños</div>
+    <div class="hero-badge">🎂 &nbsp;Cumpleaños</div>
     <div class="hero-nombre">{{ nombre }}</div>
     <div class="hero-anos">cumple {{ anos }} añitos 🎈</div>
     {% if mensaje %}
@@ -295,7 +468,6 @@
     {% endif %}
   </div>
 
-  <!-- Foto del cumpleañero — medallón centrado en el borde inferior -->
   {% if foto %}
   <div class="foto-medallon-wrap">
     <img class="foto-medallon" src="data:image/png;base64,{{ foto }}" alt="{{ nombre }}">
@@ -304,7 +476,7 @@
   {% endif %}
 </div>
 
-<!-- ══ MÚSICA ══ -->
+<!-- ── MÚSICA ── -->
 <div class="musica-bar">
   <button class="btn-musica" id="btn-musica" onclick="toggleMusica()">
     <div class="ondas" id="ondas">
@@ -319,9 +491,9 @@
   <source src="{{ musica_url }}" type="audio/mpeg">
 </audio>
 
-<!-- ══ CUENTA REGRESIVA ══ -->
-<div class="contador">
-  <div class="contador-label">⏰ Faltan</div>
+<!-- ── CUENTA REGRESIVA ── -->
+<div class="contador {% if not foto %}sin-foto{% endif %}">
+  <div class="contador-label">⏰ FALTAN</div>
   <div class="contador-nums">
     <div class="contador-bloque">
       <div class="contador-num" id="cnt-dias">--</div>
@@ -342,7 +514,7 @@
   </div>
 </div>
 
-<!-- ══ DATOS ══ -->
+<!-- ── DATOS ── -->
 <div class="inv-datos">
   <div class="inv-dato">
     <div class="inv-dato-icono">📅</div>
@@ -359,74 +531,122 @@
     <div class="inv-dato-label">{{ salon if salon else 'Lugar' }}</div>
     <div class="inv-dato-valor">{{ direccion }}</div>
   </div>
+  {% if telefono %}
   <div class="inv-dato full">
     <div class="inv-dato-icono">📞</div>
     <div class="inv-dato-label">Consultas</div>
     <div class="inv-dato-valor">{{ telefono }}</div>
   </div>
+  {% endif %}
 </div>
 
-<!-- ══ RSVP ══ -->
+<!-- ── RSVP ── -->
 <div class="rsvp-section">
-  <div class="rsvp-label">¿Podés venir? 🎊</div>
+  <div class="rsvp-titulo">¿Podés venir? 🎊</div>
+  <div class="rsvp-sub">Confirmá tu asistencia</div>
   <div class="rsvp-btns" id="rsvp-btns">
-    <button class="btn-voy"     onclick="confirmar(true)">✅ ¡Voy!</button>
-    <button class="btn-nopuedo" onclick="confirmar(false)">😔 No puedo</button>
+    <button class="btn-voy" onclick="mostrarCuantos()">✅ ¡Voy!</button>
+    <button class="btn-nopuedo" onclick="confirmarNo()">😔 No puedo</button>
+  </div>
+  <div class="rsvp-cuantos" id="rsvp-cuantos">
+    <div class="rsvp-cuantos-label">¿Cuántos van a ir?</div>
+    <div class="rsvp-counter">
+      <button class="counter-btn" onclick="cambiarCantidad(-1)">−</button>
+      <div class="counter-num" id="cant-num">1</div>
+      <button class="counter-btn" onclick="cambiarCantidad(1)">+</button>
+    </div>
+    <button class="btn-confirmar-final" onclick="confirmarSi()">🎉 ¡Confirmar asistencia!</button>
   </div>
   <div class="rsvp-confirmado" id="rsvp-confirmado"></div>
 </div>
 
-<!-- ══ ACCIONES ══ -->
+<!-- ── MURO DE SALUDOS ── -->
+<div class="muro-section">
+  <div class="muro-titulo">💌 Dejale un saludo a {{ nombre }}</div>
+  <div class="muro-sub">Tu mensaje va a aparecer acá para que lo lea</div>
+  <div class="muro-input-wrap">
+    <input class="muro-nombre-input" id="muro-nombre" type="text" placeholder="Tu nombre" maxlength="40">
+    <textarea class="muro-texto-input" id="muro-texto" placeholder="Escribí tu saludo... 🎂" maxlength="200"></textarea>
+    <button class="btn-enviar-saludo" onclick="enviarSaludo()">🎉 Enviar saludo</button>
+  </div>
+  <div class="muro-lista" id="muro-lista">
+    <div class="muro-vacio" id="muro-vacio">Todavía no hay saludos. ¡Sé el primero!</div>
+  </div>
+</div>
+
+<!-- ── ACCIONES ── -->
 <div class="acciones">
   <a href="{{ maps_url }}" target="_blank" class="btn-mapa">🗺️ Ver cómo llegar</a>
   <button class="btn-compartir" onclick="compartirLink()">💬 Compartir por WhatsApp</button>
-  <a href="/cumple" class="btn-nueva">🎉 Crear otra invitación gratis · Imprenta Ruiz</a>
+  <a href="/cumple" class="btn-nueva">🎉 Crear tu invitación · Imprenta Ruiz</a>
 </div>
 
 <div class="powered">Creado con <span>✦ ZAPIA AI</span> · Imprenta Ruiz, Salta</div>
 
+</div><!-- fin #contenido -->
+
 <script>
-  // ── CONFETTI ──
-  (function(){
+  // ══ INTRO ══
+  let introAbierta = false;
+  function abrirInvitacion() {
+    if (introAbierta) return;
+    introAbierta = true;
+    document.getElementById('sobre').classList.add('abierto');
+    setTimeout(() => {
+      document.getElementById('intro').classList.add('out');
+      setTimeout(() => {
+        document.getElementById('intro').style.display = 'none';
+        const c = document.getElementById('contenido');
+        c.classList.add('visible');
+        lanzarConfetti();
+        cargarImagen();
+        tick();
+        setInterval(tick, 1000);
+        cargarSaludos();
+      }, 700);
+    }, 600);
+  }
+
+  // ══ CONFETTI ══
+  function lanzarConfetti() {
     const colors = ['#f59e0b','#ec4899','#a855f7','#22c55e','#ef4444','#3b82f6','#fff'];
     const bg = document.getElementById('confetti-bg');
     let h = '';
-    for (let i = 0; i < 18; i++) {
+    for (let i = 0; i < 22; i++) {
       const c = colors[i % colors.length];
-      const l = Math.random() * 100;
-      const dl= Math.random() * 3;
-      const du= 2.5 + Math.random() * 2;
-      h += `<div class="confetti-piece" style="left:${l}%;background:${c};animation-delay:${dl}s;animation-duration:${du}s;"></div>`;
+      h += `<div class="confetti-piece" style="left:${Math.random()*100}%;background:${c};animation-delay:${Math.random()*3}s;animation-duration:${2.5+Math.random()*2}s;"></div>`;
     }
     bg.innerHTML = h;
-  })();
+  }
 
-  // ── CARGA IMAGEN IA (si no viene pre-generada) ──
-  {% if not imagen_ia %}
-  (async function() {
-    try {
-      const r = await fetch('/i/{{ inv_id }}/imagen');
-      const d = await r.json();
-      if (d.image) {
-        const img = document.getElementById('hero-img');
-        img.src = 'data:image/jpeg;base64,' + d.image;
-        img.style.display = 'block';
-        document.getElementById('hero-loading').style.display = 'none';
+  // ══ IMAGEN IA ══
+  function cargarImagen() {
+    {% if not imagen_ia %}
+    (async function() {
+      try {
+        const r = await fetch('/i/{{ inv_id }}/imagen');
+        const d = await r.json();
+        if (d.image) {
+          const img = document.getElementById('hero-img');
+          img.src = 'data:image/jpeg;base64,' + d.image;
+          img.style.display = 'block';
+          document.getElementById('hero-loading').style.display = 'none';
+        }
+      } catch(e) {
+        const el = document.getElementById('hero-loading');
+        if (el) el.innerHTML = '<div style="font-size:72px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.5))">{{ emoji }}</div>';
       }
-    } catch(e) {
-      document.getElementById('hero-loading').innerHTML =
-        '<div style="font-size:56px;">{{ emoji }}</div>';
-    }
-  })();
-  {% endif %}
+    })();
+    {% endif %}
+  }
 
-  // ── CUENTA REGRESIVA ──
+  // ══ CUENTA REGRESIVA ══
   const TARGET = new Date("{{ fecha_iso }}T{{ hora_raw }}:00");
   function tick() {
     const diff = TARGET - new Date();
     if (diff <= 0) {
       document.querySelector('.contador').innerHTML =
-        '<div style="padding:20px;text-align:center;font-size:22px;font-weight:900;">🎂 ¡HOY ES EL GRAN DÍA! 🎂</div>';
+        '<div style="padding:10px;font-size:22px;font-weight:900;text-align:center">🎂 ¡HOY ES EL GRAN DÍA! 🎂</div>';
       return;
     }
     document.getElementById('cnt-dias').textContent  = Math.floor(diff/86400000);
@@ -434,48 +654,93 @@
     document.getElementById('cnt-mins').textContent  = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
     document.getElementById('cnt-segs').textContent  = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
   }
-  tick(); setInterval(tick, 1000);
 
-  // ── MÚSICA ──
+  // ══ MÚSICA ══
   let playing = false;
   const audio = document.getElementById('audio-fondo');
   function toggleMusica() {
     const btn = document.getElementById('btn-musica');
     const lbl = document.getElementById('lbl-musica');
-    const ondas = document.getElementById('ondas');
     if (!playing) {
       audio.play().then(() => {
         playing = true;
         btn.classList.add('playing');
-        ondas.classList.add('playing');
+        document.getElementById('ondas').classList.add('playing');
         lbl.textContent = '🎵 Pausar música';
       }).catch(() => { lbl.textContent = '🎵 No disponible'; });
     } else {
-      audio.pause();
-      playing = false;
+      audio.pause(); playing = false;
       btn.classList.remove('playing');
-      ondas.classList.remove('playing');
+      document.getElementById('ondas').classList.remove('playing');
       lbl.textContent = '🎵 Escuchar música';
     }
   }
 
-  // ── RSVP ──
-  function confirmar(va) {
+  // ══ RSVP ══
+  let cantPersonas = 1;
+  function mostrarCuantos() {
+    document.getElementById('rsvp-btns').style.display = 'none';
+    document.getElementById('rsvp-cuantos').classList.add('visible');
+  }
+  function cambiarCantidad(delta) {
+    cantPersonas = Math.max(1, Math.min(20, cantPersonas + delta));
+    document.getElementById('cant-num').textContent = cantPersonas;
+  }
+  function confirmarSi() {
+    document.getElementById('rsvp-cuantos').style.display = 'none';
+    const el = document.getElementById('rsvp-confirmado');
+    el.classList.add('visible');
+    el.style.cssText = 'display:block;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);border-radius:14px;padding:16px;';
+    el.innerHTML = `🎉 ¡Genial! Confirmado <strong>${cantPersonas} persona${cantPersonas>1?'s':''}</strong>. ¡Los esperamos!`;
+  }
+  function confirmarNo() {
     document.getElementById('rsvp-btns').style.display = 'none';
     const el = document.getElementById('rsvp-confirmado');
     el.classList.add('visible');
-    if (va) {
-      el.style.background = 'rgba(34,197,94,0.15)';
-      el.style.border = '1px solid rgba(34,197,94,0.4)';
-      el.innerHTML = '🎉 ¡Genial! ¡Los esperamos!';
-    } else {
-      el.style.background = 'rgba(255,255,255,0.05)';
-      el.style.border = '1px solid rgba(255,255,255,0.1)';
-      el.innerHTML = '😢 ¡Qué pena! Otra vez será...';
+    el.style.cssText = 'display:block;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;';
+    el.innerHTML = '😢 ¡Qué pena! Otra vez será...';
+  }
+
+  // ══ MURO DE SALUDOS ══
+  const INV_ID = '{{ inv_id }}';
+  const saludos = [];
+
+  function cargarSaludos() {
+    const guardados = localStorage.getItem('saludos_' + INV_ID);
+    if (guardados) {
+      JSON.parse(guardados).forEach(s => agregarSaludoDOM(s.nombre, s.texto));
     }
   }
 
-  // ── COMPARTIR ──
+  function enviarSaludo() {
+    const nombre = document.getElementById('muro-nombre').value.trim();
+    const texto  = document.getElementById('muro-texto').value.trim();
+    if (!nombre || !texto) {
+      alert('Escribí tu nombre y tu saludo 💌');
+      return;
+    }
+    const s = { nombre, texto };
+    saludos.push(s);
+    // Guardar en localStorage para persistir en el dispositivo
+    const todos = JSON.parse(localStorage.getItem('saludos_' + INV_ID) || '[]');
+    todos.push(s);
+    localStorage.setItem('saludos_' + INV_ID, JSON.stringify(todos));
+    agregarSaludoDOM(nombre, texto);
+    document.getElementById('muro-nombre').value = '';
+    document.getElementById('muro-texto').value  = '';
+  }
+
+  function agregarSaludoDOM(nombre, texto) {
+    const vacio = document.getElementById('muro-vacio');
+    if (vacio) vacio.remove();
+    const lista = document.getElementById('muro-lista');
+    const card  = document.createElement('div');
+    card.className = 'muro-card';
+    card.innerHTML = `<div class="muro-card-nombre">🎈 ${nombre}</div><div class="muro-card-texto">${texto}</div>`;
+    lista.prepend(card);
+  }
+
+  // ══ COMPARTIR ══
   function compartirLink() {
     const texto = `🎉 ¡Invitación al cumpleaños de {{ nombre }}!\n\n` +
       `🎂 Cumple {{ anos }} años\n📅 {{ fecha_formato }}\n🕐 {{ hora_formato }}\n📍 {{ direccion }}\n\n` +
