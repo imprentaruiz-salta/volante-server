@@ -179,7 +179,16 @@
 <!-- CABECERA -->
 <div class="inv-header">
   <div class="confetti-bg" id="confetti-bg"></div>
+  {% if foto %}
+  <div style="margin-bottom:16px;">
+    <img src="data:image/png;base64,{{ foto }}"
+         style="width:120px;height:120px;border-radius:50%;object-fit:cover;
+                border:4px solid rgba(255,255,255,0.9);
+                box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+  </div>
+  {% else %}
   <div class="inv-emoji-grande">{{ emoji }}</div>
+  {% endif %}
   <div class="inv-te-invita">🎂 ¡Te invita a su cumpleaños!</div>
   <div class="inv-nombre">{{ nombre }}</div>
   <div class="inv-anos">cumple {{ anos }} añitos 🎈</div>
