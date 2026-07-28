@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Creá la Invitación Digital de tu Cumpleaños</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(160deg, #1a004d 0%, #4a0080 50%, #1a004d 100%);
+      padding: 36px 24px 28px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      color: #e0b3ff;
+    }
+    .hero h1 {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 20px;
+    }
+
+    /* PROGRESS */
+    .progress-bar {
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      height: 6px;
+      max-width: 340px;
+      margin: 0 auto 8px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #a855f7, #ec4899);
+      border-radius: 10px;
+      transition: width 0.5s ease;
+      width: 25%;
+    }
+    .step-label {
+      font-size: 11px;
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+    }
+
+    /* PASOS */
+    .paso {
+      display: none;
+      padding: 28px 20px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .paso.active { display: block; }
+
+    .paso h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+    .paso .subtitulo {
+      font-size: 13px;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 22px;
+    }
+
+    /* INPUTS */
+    .campo {
+      margin-bottom: 16px;
+    }
+    .campo label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.6);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .campo input, .campo textarea, .campo select {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .campo input::placeholder, .campo textarea::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+    .campo input:focus, .campo textarea:focus {
+      border-color: #a855f7;
+    }
+    .campo textarea {
+      resize: none;
+      height: 80px;
+    }
+
+    /* TEMATICAS */
+    .tematicas-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .tematica-card {
+      background: rgba(255,255,255,0.07);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 14px 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tematica-card:hover {
+      background: rgba(168,85,247,0.2);
+      border-color: #a855f7;
+    }
+    .tematica-card.selected {
+      background: rgba(168,85,247,0.3);
+      border-color: #a855f7;
+      box-shadow: 0 0 16px rgba(168,85,247,0.4);
+    }
+    .tematica-emoji { font-size: 28px; margin-bottom: 4px; }
+    .tematica-nombre { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.8); }
+
+    /* BOTONES */
+    .btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+    }
+    .btn-atras {
+      flex: 1;
+      background: rgba(255,255,255,0.08);
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      color: rgba(255,255,255,0.6);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-siguiente {
+      flex: 2;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(168,85,247,0.4);
+      transition: opacity 0.2s;
+    }
+    .btn-siguiente:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .btn-generar {
+      width: 100%;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      border: none;
+      border-radius: 16px;
+      padding: 20px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(245,158,11,0.4);
+      margin-top: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    /* GENERANDO */
+    .generando {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    .generando.active { display: block; }
+    .spinner {
+      width: 60px; height: 60px;
+      border: 4px solid rgba(168,85,247,0.2);
+      border-top-color: #a855f7;
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .generando h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .generando p { font-size: 13px; color: rgba(255,255,255,0.5); }
+
+    /* RESULTADO - INVITACION */
+    .resultado { display: none; }
+    .resultado.active { display: block; }
+
+    .invitacion {
+      max-width: 480px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .inv-header {
+      padding: 40px 24px 32px;
+      text-align: center;
+      position: relative;
+    }
+    .confetti-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 2px;
+      animation: caer 3s ease-in infinite;
+      opacity: 0.7;
+    }
+    @keyframes caer {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    .inv-emoji-grande {
+      font-size: 70px;
+      margin-bottom: 8px;
+      animation: pulso 2s ease-in-out infinite;
+    }
+    @keyframes pulso {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    .inv-te-invita {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+    .inv-nombre {
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+    .inv-anos {
+      font-size: 18px;
+      font-weight: 700;
+      opacity: 0.85;
+      margin-bottom: 0;
+    }
+
+    .inv-datos {
+      padding: 0 20px 20px;
+    }
+    .inv-dato {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+    }
+    .inv-dato-icono { font-size: 24px; flex-shrink: 0; }
+    .inv-dato-texto { flex: 1; }
+    .inv-dato-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 2px;
+    }
+    .inv-dato-valor {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* CONTADOR */
+    .contador {
+      padding: 20px;
+      text-align: center;
+      border-radius: 14px;
+      margin: 0 20px 10px;
+      background: rgba(255,255,255,0.06);
+    }
+    .contador-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 10px;
+    }
+    .contador-nums {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .contador-bloque {
+      background: rgba(0,0,0,0.3);
+      border-radius: 10px;
+      padding: 10px 16px;
+      min-width: 64px;
+    }
+    .contador-num {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .contador-txt {
+      font-size: 10px;
+      opacity: 0.5;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    /* RSVP */
+    .rsvp-section {
+      padding: 0 20px 20px;
+      text-align: center;
+    }
+    .rsvp-label {
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0.6;
+      margin-bottom: 14px;
+    }
+    .rsvp-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .btn-voy {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(34,197,94,0.4);
+      transition: transform 0.1s;
+    }
+    .btn-nopuedo {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.6);
+    }
+    .btn-voy:active { transform: scale(0.97); }
+
+    .rsvp-confirmado {
+      display: none;
+      padding: 16px;
+      border-radius: 14px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+    .rsvp-confirmado.visible { display: block; }
+
+    /* MAPA */
+    .mapa-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 0 20px 10px;
+      padding: 16px;
+      background: linear-gradient(135deg, #1e40af, #1d4ed8);
+      border-radius: 14px;
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
+      text-decoration: none;
+    }
+
+    /* COMPARTIR */
+    .compartir-section {
+      padding: 0 20px 20px;
+    }
+    .btn-compartir {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 18px;
+      background: #25d366;
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.4);
+    }
+    .btn-nuevo {
+      width: 100%;
+      padding: 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .powered {
+      text-align: center;
+      padding: 16px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.25);
+    }
+    .powered span { color: #a855f7; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">✨ Zapia AI · Imprenta Ruiz</div>
+  <h1>🎉 Invitación Digital<br>de Cumpleaños</h1>
+  <p>Diseñada con IA · Lista para compartir por WhatsApp</p>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress"></div>
+  </div>
+  <div class="step-label" id="step-label">Paso 1 de 3</div>
+</div>
+
+<!-- PASO 1: TEMÁTICA -->
+<div class="paso active" id="paso1">
+  <h2>🎨 ¿Cuál es la temática?</h2>
+  <p class="subtitulo">Elegí el estilo de la fiesta</p>
+
+  <div class="tematicas-grid">
+    <div class="tematica-card" onclick="elegirTematica(this, '🦸', 'Spiderman', '#e53935', '#b71c1c')">
+      <div class="tematica-emoji">🦸</div>
+      <div class="tematica-nombre">Spiderman</div>
+    </div>
+    <div class="tematica-card" onclick="elegirTematica(this, '❄️', 'Frozen', '#1565c0', '#0d47a1')">
+      <div class="tematica-emoji">❄️</div>
+      <div class="tematica-nombre">Frozen</div>
+    </div>
+    <div class="tematica-card" onclick="elegirTematica(this, '🦕', 'Dinosaurios', '#2e7d32', '#1b5e20')">
+      <div class="tematica-emoji">🦕</div>
+      <div class="tematica-nombre">Dinosaurios</div>
+    </div>
+    <div class="tematica-card" onclick="elegirTematica(this, '🦄', 'Unicornio', '#8e24aa', '#4a148c')">
+      <div class="tematica-emoji">🦄</div>
+      <div class="tematica-nombre">Unicornio</div>
+    </div>
+    <div class="tematica-card" onclick="elegirTematica(this, '⚽', 'Fútbol', '#1b5e20', '#2e7d32')">
+      <div class="tematica-emoji">⚽</div>
+      <div class="tematica-nombre">Fútbol</div>
+    </div>
+    <div class="tematica-card" onclick="elegirTematica(this, '🎀', 'Princesas', '#c2185b', '#880e4f')">
+      <div class="tematica-emoji">🎀</div>
+      <div class="tematica-nombre">Princesas</div>
+    </div>
+    <div class="tematica-card" onclick="elegirTematica(this, '🚗', 'Cars', '#ef6c00', '#e65100')">
+      <div class="tematica-emoji">🚗</div>
+      <div class="tematica-nombre">Cars</div>
+    </div>
+    <div class="tematica-card" onclick="elegirTematica(this, '🐱', 'Gatitos', '#f06292', '#e91e63')">
+      <div class="tematica-emoji">🐱</div>
+      <div class="tematica-nombre">Gatitos</div>
+    </div>
+    <div class="tematica-card" onclick="elegirTematica(this, '🎉', 'General', '#7b1fa2', '#4a148c')">
+      <div class="tematica-emoji">🎉</div>
+      <div class="tematica-nombre">General</div>
+    </div>
+  </div>
+
+  <div class="btns">
+    <button class="btn-siguiente" id="btn-sig1" disabled onclick="irPaso(2)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- PASO 2: DATOS DEL CUMPLEAÑERO -->
+<div class="paso" id="paso2">
+  <h2>👶 ¿Quién cumple años?</h2>
+  <p class="subtitulo">Los datos van en la invitación</p>
+
+  <div class="campo">
+    <label>Nombre del cumpleañero/a *</label>
+    <input type="text" id="nombre" placeholder="Ej: Valentina" maxlength="20">
+  </div>
+  <div class="campo">
+    <label>¿Cuántos años cumple? *</label>
+    <input type="number" id="anos" placeholder="Ej: 6" min="1" max="99">
+  </div>
+  <div class="campo">
+    <label>Mensaje especial (opcional)</label>
+    <textarea id="mensaje" placeholder="Ej: ¡Te esperamos para celebrar juntos!"></textarea>
+  </div>
+
+  <div class="btns">
+    <button class="btn-atras" onclick="irPaso(1)">← Atrás</button>
+    <button class="btn-siguiente" id="btn-sig2" onclick="irPaso(3)">Siguiente →</button>
+  </div>
+</div>
+
+<!-- PASO 3: FECHA, HORA Y LUGAR -->
+<div class="paso" id="paso3">
+  <h2>📍 ¿Cuándo y dónde?</h2>
+  <p class="subtitulo">Datos de la fiesta</p>
+
+  <div class="campo">
+    <label>Fecha del cumpleaños *</label>
+    <input type="date" id="fecha">
+  </div>
+  <div class="campo">
+    <label>Hora *</label>
+    <input type="time" id="hora">
+  </div>
+  <div class="campo">
+    <label>Dirección del salón / casa *</label>
+    <input type="text" id="direccion" placeholder="Ej: España 780, Salta">
+  </div>
+  <div class="campo">
+    <label>Nombre del salón (opcional)</label>
+    <input type="text" id="salon" placeholder="Ej: Salón El Jardín">
+  </div>
+  <div class="campo">
+    <label>Teléfono de contacto *</label>
+    <input type="tel" id="telefono" placeholder="Ej: 387 412-3456">
+  </div>
+
+  <button class="btn-generar" onclick="generarInvitacion()">🎉 ¡Crear mi invitación!</button>
+  <div class="btns" style="margin-top:12px;">
+    <button class="btn-atras" onclick="irPaso(2)">← Atrás</button>
+  </div>
+</div>
+
+<!-- GENERANDO -->
+<div class="generando" id="generando">
+  <div class="spinner"></div>
+  <h2>Creando tu invitación ✨</h2>
+  <p>La IA está preparando el diseño...</p>
+</div>
+
+<!-- RESULTADO -->
+<div class="resultado" id="resultado"></div>
+
+<div class="powered">Invitación digital creada con <span>✦ ZAPIA AI</span> · Imprenta Ruiz, Salta</div>
+
+<script>
+  // Estado
+  let tematica = null;
+  let colorPrimario = '#7b1fa2';
+  let colorSecundario = '#4a148c';
+  let emojiTema = '🎉';
+
+  function elegirTematica(el, emoji, nombre, c1, c2) {
+    document.querySelectorAll('.tematica-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    tematica = nombre;
+    emojiTema = emoji;
+    colorPrimario = c1;
+    colorSecundario = c2;
+    document.getElementById('btn-sig1').disabled = false;
+  }
+
+  function irPaso(n) {
+    document.querySelectorAll('.paso').forEach(p => p.classList.remove('active'));
+    document.getElementById('paso' + n).classList.add('active');
+    const pct = (n / 3) * 100;
+    document.getElementById('progress').style.width = pct + '%';
+    document.getElementById('step-label').textContent = 'Paso ' + n + ' de 3';
+    window.scrollTo(0, 0);
+  }
+
+  function formatearFecha(fechaStr) {
+    if (!fechaStr) return '';
+    const [y, m, d] = fechaStr.split('-');
+    const meses = ['enero','febrero','marzo','abril','mayo','junio',
+                   'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return d + ' de ' + meses[parseInt(m) - 1] + ' de ' + y;
+  }
+
+  function formatearHora(horaStr) {
+    if (!horaStr) return '';
+    const [h, min] = horaStr.split(':');
+    const hora = parseInt(h);
+    const ampm = hora >= 12 ? 'pm' : 'am';
+    const h12 = hora > 12 ? hora - 12 : hora === 0 ? 12 : hora;
+    return h12 + ':' + min + ' ' + ampm;
+  }
+
+  function calcularContador(fechaStr, horaStr) {
+    if (!fechaStr || !horaStr) return null;
+    const target = new Date(fechaStr + 'T' + horaStr + ':00');
+    const now = new Date();
+    const diff = target - now;
+    if (diff <= 0) return null;
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    return { dias, horas, mins };
+  }
+
+  function generarConfetti() {
+    const colors = ['#f59e0b','#ec4899','#a855f7','#22c55e','#ef4444','#3b82f6'];
+    let html = '';
+    for (let i = 0; i < 18; i++) {
+      const color = colors[i % colors.length];
+      const left = Math.random() * 100;
+      const delay = Math.random() * 3;
+      const duration = 2.5 + Math.random() * 2;
+      html += `<div class="confetti-piece" style="left:${left}%;background:${color};animation-delay:${delay}s;animation-duration:${duration}s;top:-10px;"></div>`;
+    }
+    return html;
+  }
+
+  function generarInvitacion() {
+    const nombre = document.getElementById('nombre').value.trim();
+    const anos = document.getElementById('anos').value;
+    const mensaje = document.getElementById('mensaje').value.trim();
+    const fecha = document.getElementById('fecha').value;
+    const hora = document.getElementById('hora').value;
+    const direccion = document.getElementById('direccion').value.trim();
+    const salon = document.getElementById('salon').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+
+    if (!nombre || !anos || !fecha || !hora || !direccion || !telefono) {
+      alert('Completá todos los campos obligatorios (*)');
+      return;
+    }
+
+    // Mostrar generando
+    document.querySelectorAll('.paso').forEach(p => p.classList.remove('active'));
+    document.getElementById('generando').classList.add('active');
+    document.getElementById('progress').style.width = '85%';
+    document.getElementById('step-label').textContent = 'Creando tu invitación...';
+    window.scrollTo(0, 0);
+
+    setTimeout(() => construirInvitacion(nombre, anos, mensaje, fecha, hora, direccion, salon, telefono), 1800);
+  }
+
+  function construirInvitacion(nombre, anos, mensaje, fecha, hora, direccion, salon, telefono) {
+    const fechaFormato = formatearFecha(fecha);
+    const horaFormato = formatearHora(hora);
+    const contador = calcularContador(fecha, hora);
+    const confetti = generarConfetti();
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(direccion + ', Salta')}`;
+    const textoWsp = `🎉 ¡Invitación al cumpleaños de ${nombre}!\n\n` +
+      `🎂 Cumple ${anos} años\n` +
+      `📅 ${fechaFormato}\n` +
+      `🕐 ${horaFormato}\n` +
+      `📍 ${direccion}\n` +
+      `📞 Consultas: ${telefono}\n\n` +
+      `${mensaje ? mensaje + '\n\n' : ''}¡Te esperamos! 🎊`;
+
+    const contadorHtml = contador ? `
+      <div class="contador" style="background: rgba(255,255,255,0.06);">
+        <div class="contador-label">⏰ Faltan</div>
+        <div class="contador-nums">
+          <div class="contador-bloque">
+            <div class="contador-num">${contador.dias}</div>
+            <div class="contador-txt">días</div>
+          </div>
+          <div class="contador-bloque">
+            <div class="contador-num">${contador.horas}</div>
+            <div class="contador-txt">horas</div>
+          </div>
+          <div class="contador-bloque">
+            <div class="contador-num">${contador.mins}</div>
+            <div class="contador-txt">min</div>
+          </div>
+        </div>
+      </div>` : '';
+
+    const html = `
+    <div class="invitacion">
+      <div class="inv-header" style="background: linear-gradient(160deg, ${colorSecundario} 0%, ${colorPrimario} 100%);">
+        <div class="confetti-bg">${confetti}</div>
+        <div class="inv-emoji-grande">${emojiTema}</div>
+        <div class="inv-te-invita">🎂 ¡Te invita a su cumpleaños!</div>
+        <div class="inv-nombre">${nombre}</div>
+        <div class="inv-anos">cumple ${anos} añitos 🎈</div>
+        ${mensaje ? `<div style="margin-top:14px; font-size:14px; font-style:italic; opacity:0.85;">"${mensaje}"</div>` : ''}
+      </div>
+
+      ${contadorHtml}
+
+      <div class="inv-datos">
+        <div class="inv-dato">
+          <div class="inv-dato-icono">📅</div>
+          <div class="inv-dato-texto">
+            <div class="inv-dato-label">Fecha</div>
+            <div class="inv-dato-valor">${fechaFormato}</div>
+          </div>
+        </div>
+        <div class="inv-dato">
+          <div class="inv-dato-icono">🕐</div>
+          <div class="inv-dato-texto">
+            <div class="inv-dato-label">Hora</div>
+            <div class="inv-dato-valor">${horaFormato}</div>
+          </div>
+        </div>
+        <div class="inv-dato">
+          <div class="inv-dato-icono">📍</div>
+          <div class="inv-dato-texto">
+            <div class="inv-dato-label">${salon ? salon : 'Lugar'}</div>
+            <div class="inv-dato-valor">${direccion}</div>
+          </div>
+        </div>
+        <div class="inv-dato">
+          <div class="inv-dato-icono">📞</div>
+          <div class="inv-dato-texto">
+            <div class="inv-dato-label">Consultas</div>
+            <div class="inv-dato-valor">${telefono}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rsvp-section">
+        <div class="rsvp-label">¿Podés venir? 🎊</div>
+        <div class="rsvp-btns" id="rsvp-btns">
+          <button class="btn-voy" onclick="confirmar(true)">✅ ¡Voy!</button>
+          <button class="btn-nopuedo" onclick="confirmar(false)">😔 No puedo</button>
+        </div>
+        <div class="rsvp-confirmado" id="rsvp-confirmado"></div>
+      </div>
+
+      <a href="${mapsUrl}" target="_blank" class="mapa-link">
+        🗺️ Ver cómo llegar
+      </a>
+
+      <div class="compartir-section">
+        <button class="btn-compartir" onclick="compartirWsp('${encodeURIComponent(textoWsp)}')">
+          💬 Compartir por WhatsApp
+        </button>
+        <button class="btn-nuevo" onclick="location.reload()">🔄 Crear otra invitación</button>
+      </div>
+    </div>`;
+
+    document.getElementById('generando').classList.remove('active');
+    const res = document.getElementById('resultado');
+    res.innerHTML = html;
+    res.classList.add('active');
+    document.getElementById('progress').style.width = '100%';
+    document.getElementById('step-label').textContent = '¡Invitación lista!';
+    window.scrollTo(0, 0);
+  }
+
+  function confirmar(va) {
+    const el = document.getElementById('rsvp-confirmado');
+    const btns = document.getElementById('rsvp-btns');
+    btns.style.display = 'none';
+    el.classList.add('visible');
+    if (va) {
+      el.style.background = 'rgba(34,197,94,0.2)';
+      el.style.border = '1px solid rgba(34,197,94,0.4)';
+      el.innerHTML = '🎉 ¡Genial! ¡Los esperamos!';
+    } else {
+      el.style.background = 'rgba(255,255,255,0.06)';
+      el.style.border = '1px solid rgba(255,255,255,0.1)';
+      el.innerHTML = '😢 ¡Qué pena! Otra vez será...';
+    }
+  }
+
+  function compartirWsp(texto) {
+    window.open('https://wa.me/?text=' + texto, '_blank');
+  }
+</script>
+</body>
+</html>
