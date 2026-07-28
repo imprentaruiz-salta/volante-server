@@ -359,6 +359,12 @@ def menu_page():
     return render_template("menu.html", imprenta_wpp=IMPRENTA_WHATSAPP)
 
 
+@app.route("/cumple")
+def cumple_page():
+    """Página del generador de invitación digital de cumpleaños."""
+    return render_template("cumple.html")
+
+
 @app.route("/carnet")
 def carnet_page():
     """Página de foto carnet 4x4."""
