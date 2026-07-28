@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>🎉 Cumpleaños de {{ nombre }}</title>
+
+  <!-- Open Graph para preview bonito en WhatsApp -->
+  <meta property="og:title" content="🎉 ¡Cumpleaños de {{ nombre }}!">
+  <meta property="og:description" content="{{ nombre }} cumple {{ anos }} años 🎂 · {{ fecha_formato }} · {{ hora_formato }}">
+  <meta property="og:type" content="website">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      background: #0d0d0d;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* CABECERA */
+    .inv-header {
+      background: linear-gradient(160deg, {{ color2 }} 0%, {{ color1 }} 100%);
+      padding: 40px 24px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .confetti-bg {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; overflow: hidden;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+    .confetti-piece {
+      position: absolute; width: 8px; height: 8px;
+      border-radius: 2px; animation: fall linear infinite;
+    }
+    .inv-emoji-grande {
+      font-size: 72px; margin-bottom: 8px; position: relative;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+    .inv-te-invita {
+      font-size: 13px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.75);
+      margin-bottom: 8px;
+    }
+    .inv-nombre {
+      font-size: 44px; font-weight: 900; line-height: 1.1;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .inv-anos {
+      font-size: 18px; color: rgba(255,255,255,0.85);
+      margin-top: 6px; font-weight: 600;
+    }
+    .inv-mensaje {
+      margin-top: 14px; font-size: 14px; font-style: italic;
+      opacity: 0.85; padding: 0 12px;
+    }
+
+    /* CONTADOR */
+    .contador {
+      margin: 0; padding: 20px 16px;
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+    }
+    .contador-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.5);
+      margin-bottom: 14px;
+    }
+    .contador-nums {
+      display: flex; justify-content: center; gap: 16px;
+    }
+    .contador-bloque {
+      background: rgba(255,255,255,0.08); border-radius: 12px;
+      padding: 12px 18px; min-width: 70px;
+    }
+    .contador-num {
+      font-size: 32px; font-weight: 900; line-height: 1;
+    }
+    .contador-txt {
+      font-size: 11px; color: rgba(255,255,255,0.5);
+      text-transform: uppercase; letter-spacing: 1px; margin-top: 4px;
+    }
+
+    /* DATOS */
+    .inv-datos {
+      padding: 20px 20px 8px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .inv-dato {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px; padding: 14px 16px;
+    }
+    .inv-dato-icono { font-size: 22px; }
+    .inv-dato-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: rgba(255,255,255,0.4);
+      margin-bottom: 2px;
+    }
+    .inv-dato-valor { font-size: 16px; font-weight: 700; }
+
+    /* RSVP */
+    .rsvp-section {
+      margin: 20px 20px 10px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px; padding: 20px;
+      text-align: center;
+    }
+    .rsvp-label {
+      font-size: 14px; font-weight: 700;
+      color: rgba(255,255,255,0.7); margin-bottom: 14px;
+    }
+    .rsvp-btns { display: flex; gap: 10px; }
+    .btn-voy {
+      flex: 1; padding: 14px; background: #22c55e;
+      border: none; border-radius: 12px; color: #fff;
+      font-size: 15px; font-weight: 800; cursor: pointer;
+    }
+    .btn-nopuedo {
+      flex: 1; padding: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 12px; color: rgba(255,255,255,0.7);
+      font-size: 15px; font-weight: 700; cursor: pointer;
+    }
+    .rsvp-confirmado {
+      display: none; padding: 14px; border-radius: 12px;
+      font-size: 16px; font-weight: 800; margin-top: 8px;
+    }
+    .rsvp-confirmado.visible { display: block; }
+
+    /* MAPA */
+    .mapa-link {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin: 0 20px 10px; padding: 16px;
+      background: linear-gradient(135deg, #1e40af, #1d4ed8);
+      border-radius: 14px; color: #fff; font-weight: 800;
+      font-size: 15px; text-decoration: none;
+    }
+
+    /* COMPARTIR */
+    .compartir-section { padding: 0 20px 12px; }
+    .btn-compartir {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 18px;
+      background: #25d366; border: none; border-radius: 14px;
+      color: #fff; font-size: 16px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(37,211,102,0.4); margin-bottom: 10px;
+    }
+    .btn-nueva {
+      width: 100%; padding: 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px; color: rgba(255,255,255,0.6);
+      font-size: 14px; font-weight: 700; cursor: pointer;
+      text-align: center; text-decoration: none; display: block;
+    }
+
+    .powered {
+      text-align: center; padding: 20px 16px 28px;
+      font-size: 11px; color: rgba(255,255,255,0.25);
+    }
+    .powered span { color: #a855f7; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- CABECERA -->
+<div class="inv-header">
+  <div class="confetti-bg" id="confetti-bg"></div>
+  <div class="inv-emoji-grande">{{ emoji }}</div>
+  <div class="inv-te-invita">🎂 ¡Te invita a su cumpleaños!</div>
+  <div class="inv-nombre">{{ nombre }}</div>
+  <div class="inv-anos">cumple {{ anos }} añitos 🎈</div>
+  {% if mensaje %}
+  <div class="inv-mensaje">"{{ mensaje }}"</div>
+  {% endif %}
+</div>
+
+<!-- CONTADOR -->
+<div class="contador">
+  <div class="contador-label">⏰ Faltan</div>
+  <div class="contador-nums">
+    <div class="contador-bloque">
+      <div class="contador-num" id="cnt-dias">--</div>
+      <div class="contador-txt">días</div>
+    </div>
+    <div class="contador-bloque">
+      <div class="contador-num" id="cnt-horas">--</div>
+      <div class="contador-txt">horas</div>
+    </div>
+    <div class="contador-bloque">
+      <div class="contador-num" id="cnt-mins">--</div>
+      <div class="contador-txt">min</div>
+    </div>
+    <div class="contador-bloque">
+      <div class="contador-num" id="cnt-segs">--</div>
+      <div class="contador-txt">seg</div>
+    </div>
+  </div>
+</div>
+
+<!-- DATOS -->
+<div class="inv-datos">
+  <div class="inv-dato">
+    <div class="inv-dato-icono">📅</div>
+    <div class="inv-dato-texto">
+      <div class="inv-dato-label">Fecha</div>
+      <div class="inv-dato-valor">{{ fecha_formato }}</div>
+    </div>
+  </div>
+  <div class="inv-dato">
+    <div class="inv-dato-icono">🕐</div>
+    <div class="inv-dato-texto">
+      <div class="inv-dato-label">Hora</div>
+      <div class="inv-dato-valor">{{ hora_formato }}</div>
+    </div>
+  </div>
+  <div class="inv-dato">
+    <div class="inv-dato-icono">📍</div>
+    <div class="inv-dato-texto">
+      <div class="inv-dato-label">{{ salon if salon else 'Lugar' }}</div>
+      <div class="inv-dato-valor">{{ direccion }}</div>
+    </div>
+  </div>
+  <div class="inv-dato">
+    <div class="inv-dato-icono">📞</div>
+    <div class="inv-dato-texto">
+      <div class="inv-dato-label">Consultas</div>
+      <div class="inv-dato-valor">{{ telefono }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- RSVP -->
+<div class="rsvp-section">
+  <div class="rsvp-label">¿Podés venir? 🎊</div>
+  <div class="rsvp-btns" id="rsvp-btns">
+    <button class="btn-voy" onclick="confirmar(true)">✅ ¡Voy!</button>
+    <button class="btn-nopuedo" onclick="confirmar(false)">😔 No puedo</button>
+  </div>
+  <div class="rsvp-confirmado" id="rsvp-confirmado"></div>
+</div>
+
+<!-- MAPA -->
+<a href="{{ maps_url }}" target="_blank" class="mapa-link">
+  🗺️ Ver cómo llegar
+</a>
+
+<!-- COMPARTIR -->
+<div class="compartir-section">
+  <button class="btn-compartir" onclick="compartirLink()">
+    💬 Compartir esta invitación por WhatsApp
+  </button>
+  <a href="/cumple" class="btn-nueva">🎉 Crear otra invitación gratis</a>
+</div>
+
+<div class="powered">Invitación digital creada con <span>✦ ZAPIA AI</span> · Imprenta Ruiz, Salta</div>
+
+<script>
+  // ---- CONFETTI ----
+  (function() {
+    const colors = ['#f59e0b','#ec4899','#a855f7','#22c55e','#ef4444','#3b82f6','#fff'];
+    const bg = document.getElementById('confetti-bg');
+    let html = '';
+    for (let i = 0; i < 22; i++) {
+      const c = colors[i % colors.length];
+      const left = Math.random() * 100;
+      const delay = Math.random() * 3;
+      const dur = 2.5 + Math.random() * 2;
+      html += `<div class="confetti-piece" style="left:${left}%;background:${c};animation-delay:${delay}s;animation-duration:${dur}s;"></div>`;
+    }
+    bg.innerHTML = html;
+  })();
+
+  // ---- CUENTA REGRESIVA EN VIVO ----
+  const TARGET = new Date("{{ fecha_iso }}T{{ hora_raw }}:00");
+
+  function tick() {
+    const now = new Date();
+    const diff = TARGET - now;
+    if (diff <= 0) {
+      document.querySelector('.contador').innerHTML =
+        '<div style="padding:20px;text-align:center;font-size:22px;font-weight:900;">🎂 ¡HOY ES EL GRAN DÍA! 🎂</div>';
+      return;
+    }
+    const dias  = Math.floor(diff / 86400000);
+    const horas = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000)  / 60000);
+    const segs  = Math.floor((diff % 60000)    / 1000);
+    document.getElementById('cnt-dias').textContent  = dias;
+    document.getElementById('cnt-horas').textContent = String(horas).padStart(2,'0');
+    document.getElementById('cnt-mins').textContent  = String(mins).padStart(2,'0');
+    document.getElementById('cnt-segs').textContent  = String(segs).padStart(2,'0');
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ---- RSVP ----
+  function confirmar(va) {
+    document.getElementById('rsvp-btns').style.display = 'none';
+    const el = document.getElementById('rsvp-confirmado');
+    el.classList.add('visible');
+    if (va) {
+      el.style.background = 'rgba(34,197,94,0.2)';
+      el.style.border = '1px solid rgba(34,197,94,0.4)';
+      el.innerHTML = '🎉 ¡Genial! ¡Los esperamos!';
+    } else {
+      el.style.background = 'rgba(255,255,255,0.06)';
+      el.style.border = '1px solid rgba(255,255,255,0.12)';
+      el.innerHTML = '😢 ¡Qué pena! Otra vez será...';
+    }
+  }
+
+  // ---- COMPARTIR ----
+  function compartirLink() {
+    const link = window.location.href;
+    const texto = `🎉 ¡Invitación al cumpleaños de {{ nombre }}!\n\n` +
+      `🎂 Cumple {{ anos }} años\n` +
+      `📅 {{ fecha_formato }}\n` +
+      `🕐 {{ hora_formato }}\n` +
+      `📍 {{ direccion }}\n\n` +
+      `¡Mirá la invitación completa acá! 👇\n${link}`;
+    window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+  }
+</script>
+</body>
+</html>
