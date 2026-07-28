@@ -367,6 +367,33 @@ def cumple_page():
     return render_template("cumple.html")
 
 
+# Prompts FLUX por temática
+CUMPLE_PROMPTS = {
+    "Spiderman":   "Spiderman hero illustration, dynamic pose swinging between buildings, comic book style, vibrant red and blue, dramatic lighting, no text, cinematic",
+    "Frozen":      "Elsa from Frozen, magical ice powers, snowflakes swirling, blue and white palette, Disney style illustration, glowing magical atmosphere, no text",
+    "Dinosaurios": "cute cartoon T-Rex dinosaur birthday party, colorful balloons, jungle background, fun and playful style, vibrant greens and yellows, no text",
+    "Unicornio":   "magical unicorn with rainbow mane, sparkles and stars, pastel pink and purple, whimsical fantasy illustration, glowing magical atmosphere, no text",
+    "Fútbol":      "soccer ball illustration, stadium lights, green field, dynamic action, sports poster style, vibrant colors, no text",
+    "Princesas":   "beautiful princess with tiara, castle background, pink and gold palette, fairy tale Disney style, sparkles and flowers, no text",
+    "Cars":        "Lightning McQueen cartoon race car, race track, motion blur, vibrant red and yellow, Pixar style illustration, dynamic speed lines, no text",
+    "Gatitos":     "cute kawaii kittens with birthday hats, pastel colors, confetti, adorable cartoon style, pink and cream palette, no text",
+    "General":     "colorful birthday party celebration illustration, balloons confetti streamers, festive background, vibrant colors, joyful atmosphere, no text",
+}
+
+# Música por temática (URLs de audio libre de derechos)
+CUMPLE_MUSICA = {
+    "Spiderman":   "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+    "Frozen":      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "Dinosaurios": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3",
+    "Unicornio":   "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "Fútbol":      "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
+    "Princesas":   "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "Cars":        "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+    "Gatitos":     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "General":     "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3",
+}
+
+
 @app.route("/cumple/guardar", methods=["POST"])
 def cumple_guardar():
     """Guarda los datos de la invitación y devuelve un link único."""
@@ -385,6 +412,46 @@ def cumple_guardar():
         json.dump(datos, f, ensure_ascii=False)
 
     return jsonify({"id": inv_id, "url": f"/i/{inv_id}"})
+
+
+@app.route("/i/<inv_id>/imagen")
+def inv_imagen(inv_id):
+    """Genera la imagen IA para la invitación (llamada async desde el browser)."""
+    inv_dir = os.path.join(os.path.dirname(__file__), "invitaciones")
+    ruta    = os.path.join(inv_dir, f"{inv_id}.json")
+    if not os.path.exists(ruta):
+        return jsonify({"error": "no encontrado"}), 404
+
+    with open(ruta, encoding="utf-8") as f:
+        d = json.load(f)
+
+    # Si ya está cacheada, devolver directo
+    img_ruta = os.path.join(inv_dir, f"{inv_id}_img.jpg")
+    if os.path.exists(img_ruta):
+        with open(img_ruta, "rb") as f:
+            return jsonify({"image": base64.b64encode(f.read()).decode()})
+
+    tematica = d.get("tematica", "General")
+    prompt   = CUMPLE_PROMPTS.get(tematica, CUMPLE_PROMPTS["General"])
+    prompt  += ", celebration birthday party background, high quality digital art"
+
+    try:
+        resp = requests.post(
+            TOGETHER_IMAGE_URL,
+            headers={"Authorization": f"Bearer {TOGETHER_API_KEY}",
+                     "Content-Type": "application/json"},
+            json={"model": FLUX_MODEL, "prompt": prompt,
+                  "width": 768, "height": 512, "steps": 4, "n": 1},
+            timeout=60,
+        )
+        resp.raise_for_status()
+        b64 = resp.json()["data"][0]["b64_json"]
+        # Cachear en disco
+        with open(img_ruta, "wb") as f:
+            f.write(base64.b64decode(b64))
+        return jsonify({"image": b64})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/i/<inv_id>")
@@ -419,8 +486,20 @@ def ver_invitacion(inv_id):
     direccion = d.get("direccion", "")
     maps_url = f"https://www.google.com/maps/search/?api=1&query={requests.utils.quote(direccion + ', Salta')}"
 
+    tematica  = d.get("tematica", "General")
+    musica_url = CUMPLE_MUSICA.get(tematica, CUMPLE_MUSICA["General"])
+
+    # Ver si imagen IA ya está cacheada
+    inv_dir  = os.path.join(os.path.dirname(__file__), "invitaciones")
+    img_ruta = os.path.join(inv_dir, f"{inv_id}_img.jpg")
+    imagen_ia = None
+    if os.path.exists(img_ruta):
+        with open(img_ruta, "rb") as f:
+            imagen_ia = base64.b64encode(f.read()).decode()
+
     return render_template(
         "invitacion.html",
+        inv_id       = inv_id,
         nombre       = d.get("nombre", ""),
         anos         = d.get("anos", ""),
         mensaje      = d.get("mensaje", ""),
@@ -436,6 +515,9 @@ def ver_invitacion(inv_id):
         color2       = d.get("color2", "#4a148c"),
         maps_url     = maps_url,
         foto         = d.get("foto", None),
+        tematica     = tematica,
+        musica_url   = musica_url,
+        imagen_ia    = imagen_ia,
     )
 
 
