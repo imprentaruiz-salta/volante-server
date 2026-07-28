@@ -436,19 +436,17 @@ def inv_imagen(inv_id):
     prompt  += ", celebration birthday party background, high quality digital art"
 
     try:
-        resp = requests.post(
-            TOGETHER_IMAGE_URL,
-            headers={"Authorization": f"Bearer {TOGETHER_API_KEY}",
-                     "Content-Type": "application/json"},
-            json={"model": FLUX_MODEL, "prompt": prompt,
-                  "width": 768, "height": 512, "steps": 4, "n": 1},
-            timeout=60,
-        )
+        # Pollinations AI — gratis, sin API key
+        import urllib.parse
+        prompt_enc = urllib.parse.quote(prompt)
+        url = f"https://image.pollinations.ai/prompt/{prompt_enc}?width=768&height=512&nologo=true&seed=42"
+        resp = requests.get(url, timeout=60)
         resp.raise_for_status()
-        b64 = resp.json()["data"][0]["b64_json"]
+        img_bytes = resp.content
+        b64 = base64.b64encode(img_bytes).decode()
         # Cachear en disco
         with open(img_ruta, "wb") as f:
-            f.write(base64.b64decode(b64))
+            f.write(img_bytes)
         return jsonify({"image": b64})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
