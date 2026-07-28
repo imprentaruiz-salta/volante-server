@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Foto Carnet 4x4 — Imprenta Ruiz</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(160deg, #003049 0%, #023e5c 100%);
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      max-width: 480px;
+      margin: 0 auto;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    }
+    .header {
+      background: linear-gradient(135deg, #fcbf49, #f77f00);
+      padding: 20px;
+      text-align: center;
+    }
+    .header h1 { font-size: 22px; font-weight: 900; color: #003049; }
+    .header p { font-size: 13px; color: #003049; margin-top: 4px; opacity: 0.8; }
+    .body { padding: 24px 20px; }
+
+    .instrucciones {
+      background: #f0f8ff;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border-left: 4px solid #003049;
+    }
+    .instrucciones h3 { font-size: 14px; color: #003049; font-weight: 900; margin-bottom: 10px; }
+    .instrucciones ul { padding-left: 18px; }
+    .instrucciones li { font-size: 13px; color: #444; margin-bottom: 6px; line-height: 1.4; }
+
+    .muestra {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .muestra-item {
+      flex: 1;
+      text-align: center;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .muestra-item.mal { background: #ffebee; color: #c62828; border: 2px solid #ef9a9a; }
+    .muestra-item.bien { background: #e8f5e9; color: #2e7d32; border: 2px solid #a5d6a7; }
+    .muestra-item .emoji { font-size: 28px; display: block; margin-bottom: 4px; }
+
+    .btn-camara {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #003049, #023e5c);
+      color: #fcbf49;
+      font-size: 18px;
+      font-weight: 900;
+      padding: 18px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: 12px;
+      box-shadow: 0 6px 20px rgba(0,48,73,0.4);
+    }
+    .btn-galeria {
+      display: block;
+      width: 100%;
+      background: #f5f5f5;
+      color: #555;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 14px;
+      border: 2px dashed #ccc;
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #input-camara, #input-galeria { display: none; }
+
+    #seccion-preview { display: none; }
+    #seccion-preview h3 {
+      font-size: 16px;
+      font-weight: 900;
+      color: #003049;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    #preview-img {
+      width: 100%;
+      max-width: 240px;
+      display: block;
+      margin: 0 auto 16px;
+      border-radius: 10px;
+      border: 4px solid #003049;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    .btn-wpp {
+      display: block;
+      width: 100%;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 900;
+      padding: 18px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: 10px;
+      box-shadow: 0 6px 20px rgba(37,211,102,0.4);
+      text-decoration: none;
+    }
+    .btn-otra {
+      display: block;
+      width: 100%;
+      background: #fff;
+      color: #003049;
+      font-size: 14px;
+      font-weight: 700;
+      padding: 14px;
+      border-radius: 14px;
+      border: 2px solid #003049;
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #loading {
+      display: none;
+      text-align: center;
+      padding: 30px;
+    }
+    #loading .spinner {
+      width: 48px; height: 48px;
+      border: 5px solid #eee;
+      border-top: 5px solid #f77f00;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading p { font-size: 14px; color: #555; font-weight: 700; }
+
+    #error-msg {
+      display: none;
+      background: #ffebee;
+      color: #c62828;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .footer {
+      background: #003049;
+      padding: 14px;
+      text-align: center;
+      color: rgba(255,255,255,0.6);
+      font-size: 11px;
+    }
+    .back-link {
+      display: block;
+      text-align: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 13px;
+      margin-top: 16px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <h1>📸 Foto Carnet 4×4</h1>
+    <p>Fondo celeste automático · Lista para imprimir</p>
+  </div>
+
+  <div class="body">
+
+    <div class="instrucciones">
+      <h3>📋 Cómo sacarte la foto</h3>
+      <ul>
+        <li>✅ De frente, mirando a la cámara</li>
+        <li>✅ Que se vean los hombros</li>
+        <li>✅ Buena iluminación (cerca de una ventana)</li>
+        <li>✅ Fondo liso (pared blanca o clara)</li>
+        <li>❌ Sin lentes de sol ni gorro</li>
+        <li>❌ Sin sombras en la cara</li>
+      </ul>
+    </div>
+
+    <div class="muestra">
+      <div class="muestra-item mal">
+        <span class="emoji">🙅</span>
+        Con filtros / oscura / cortada
+      </div>
+      <div class="muestra-item bien">
+        <span class="emoji">🙆</span>
+        Clara · De frente · Con hombros
+      </div>
+    </div>
+
+    <div id="seccion-form">
+      <button class="btn-camara" onclick="document.getElementById('input-camara').click()">
+        📷 Abrir cámara y sacar foto
+      </button>
+      <button class="btn-galeria" onclick="document.getElementById('input-galeria').click()">
+        🖼️ Elegir foto de la galería
+      </button>
+      <input type="file" id="input-camara" accept="image/*" capture="user">
+      <input type="file" id="input-galeria" accept="image/*">
+    </div>
+
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Procesando tu foto...<br>Sacando el fondo y poniendo celeste ✨</p>
+    </div>
+
+    <div id="error-msg"></div>
+
+    <div id="seccion-preview">
+      <h3>✅ ¡Quedó lista!</h3>
+      <img id="preview-img" src="" alt="Foto carnet">
+      <a id="btn-wpp" class="btn-wpp" href="#" target="_blank">
+        📲 Enviar a Imprenta Ruiz para imprimir
+      </a>
+      <button class="btn-otra" onclick="reiniciar()">
+        🔄 Sacar otra foto
+      </button>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Imprenta Ruiz · Chacabuco 470, Salta · 387 210-1274
+  </div>
+</div>
+
+<a href="/" class="back-link">← Volver a la página principal</a>
+
+<script>
+  var imgB64 = null;
+
+  function manejarFoto(input) {
+    var file = input.files[0];
+    if (!file) return;
+    procesarFoto(file);
+  }
+
+  document.getElementById('input-camara').addEventListener('change', function() { manejarFoto(this); });
+  document.getElementById('input-galeria').addEventListener('change', function() { manejarFoto(this); });
+
+  function procesarFoto(file) {
+    document.getElementById('seccion-form').style.display = 'none';
+    document.getElementById('seccion-preview').style.display = 'none';
+    document.getElementById('error-msg').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+
+    var formData = new FormData();
+    formData.append('foto', file);
+
+    fetch('/carnet/procesar', {
+      method: 'POST',
+      body: formData
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      document.getElementById('loading').style.display = 'none';
+      if (data.error) {
+        mostrarError(data.error);
+        return;
+      }
+      imgB64 = data.image;
+      document.getElementById('preview-img').src = 'data:image/jpeg;base64,' + imgB64;
+
+      var msg = encodeURIComponent('Hola Carlitos! 📸 Te mando mi foto carnet 4x4 lista para imprimir.\n\n✅ Ya vi la preview y me gusta. Por favor imprimila en tamaño 4x4 cm.');
+      document.getElementById('btn-wpp').href = 'https://wa.me/{{ imprenta_wpp }}?text=' + msg;
+
+      document.getElementById('seccion-preview').style.display = 'block';
+    })
+    .catch(function() {
+      document.getElementById('loading').style.display = 'none';
+      mostrarError('Ocurrió un error. Por favor intentá de nuevo.');
+    });
+  }
+
+  function mostrarError(msg) {
+    var el = document.getElementById('error-msg');
+    el.textContent = '⚠️ ' + msg;
+    el.style.display = 'block';
+    document.getElementById('seccion-form').style.display = 'block';
+  }
+
+  function reiniciar() {
+    imgB64 = null;
+    document.getElementById('seccion-preview').style.display = 'none';
+    document.getElementById('error-msg').style.display = 'none';
+    document.getElementById('seccion-form').style.display = 'block';
+    document.getElementById('input-camara').value = '';
+    document.getElementById('input-galeria').value = '';
+  }
+</script>
+
+</body>
+</html>
