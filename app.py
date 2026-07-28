@@ -9,10 +9,12 @@ Autor: Generador automático para Carlitos Ruiz
 import os
 import io
 import json
+import uuid
 import base64
 import requests
+from datetime import datetime
 from PIL import Image
-from flask import Flask, request, jsonify, render_template, send_file
+from flask import Flask, request, jsonify, render_template, send_file, redirect
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
 
@@ -363,6 +365,77 @@ def menu_page():
 def cumple_page():
     """Página del generador de invitación digital de cumpleaños."""
     return render_template("cumple.html")
+
+
+@app.route("/cumple/guardar", methods=["POST"])
+def cumple_guardar():
+    """Guarda los datos de la invitación y devuelve un link único."""
+    datos = request.get_json(force=True, silent=True) or {}
+
+    # Generar ID único corto (8 chars)
+    inv_id = uuid.uuid4().hex[:8]
+
+    # Directorio de invitaciones
+    inv_dir = os.path.join(os.path.dirname(__file__), "invitaciones")
+    os.makedirs(inv_dir, exist_ok=True)
+
+    # Guardar datos
+    ruta = os.path.join(inv_dir, f"{inv_id}.json")
+    with open(ruta, "w", encoding="utf-8") as f:
+        json.dump(datos, f, ensure_ascii=False)
+
+    return jsonify({"id": inv_id, "url": f"/i/{inv_id}"})
+
+
+@app.route("/i/<inv_id>")
+def ver_invitacion(inv_id):
+    """Muestra la invitación ya generada a partir de su ID único."""
+    inv_dir = os.path.join(os.path.dirname(__file__), "invitaciones")
+    ruta = os.path.join(inv_dir, f"{inv_id}.json")
+
+    if not os.path.exists(ruta):
+        return "Invitación no encontrada", 404
+
+    with open(ruta, encoding="utf-8") as f:
+        d = json.load(f)
+
+    # Formatear fecha
+    meses = ['enero','febrero','marzo','abril','mayo','junio',
+             'julio','agosto','septiembre','octubre','noviembre','diciembre']
+    fecha_iso = d.get("fecha", "")
+    hora_raw  = d.get("hora", "00:00")
+    fecha_formato = ""
+    if fecha_iso:
+        y, m, day = fecha_iso.split("-")
+        fecha_formato = f"{int(day)} de {meses[int(m)-1]} de {y}"
+
+    # Formatear hora
+    h, mi = hora_raw.split(":")
+    h_int = int(h)
+    ampm = "pm" if h_int >= 12 else "am"
+    h12 = h_int - 12 if h_int > 12 else (12 if h_int == 0 else h_int)
+    hora_formato = f"{h12}:{mi} {ampm}"
+
+    direccion = d.get("direccion", "")
+    maps_url = f"https://www.google.com/maps/search/?api=1&query={requests.utils.quote(direccion + ', Salta')}"
+
+    return render_template(
+        "invitacion.html",
+        nombre       = d.get("nombre", ""),
+        anos         = d.get("anos", ""),
+        mensaje      = d.get("mensaje", ""),
+        fecha_iso    = fecha_iso,
+        hora_raw     = hora_raw,
+        fecha_formato= fecha_formato,
+        hora_formato = hora_formato,
+        direccion    = direccion,
+        salon        = d.get("salon", ""),
+        telefono     = d.get("telefono", ""),
+        emoji        = d.get("emoji", "🎉"),
+        color1       = d.get("color1", "#7b1fa2"),
+        color2       = d.get("color2", "#4a148c"),
+        maps_url     = maps_url,
+    )
 
 
 @app.route("/carnet")
