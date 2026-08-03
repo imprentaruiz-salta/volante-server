@@ -38,13 +38,12 @@ const products=[
 {id:'papas',cat:'Para picar',name:'Papas fritas',desc:'Porción crocante con salsa de la casa.',price:3600,img:'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=700&q=82'},
 {id:'mani',cat:'Para picar',name:'Maní salado',desc:'Porción para compartir.',price:1800,img:'https://images.unsplash.com/photo-1567892737950-30c7e37d5b26?auto=format&fit=crop&w=700&q=82'},
 {id:'mirinda15',cat:'Gaseosas',name:'Mirinda naranja',desc:'Botella familiar de 1,5 litros.',price:3200,img:'https://images.unsplash.com/photo-1629203849820-fdd70d49c38e?auto=format&fit=crop&w=700&q=82'},
-{id:'fanta15',cat:'Gaseosas',name:'Fanta naranja',desc:'Botella familiar de 1,5 litros.',price:3500,img:'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?auto=format&fit=crop&w=700&q=82',tag:'Nueva'},
 {id:'coca15',cat:'Gaseosas',name:'Coca-Cola',desc:'Botella familiar de 1,5 litros.',price:3500,img:'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=700&q=82'},
 {id:'fanta500',cat:'Gaseosas',name:'Fanta naranja',desc:'Botella individual de 500 ml.',price:1900,img:'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?auto=format&fit=crop&w=700&q=82'},
-{id:'salta',cat:'Cervezas',name:'Salta',desc:'Lata bien fría.',price:3000,img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=700&q=82'},
-{id:'quilmes',cat:'Cervezas',name:'Quilmes',desc:'Lata bien fría.',price:3100,img:'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=700&q=82'},
-{id:'budweiser',cat:'Cervezas',name:'Budweiser',desc:'Lata de 473 ml, bien fría.',price:4000,img:'https://images.unsplash.com/photo-1518099074172-2e47ee6cfdc6?auto=format&fit=crop&w=700&q=82',tag:'Nueva'},
-{id:'stella',cat:'Cervezas',name:'Stella Artois',desc:'Lata de 473 ml, bien fría.',price:4500,img:'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=700&q=82',tag:'Premium'},
+{id:'salta',cat:'Cervezas',name:'Salta',desc:'Lata bien fría · 473 ml.',price:3000,img:'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=700&q=82'},
+{id:'quilmes',cat:'Cervezas',name:'Quilmes',desc:'Lata bien fría · 473 ml.',price:3100,img:'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=700&q=82'},
+{id:'budweiser',cat:'Cervezas',name:'Budweiser',desc:'Lata bien fría · 473 ml.',price:4000,img:'https://images.unsplash.com/photo-1518099074172-2e47ee6cfdc6?auto=format&fit=crop&w=700&q=82',tag:'Nueva'},
+{id:'stella',cat:'Cervezas',name:'Stella Artois',desc:'Lata premium bien fría · 473 ml.',price:4500,img:'https://images.unsplash.com/photo-1608885898957-a559228e4402?auto=format&fit=crop&w=700&q=82',tag:'Premium'},
 {id:'helado-choco',cat:'Postres',name:'Helado de chocolate',desc:'Copa individual.',price:2800,img:'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=700&q=82'},
 {id:'helado-dulce',cat:'Postres',name:'Helado de dulce de leche',desc:'Copa individual.',price:2800,img:'https://images.unsplash.com/photo-1570197788417-0e82375c9371?auto=format&fit=crop&w=700&q=82'}];
 let mesa=new URLSearchParams(location.search).get('mesa')||localStorage.getItem('bocado-mesa')||'1';let filter='Todo';let cart=JSON.parse(localStorage.getItem('bocado-cart-'+mesa)||'{}');let sent=JSON.parse(localStorage.getItem('bocado-sent-'+mesa)||'{}');
