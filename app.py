@@ -10,6 +10,7 @@ import os
 import io
 import json
 import uuid
+import sqlite3
 import base64
 import requests
 from datetime import datetime
@@ -17,6 +18,29 @@ from PIL import Image
 from flask import Flask, request, jsonify, render_template, send_file, redirect
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
+
+# Comandas del menú QR. Se guarda en SQLite para que el panel y los celulares
+# compartan los pedidos mientras el servidor está activo.
+PEDIDOS_DB = os.environ.get("PEDIDOS_DB", os.path.join(os.path.dirname(__file__), "pedidos.sqlite3"))
+
+def init_pedidos_db():
+    with sqlite3.connect(PEDIDOS_DB) as db:
+        db.execute("""CREATE TABLE IF NOT EXISTS pedidos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            mesa TEXT NOT NULL,
+            tipo TEXT NOT NULL DEFAULT 'nuevo',
+            items TEXT NOT NULL,
+            total INTEGER NOT NULL DEFAULT 0,
+            observaciones TEXT DEFAULT '',
+            estado TEXT NOT NULL DEFAULT 'nuevo',
+            creado TEXT NOT NULL
+        )""")
+        db.commit()
+
+def pedido_dict(row):
+    d = dict(row)
+    d['items'] = json.loads(d['items'] or '[]')
+    return d
 
 # ---------------------------------------------------------------------------
 # Configuración
@@ -361,6 +385,52 @@ def menu_page():
     return render_template("menu.html", imprenta_wpp=IMPRENTA_WHATSAPP)
 
 
+@app.route("/panel")
+def panel_page():
+    """Panel del encargado para ver y avanzar comandas por estado."""
+    return render_template("panel.html")
+
+@app.route("/api/pedidos", methods=["GET", "POST"])
+def pedidos_api():
+    if request.method == "GET":
+        estado = request.args.get("estado")
+        with sqlite3.connect(PEDIDOS_DB) as db:
+            db.row_factory = sqlite3.Row
+            if estado:
+                rows = db.execute("SELECT * FROM pedidos WHERE estado=? ORDER BY id DESC", (estado,)).fetchall()
+            else:
+                rows = db.execute("SELECT * FROM pedidos ORDER BY id DESC LIMIT 100").fetchall()
+        return jsonify([pedido_dict(r) for r in rows])
+
+    data = request.get_json(silent=True) or {}
+    mesa = str(data.get("mesa", "")).strip()
+    items = data.get("items") or []
+    if not mesa or not items:
+        return jsonify(ok=False, error="Falta mesa o productos"), 400
+    ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with sqlite3.connect(PEDIDOS_DB) as db:
+        cur = db.execute("""INSERT INTO pedidos
+            (mesa,tipo,items,total,observaciones,estado,creado)
+            VALUES (?,?,?,?,?,?,?)""", (
+                mesa, str(data.get("tipo", "nuevo")), json.dumps(items, ensure_ascii=False),
+                int(data.get("total", 0) or 0), str(data.get("observaciones", "")),
+                "nuevo", ahora))
+        db.commit()
+        pedido_id = cur.lastrowid
+    return jsonify(ok=True, id=pedido_id, estado="nuevo", creado=ahora)
+
+@app.route("/api/pedidos/<int:pedido_id>", methods=["PATCH"])
+def actualizar_pedido(pedido_id):
+    data = request.get_json(silent=True) or {}
+    estado = str(data.get("estado", "")).strip()
+    permitidos = {"nuevo", "preparando", "listo", "entregado", "cancelado"}
+    if estado not in permitidos:
+        return jsonify(ok=False, error="Estado no válido"), 400
+    with sqlite3.connect(PEDIDOS_DB) as db:
+        db.execute("UPDATE pedidos SET estado=? WHERE id=?", (estado, pedido_id))
+        db.commit()
+    return jsonify(ok=True, id=pedido_id, estado=estado)
+
 @app.route("/cumple")
 def cumple_page():
     """Página del generador de invitación digital de cumpleaños."""
@@ -575,6 +645,8 @@ def carnet_procesar():
 # ---------------------------------------------------------------------------
 # Arranque
 # ---------------------------------------------------------------------------
+init_pedidos_db()
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)
