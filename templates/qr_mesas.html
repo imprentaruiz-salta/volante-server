@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bocado QR · QR de las mesas</title>
+<style>
+:root{--ink:#18212b;--orange:#f4512a;--cream:#f7f4ef;--line:#ded7cb}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,system-ui,sans-serif}.toolbar{max-width:1100px;margin:auto;padding:22px 18px 12px;display:flex;align-items:center;justify-content:space-between;gap:15px}.toolbar h1{font-size:26px;margin:0 0 5px}.toolbar p{margin:0;color:#697680;font-size:13px}.print{border:0;border-radius:12px;background:var(--orange);color:#fff;padding:12px 18px;font-weight:900;font-size:14px;cursor:pointer}.sheet{max-width:1100px;margin:0 auto;padding:12px 18px 30px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#fff;border:2px solid var(--line);border-radius:18px;padding:15px;text-align:center;break-inside:avoid;box-shadow:0 4px 16px #18212b10}.brand{font-size:11px;letter-spacing:2px;font-weight:900;color:#697680;text-transform:uppercase}.mesa{font-size:28px;font-weight:950;margin:5px 0 8px}.qr{display:block;width:100%;max-width:220px;aspect-ratio:1;margin:0 auto 10px;border-radius:8px}.hint{font-size:11px;color:#697680;line-height:1.35}.url{font-size:9px;color:#8a949a;margin-top:7px;word-break:break-all}.note{max-width:1100px;margin:0 auto;padding:0 18px 22px;color:#697680;font-size:12px;text-align:center}@media(max-width:760px){.toolbar{display:block}.print{margin-top:15px}.sheet{grid-template-columns:repeat(2,1fr);padding-left:12px;padding-right:12px}.card{padding:10px}.mesa{font-size:22px}}@media(max-width:460px){.sheet{grid-template-columns:1fr}.card{max-width:330px;margin:auto}}@media print{body{background:#fff}.toolbar,.note{display:none}.sheet{max-width:none;padding:0;grid-template-columns:repeat(3,1fr);gap:8mm}.card{border:1px solid #999;box-shadow:none;border-radius:8px;padding:8px}.qr{max-width:44mm}.mesa{font-size:21px}.hint{font-size:9px}.url{font-size:7px}}
+</style>
+</head>
+<body>
+<header class="toolbar"><div><h1>🍔 Bocado QR · QR de las mesas</h1><p>Imprimí esta hoja y colocá cada código en su mesa.</p></div><button class="print" onclick="window.print()">🖨️ Imprimir los 12 QR</button></header>
+<main class="sheet">
+{% for mesa in range(1, 13) %}
+{% set destino = base_url ~ '/menu?mesa=' ~ mesa %}
+<article class="card"><div class="brand">Bocado · Menú digital</div><div class="mesa">MESA {{ mesa }}</div><img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=420x420&amp;data={{ destino|urlencode }}" alt="QR de la mesa {{ mesa }}"><div class="hint">Escaneá para ver el menú<br>y hacer tu pedido</div><div class="url">{{ destino }}</div></article>
+{% endfor %}
+</main>
+<div class="note">Cada mesa tiene un código diferente. Si cambiás el menú, no hace falta cambiar los QR.</div>
+</body>
+</html>
