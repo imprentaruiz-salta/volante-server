@@ -55,6 +55,14 @@ def init_db():
           items_json TEXT NOT NULL
         );
         INSERT OR IGNORE INTO cart_location(id, floor, corridor, active) VALUES (1, 'Planta baja', 'Pasillo A', 0);
+        CREATE TABLE IF NOT EXISTS debts (
+          id INTEGER PRIMARY KEY AUTOINCREMENT, order_id INTEGER, created_at TEXT NOT NULL,
+          customer TEXT NOT NULL, phone TEXT DEFAULT '', floor TEXT NOT NULL, corridor TEXT NOT NULL,
+          detail TEXT DEFAULT '', amount INTEGER NOT NULL, balance INTEGER NOT NULL, status TEXT NOT NULL DEFAULT 'pendiente'
+        );
+        CREATE TABLE IF NOT EXISTS debt_payments (
+          id INTEGER PRIMARY KEY AUTOINCREMENT, debt_id INTEGER NOT NULL, paid_at TEXT NOT NULL, amount INTEGER NOT NULL, note TEXT DEFAULT ''
+        );
         ''')
         cols = {r[1] for r in con.execute('PRAGMA table_info(cart_location)').fetchall()}
         if 'floor' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN floor TEXT DEFAULT 'Planta baja'")
@@ -195,7 +203,38 @@ def create_order():
         cur = con.execute('''INSERT INTO orders(created_at,customer,phone,floor,corridor,detail,payment,total,status,items_json)
           VALUES (?,?,?,?,?,?,?,?,?,?)''', (datetime.now().isoformat(timespec='seconds'), data['customer'].strip(), data.get('phone','').strip(),
           data['floor'], data['corridor'], data.get('detail','').strip(), data['payment'], total, 'recibido', json.dumps(checked, ensure_ascii=False)))
+        if str(data['payment']).lower() == 'fiado':
+            con.execute('''INSERT INTO debts(order_id,created_at,customer,phone,floor,corridor,detail,amount,balance,status)
+              VALUES (?,?,?,?,?,?,?,?,?,?)''', (cur.lastrowid, datetime.now().isoformat(timespec='seconds'), data['customer'].strip(), data.get('phone','').strip(), data['floor'], data['corridor'], data.get('detail','').strip(), total, total, 'pendiente'))
     return jsonify({'ok': True, 'order_id': cur.lastrowid, 'total': total}), 201
+
+@app.get('/api/debts')
+@seller_required
+def debts():
+    with db() as con:
+        rows = con.execute("SELECT * FROM debts ORDER BY CASE WHEN status='pendiente' THEN 0 ELSE 1 END, id DESC").fetchall()
+        out = []
+        for r in rows:
+            d = dict(r)
+            d['payments'] = [dict(x) for x in con.execute('SELECT * FROM debt_payments WHERE debt_id=? ORDER BY id DESC', (r['id'],)).fetchall()]
+            out.append(d)
+    return jsonify(out)
+
+@app.post('/api/debts/<int:did>/payments')
+@seller_required
+def debt_payment(did):
+    data = request.get_json(force=True) or {}
+    try: amount = int(data.get('amount', 0))
+    except (TypeError, ValueError): amount = 0
+    if amount <= 0: return jsonify({'error': 'Ingresá un importe válido.'}), 400
+    with db() as con:
+        row = con.execute('SELECT * FROM debts WHERE id=?', (did,)).fetchone()
+        if not row: return jsonify({'error': 'Fiado inexistente.'}), 404
+        amount = min(amount, row['balance'])
+        con.execute('INSERT INTO debt_payments(debt_id,paid_at,amount,note) VALUES (?,?,?,?)', (did, datetime.now().isoformat(timespec='seconds'), amount, data.get('note','').strip()))
+        new_balance = row['balance'] - amount
+        con.execute('UPDATE debts SET balance=?, status=? WHERE id=?', (new_balance, 'pagado' if new_balance == 0 else 'pendiente', did))
+    return jsonify({'ok': True, 'balance': new_balance})
 
 @app.patch('/api/orders/<int:oid>')
 @seller_required
