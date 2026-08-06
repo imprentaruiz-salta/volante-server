@@ -1,12 +1,14 @@
 import os, sqlite3, json
 from datetime import datetime
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request, render_template, session
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.environ.get('CARRITO_DATA_DIR', os.path.join(BASE, 'data'))
 os.makedirs(DATA_DIR, exist_ok=True)
 DB = os.path.join(DATA_DIR, 'carrito.db')
 app = Flask(__name__, template_folder='.')
+app.secret_key = os.environ.get('APP_SECRET', 'change-this-secret')
+SELLER_PIN = os.environ.get('SELLER_PIN', '4827')
 
 INITIAL_PRODUCTS = [
     ('Baguette', '🥖', 'Sandwiches', 2500, 0),
@@ -60,6 +62,32 @@ def init_db():
         if con.execute('SELECT COUNT(*) FROM products').fetchone()[0] == 0:
             con.executemany('INSERT INTO products(name,emoji,category,price,stock,available) VALUES (?,?,?,?,?,1)', INITIAL_PRODUCTS)
 
+def seller_required(fn):
+    from functools import wraps
+    @wraps(fn)
+    def wrapped(*args, **kwargs):
+        if not session.get('seller_ok'):
+            return jsonify({'error': 'Vendedor no autenticado'}), 401
+        return fn(*args, **kwargs)
+    return wrapped
+
+@app.post('/api/admin/login')
+def admin_login():
+    data = request.get_json(force=True) or {}
+    if str(data.get('pin', '')) != str(SELLER_PIN):
+        return jsonify({'error': 'PIN incorrecto'}), 401
+    session['seller_ok'] = True
+    return jsonify({'ok': True})
+
+@app.post('/api/admin/logout')
+def admin_logout():
+    session.clear()
+    return jsonify({'ok': True})
+
+@app.get('/api/admin/me')
+def admin_me():
+    return jsonify({'authenticated': bool(session.get('seller_ok'))})
+
 def product_dict(row):
     d = dict(row)
     d['available'] = bool(d['available']) and d['stock'] > 0
@@ -67,7 +95,7 @@ def product_dict(row):
 
 def location_dict(row):
     if not row:
-        return {'active': False, 'lat': None, 'lng': None, 'floor': 'Planta baja', 'corridor': 'Pasillo A', 'updated_at': None}
+        return {'active': False, 'lat': None, 'lng': None, 'updated_at': None}
     d = dict(row)
     d['active'] = bool(d['active'])
     return d
@@ -89,6 +117,7 @@ def get_location():
     return jsonify(location_dict(row))
 
 @app.post('/api/location')
+@seller_required
 def set_location():
     data = request.get_json(force=True) or {}
     with db() as con:
@@ -97,12 +126,14 @@ def set_location():
     return jsonify({'ok': True})
 
 @app.post('/api/location/off')
+@seller_required
 def location_off():
     with db() as con:
         con.execute('UPDATE cart_location SET active=0, updated_at=? WHERE id=1', (datetime.now().isoformat(timespec='seconds'),))
     return jsonify({'ok': True})
 
 @app.patch('/api/admin/products/<int:pid>')
+@seller_required
 def update_product(pid):
     data = request.get_json(force=True) or {}
     fields, values = [], []
@@ -119,6 +150,7 @@ def update_product(pid):
     return jsonify(product_dict(row))
 
 @app.post('/api/admin/products')
+@seller_required
 def add_product():
     data = request.get_json(force=True) or {}
     name = str(data.get('name', '')).strip()
@@ -130,6 +162,7 @@ def add_product():
     return jsonify(product_dict(row)), 201
 
 @app.get('/api/orders')
+@seller_required
 def orders():
     with db() as con:
         rows = con.execute('SELECT * FROM orders ORDER BY id DESC LIMIT 100').fetchall()
@@ -165,6 +198,7 @@ def create_order():
     return jsonify({'ok': True, 'order_id': cur.lastrowid, 'total': total}), 201
 
 @app.patch('/api/orders/<int:oid>')
+@seller_required
 def update_order(oid):
     status = (request.get_json(force=True) or {}).get('status')
     allowed = {'recibido', 'preparando', 'en_camino', 'entregado', 'cancelado'}
