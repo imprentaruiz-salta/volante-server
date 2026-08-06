@@ -46,7 +46,7 @@ def init_db():
         );
         CREATE TABLE IF NOT EXISTS cart_location (
           id INTEGER PRIMARY KEY CHECK(id=1),
-          lat REAL, lng REAL, floor TEXT DEFAULT 'Planta baja', corridor TEXT DEFAULT 'Pasillo A', updated_at TEXT, active INTEGER DEFAULT 0
+          lat REAL, lng REAL, floor TEXT DEFAULT 'Planta baja', corridor TEXT DEFAULT 'Pasillo A', updated_at TEXT, active INTEGER DEFAULT 0, status TEXT DEFAULT 'cerrado', meeting_point TEXT DEFAULT ''
         );
         CREATE TABLE IF NOT EXISTS orders (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -80,6 +80,8 @@ def init_db():
         cols = {r[1] for r in con.execute('PRAGMA table_info(cart_location)').fetchall()}
         if 'floor' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN floor TEXT DEFAULT 'Planta baja'")
         if 'corridor' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN corridor TEXT DEFAULT 'Pasillo A'")
+        if 'status' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN status TEXT DEFAULT 'cerrado'")
+        if 'meeting_point' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN meeting_point TEXT DEFAULT ''")
         if con.execute('SELECT COUNT(*) FROM products').fetchone()[0] == 0:
             con.executemany('INSERT INTO products(name,emoji,category,price,stock,available) VALUES (?,?,?,?,?,1)', INITIAL_PRODUCTS)
 
@@ -133,6 +135,8 @@ def location_dict(row):
         return {'active': False, 'lat': None, 'lng': None, 'updated_at': None}
     d = dict(row)
     d['active'] = bool(d['active'])
+    d['status'] = d.get('status') or ('activo' if d['active'] else 'cerrado')
+    d['meeting_point'] = d.get('meeting_point') or ''
     return d
 
 @app.get('/')
@@ -156,15 +160,17 @@ def get_location():
 def set_location():
     data = request.get_json(force=True) or {}
     with db() as con:
-        con.execute('UPDATE cart_location SET lat=?, lng=?, floor=?, corridor=?, updated_at=?, active=? WHERE id=1',
-                    (data.get('lat'), data.get('lng'), data.get('floor', 'Planta baja'), data.get('corridor', 'Pasillo A'), datetime.now().isoformat(timespec='seconds'), 1 if data.get('active', True) else 0))
+        status = str(data.get('status', 'activo')).strip() or 'activo'
+        active = 0 if status == 'cerrado' else (1 if data.get('active', True) else 0)
+        con.execute('UPDATE cart_location SET lat=?, lng=?, floor=?, corridor=?, updated_at=?, active=?, status=?, meeting_point=? WHERE id=1',
+                    (data.get('lat'), data.get('lng'), data.get('floor', 'Planta baja'), data.get('corridor', 'Pasillo A'), datetime.now().isoformat(timespec='seconds'), active, status, str(data.get('meeting_point') or '').strip()))
     return jsonify({'ok': True})
 
 @app.post('/api/location/off')
 @seller_required
 def location_off():
     with db() as con:
-        con.execute('UPDATE cart_location SET active=0, updated_at=? WHERE id=1', (datetime.now().isoformat(timespec='seconds'),))
+        con.execute("UPDATE cart_location SET active=0, status='cerrado', updated_at=? WHERE id=1", (datetime.now().isoformat(timespec='seconds'),))
     return jsonify({'ok': True})
 
 @app.patch('/api/admin/products/<int:pid>')
