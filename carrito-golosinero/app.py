@@ -35,7 +35,8 @@ def init_db():
           category TEXT NOT NULL,
           price INTEGER NOT NULL DEFAULT 0,
           stock INTEGER NOT NULL DEFAULT 0,
-          available INTEGER NOT NULL DEFAULT 1
+          available INTEGER NOT NULL DEFAULT 1,
+          image_url TEXT DEFAULT ''
         );
         CREATE TABLE IF NOT EXISTS cart_location (
           id INTEGER PRIMARY KEY CHECK(id=1),
@@ -64,6 +65,8 @@ def init_db():
           id INTEGER PRIMARY KEY AUTOINCREMENT, debt_id INTEGER NOT NULL, paid_at TEXT NOT NULL, amount INTEGER NOT NULL, note TEXT DEFAULT ''
         );
         ''')
+        product_cols = {r[1] for r in con.execute('PRAGMA table_info(products)').fetchall()}
+        if 'image_url' not in product_cols: con.execute("ALTER TABLE products ADD COLUMN image_url TEXT DEFAULT ''")
         cols = {r[1] for r in con.execute('PRAGMA table_info(cart_location)').fetchall()}
         if 'floor' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN floor TEXT DEFAULT 'Planta baja'")
         if 'corridor' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN corridor TEXT DEFAULT 'Pasillo A'")
@@ -149,6 +152,7 @@ def update_product(pid):
     if 'price' in data: fields += ['price=?']; values += [max(0, int(data['price']))]
     if 'stock' in data: fields += ['stock=?']; values += [max(0, int(data['stock']))]
     if 'available' in data: fields += ['available=?']; values += [1 if data['available'] else 0]
+    if 'image_url' in data: fields += ['image_url=?']; values += [str(data.get('image_url') or '').strip()]
     if not fields: return jsonify({'error': 'Sin cambios'}), 400
     values.append(pid)
     with db() as con:
@@ -164,8 +168,8 @@ def add_product():
     name = str(data.get('name', '')).strip()
     if not name: return jsonify({'error': 'Falta el nombre'}), 400
     with db() as con:
-        cur = con.execute('INSERT INTO products(name,emoji,category,price,stock,available) VALUES (?,?,?,?,?,?)',
-                          (name, data.get('emoji', '📦'), data.get('category', 'Otros'), max(0, int(data.get('price', 0))), max(0, int(data.get('stock', 0))), 1))
+        cur = con.execute('INSERT INTO products(name,emoji,category,price,stock,available,image_url) VALUES (?,?,?,?,?,?,?)',
+                          (name, data.get('emoji', '📦'), data.get('category', 'Otros'), max(0, int(data.get('price', 0))), max(0, int(data.get('stock', 0))), 1, str(data.get('image_url') or '').strip()))
         row = con.execute('SELECT * FROM products WHERE id=?', (cur.lastrowid,)).fetchone()
     return jsonify(product_dict(row)), 201
 
