@@ -37,7 +37,7 @@ def init_db():
         );
         CREATE TABLE IF NOT EXISTS cart_location (
           id INTEGER PRIMARY KEY CHECK(id=1),
-          lat REAL, lng REAL, updated_at TEXT, active INTEGER DEFAULT 0
+          lat REAL, lng REAL, floor TEXT DEFAULT 'Planta baja', corridor TEXT DEFAULT 'Pasillo A', updated_at TEXT, active INTEGER DEFAULT 0
         );
         CREATE TABLE IF NOT EXISTS orders (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -52,8 +52,11 @@ def init_db():
           status TEXT NOT NULL DEFAULT 'recibido',
           items_json TEXT NOT NULL
         );
-        INSERT OR IGNORE INTO cart_location(id, active) VALUES (1, 0);
+        INSERT OR IGNORE INTO cart_location(id, floor, corridor, active) VALUES (1, 'Planta baja', 'Pasillo A', 0);
         ''')
+        cols = {r[1] for r in con.execute('PRAGMA table_info(cart_location)').fetchall()}
+        if 'floor' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN floor TEXT DEFAULT 'Planta baja'")
+        if 'corridor' not in cols: con.execute("ALTER TABLE cart_location ADD COLUMN corridor TEXT DEFAULT 'Pasillo A'")
         if con.execute('SELECT COUNT(*) FROM products').fetchone()[0] == 0:
             con.executemany('INSERT INTO products(name,emoji,category,price,stock,available) VALUES (?,?,?,?,?,1)', INITIAL_PRODUCTS)
 
@@ -64,7 +67,7 @@ def product_dict(row):
 
 def location_dict(row):
     if not row:
-        return {'active': False, 'lat': None, 'lng': None, 'updated_at': None}
+        return {'active': False, 'lat': None, 'lng': None, 'floor': 'Planta baja', 'corridor': 'Pasillo A', 'updated_at': None}
     d = dict(row)
     d['active'] = bool(d['active'])
     return d
@@ -89,8 +92,8 @@ def get_location():
 def set_location():
     data = request.get_json(force=True) or {}
     with db() as con:
-        con.execute('UPDATE cart_location SET lat=?, lng=?, updated_at=?, active=? WHERE id=1',
-                    (data.get('lat'), data.get('lng'), datetime.now().isoformat(timespec='seconds'), 1 if data.get('active', True) else 0))
+        con.execute('UPDATE cart_location SET lat=?, lng=?, floor=?, corridor=?, updated_at=?, active=? WHERE id=1',
+                    (data.get('lat'), data.get('lng'), data.get('floor', 'Planta baja'), data.get('corridor', 'Pasillo A'), datetime.now().isoformat(timespec='seconds'), 1 if data.get('active', True) else 0))
     return jsonify({'ok': True})
 
 @app.post('/api/location/off')
@@ -176,4 +179,3 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
 else:
     init_db()
-
