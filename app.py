@@ -107,9 +107,8 @@ def imprenta_ruiz():
     # Rulito: mascota animada con globo de bienvenida y acceso a todos los precios.
     animated_mascot = '''<div class="rulito-widget" aria-label="Rulito, asistente de Imprenta Ruiz">
       <div class="rulito-bubble">
-        <strong>👋 Hola, bienvenidos a Imprenta Ruiz</strong>
-        <span>Soy <b>Rulito</b>, tu asistente.</span>
-        <button type="button" class="rulito-prices-btn">💬 Preguntame los precios</button>
+        <strong class="rulito-message">👋 Hola, bienvenidos a Imprenta Ruiz</strong>
+        <button type="button" class="rulito-prices-btn">Siguiente precio ›</button>
       </div>
       <img class="mascota-float" src="/static/video_muneco_ruiz_transparente.gif" alt="Rulito, muñeco animado de Imprenta Ruiz">
     </div>'''
@@ -128,10 +127,10 @@ def imprenta_ruiz():
 <style>
 .rulito-widget{position:fixed;right:6px;bottom:96px;z-index:25;width:190px;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none}
 .rulito-widget .mascota-float{position:static;width:145px;max-height:205px;pointer-events:none;animation:robot-float 3.2s ease-in-out infinite}
-.rulito-bubble{position:relative;width:172px;margin:0 4px 5px;padding:9px 10px 8px;border:2px solid #078da8;border-radius:16px 16px 4px 16px;background:linear-gradient(145deg,#ffffff,#e9fbff);box-shadow:0 6px 15px rgba(0,29,58,.24);color:#071b3b;font:700 11px/1.2 Arial,sans-serif;text-align:left;pointer-events:auto}
-.rulito-bubble:after{content:"";position:absolute;right:18px;bottom:-10px;border:6px solid transparent;border-top-color:#078da8;border-right:0;transform:rotate(18deg)}
-.rulito-bubble strong,.rulito-bubble span{display:block}.rulito-bubble strong{font-size:12px;margin-bottom:3px}.rulito-bubble b{color:#087c9a}
-.rulito-prices-btn{display:block;margin-top:6px;border:0;border-radius:999px;padding:6px 8px;background:#087c9a;color:#fff;font:900 10px Arial;cursor:pointer;box-shadow:0 3px 8px #087c9a55}
+.rulito-bubble{position:relative;width:172px;min-height:52px;margin:0 4px 5px;padding:11px 12px 12px;border:2px solid #078da8;border-radius:50% 50% 48% 48% / 48% 48% 52% 52%;background:linear-gradient(145deg,#ffffff,#e9fbff);box-shadow:0 6px 15px rgba(0,29,58,.24);color:#071b3b;font:700 11px/1.2 Arial,sans-serif;text-align:center;pointer-events:auto}
+.rulito-bubble:after{content:"";position:absolute;right:22px;bottom:-11px;border:7px solid transparent;border-top-color:#078da8;border-right:0;transform:rotate(18deg)}
+.rulito-bubble strong,.rulito-bubble span{display:block}.rulito-bubble strong{font-size:12px;margin-bottom:3px}.rulito-bubble b{color:#087c9a}.rulito-message{min-height:29px;display:flex!important;align-items:center;justify-content:center}.rulito-message.rulito-pop{animation:rulito-pop .35s ease}@keyframes rulito-pop{0%{opacity:.25;transform:scale(.92)}100%{opacity:1;transform:scale(1)}}
+.rulito-prices-btn{display:block;margin:5px auto 0;border:0;border-radius:999px;padding:5px 8px;background:#087c9a;color:#fff;font:900 10px Arial;cursor:pointer;box-shadow:0 3px 8px #087c9a55}
 .rulito-prices-btn:active{transform:scale(.97)}
 .rulito-prices-modal{display:none;position:fixed;inset:0;z-index:80;background:rgba(3,16,36,.78);align-items:center;justify-content:center;padding:14px}
 .rulito-prices-modal.is-open{display:flex}.rulito-prices-card{position:relative;width:min(700px,96vw);max-height:88vh;overflow:auto;border-radius:22px;padding:20px;background:#fff;box-shadow:0 20px 55px #0008;color:#071b3b;font-family:Arial,sans-serif}.rulito-prices-card h2{margin:0 38px 4px 0;font-size:23px}.rulito-prices-card>p{margin:0 0 14px;color:#516274;font-weight:700}.rulito-price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.rulito-price-group{padding:11px;border-radius:13px;background:#f0fbff;border-left:4px solid #078da8}.rulito-price-group h3{margin:0 0 6px;font-size:15px;color:#087c9a}.rulito-price-group p{margin:3px 0;font-size:13px;font-weight:700}.rulito-price-close{position:absolute;right:12px;top:10px;border:0;border-radius:10px;background:#071b3b;color:#fff;padding:7px 10px;font-weight:900;cursor:pointer}
@@ -174,7 +173,25 @@ def imprenta_ruiz():
   function closeAll(){document.querySelectorAll('.ruiz-modal.is-open,.rulito-prices-modal.is-open').forEach(function(m){m.classList.remove('is-open')})}
   function openModal(id){closeAll();var m=document.getElementById(id);if(m)m.classList.add('is-open')}
   var pricesModal=document.getElementById('rulitoPricesModal');
-  document.querySelectorAll('.rulito-prices-btn').forEach(function(b){b.addEventListener('click',function(){if(pricesModal){pricesModal.classList.add('is-open')}})});
+  var rulitoMessage=document.querySelector('.rulito-message');
+  var rulitoMessages=[
+    '👋 Hola, bienvenidos a Imprenta Ruiz',
+    'Soy Rulito, tu asistente.',
+    '🖨️ Impresión color: $900 por faz',
+    '📄 Blanco y negro: $700 por faz',
+    '🔩 Anillado: $2.500',
+    '🏷️ A4 autoadhesivo: $6.000',
+    '📸 Fotos Inkjet desde $3.000',
+    '📸 Fotos Mitsubishi desde $4.000',
+    '📸 Fotos Kodak desde $4.500',
+    '📅 Almanaques desde $2.000',
+    '🧊 Plastificado: consultar',
+    '💻 Diseños web: consultar'
+  ];
+  var rulitoIndex=0;
+  function nextRulitoMessage(){if(!rulitoMessage)return;rulitoIndex=(rulitoIndex+1)%rulitoMessages.length;rulitoMessage.classList.remove('rulito-pop');void rulitoMessage.offsetWidth;rulitoMessage.textContent=rulitoMessages[rulitoIndex];rulitoMessage.classList.add('rulito-pop')}
+  document.querySelectorAll('.rulito-prices-btn').forEach(function(b){b.addEventListener('click',nextRulitoMessage)});
+  if(rulitoMessage)window.setInterval(nextRulitoMessage,4200);
   document.querySelectorAll('[data-rulito-close]').forEach(function(b){b.addEventListener('click',closeAll)});
   if(pricesModal)pricesModal.addEventListener('click',function(e){if(e.target===pricesModal)closeAll()});
   document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(){openModal(b.getAttribute('data-open-modal'))})})
