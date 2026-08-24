@@ -109,18 +109,18 @@ def imprenta_ruiz():
         if mascot_end >= 0:
             html = html[:mascot_start] + animated_mascot + html[mascot_end + 1:]
     location_anchor = '<a class="hit hit-map" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener" aria-label="Cómo llegar a Imprenta Ruiz"></a>'
-    location_buttons = '''<div class="location-actions hit" aria-label="Ubicación de Imprenta Ruiz">
-      <button type="button" class="location-action front-action" data-open-modal="frontModal" title="Ver mi casa" aria-label="Ver mi casa">📍</button>
-      <button type="button" class="location-action map-action" data-open-modal="mapModal" title="Ver mapa" aria-label="Ver mapa">🗺️</button>
+    location_buttons = '''<div class="location-split hit" aria-label="Ubicación de Imprenta Ruiz">
+      <button type="button" class="location-hotspot front-hotspot" data-open-modal="frontModal" title="Ver mi casa" aria-label="Ver mi casa"></button>
+      <button type="button" class="location-hotspot map-hotspot" data-open-modal="mapModal" title="Cómo llegar y ver mapa" aria-label="Cómo llegar y ver mapa"></button>
     </div>'''
     html = html.replace(location_anchor, location_buttons, 1)
     location_ui = '''
 <style>
-.location-actions{display:flex;align-items:center;justify-content:center;gap:10px;pointer-events:auto}
-.location-action{border:0;border-radius:14px;min-width:48px;min-height:42px;padding:8px 12px;color:#fff;font:900 22px Arial;cursor:pointer;box-shadow:0 4px 10px rgba(7,27,59,.28);transition:transform .15s,filter .15s}
-.location-action:hover,.location-action:focus-visible{filter:brightness(1.08);transform:translateY(-1px);outline:3px solid #071b3b;outline-offset:2px}
-.front-action{background:linear-gradient(145deg,#159bb5,#087c9a)}
-.map-action{background:linear-gradient(145deg,#246ed8,#1248a7)}
+.location-split{display:flex;align-items:stretch;pointer-events:auto;background:transparent}
+.location-hotspot{height:100%;border:0;background:transparent;cursor:pointer}
+.location-hotspot:focus-visible{outline:3px solid #078de8;outline-offset:-4px;border-radius:18px}
+.front-hotspot{width:34%}
+.map-hotspot{width:66%}
 .ruiz-modal{display:none;position:fixed;inset:0;z-index:30;background:rgba(3,16,36,.78);align-items:center;justify-content:center;padding:18px}
 .ruiz-modal.is-open{display:flex}
 .ruiz-modal-card{position:relative;width:min(920px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;padding:22px;box-shadow:0 20px 55px rgba(0,0,0,.4);text-align:center}
@@ -129,7 +129,7 @@ def imprenta_ruiz():
 .ruiz-front-image,.ruiz-map-image{display:block;width:100%;max-height:64vh;object-fit:contain;border-radius:14px;background:#eef3f7}.missing-front{padding:58px 22px;color:#071b3b;font:700 17px Arial;box-sizing:border-box}
 .ruiz-map-frame{display:block;width:100%;height:min(52vh,480px);border:0;border-radius:14px;margin-bottom:12px}
 .ruiz-map-link{display:inline-block;background:#1769d1;color:#fff;text-decoration:none;border-radius:12px;padding:11px 16px;font:900 15px Arial}
-@media(max-width:620px){.location-action{padding:8px 10px;font-size:12px}.location-actions{gap:6px}.ruiz-modal-card{padding:15px}.ruiz-modal-card h2{font-size:19px}.ruiz-modal{padding:9px}}
+@media(max-width:620px){.location-hotspot{min-height:100%}.ruiz-modal-card{padding:15px}.ruiz-modal-card h2{font-size:19px}.ruiz-modal{padding:9px}}
 </style>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
