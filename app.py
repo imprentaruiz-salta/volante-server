@@ -102,6 +102,12 @@ def index():
 def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
+    animated_mascot = '<img class="mascota-float mascota-nueva" style="width:125px;max-height:180px" src="https://share.zapia.com/o8oveyfvpjw58y727ed0ff" alt="Mascota de Imprenta Ruiz">'
+    mascot_start = html.find('<img class="mascota-float"')
+    if mascot_start >= 0:
+        mascot_end = html.find('>', mascot_start)
+        if mascot_end >= 0:
+            html = html[:mascot_start] + animated_mascot + html[mascot_end + 1:]
     social_preview = """
 <meta property="og:type" content="website">
 <meta property="og:title" content="Imprenta Ruiz">
