@@ -183,11 +183,17 @@ def imprenta_ruiz_subir_video():
         if request.content_length and request.content_length > 150 * 1024 * 1024:
             mensaje = "El video supera el límite de 150 MB."
         else:
+            # Algunos teléfonos envían el archivo con otro nombre de campo o sin
+            # nombre visible; aceptamos igualmente el primer archivo de video.
             video = request.files.get("video")
-            nombre = secure_filename(video.filename or "") if video else ""
+            if not video and request.files:
+                video = next(iter(request.files.values()))
+            nombre = secure_filename(video.filename or "video.mp4") if video else ""
             extensiones = {".mp4", ".mov", ".webm", ".m4v", ".avi", ".mkv"}
             extension = Path(nombre).suffix.lower()
-            if not video or not nombre or extension not in extensiones:
+            if extension not in extensiones and video and (video.mimetype or "").startswith("video/"):
+                extension = ".mp4"
+            if not video or extension not in extensiones:
                 mensaje = "Elegí un video MP4, MOV, WEBM, M4V, AVI o MKV."
             else:
                 destino = upload_dir / f"ruiz_video_{uuid.uuid4().hex}{extension}"
