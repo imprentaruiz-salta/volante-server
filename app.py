@@ -189,12 +189,13 @@ def imprenta_ruiz_subir_video():
             if not video and request.files:
                 video = next(iter(request.files.values()))
             nombre = secure_filename(video.filename or "video.mp4") if video else ""
-            extensiones = {".mp4", ".mov", ".webm", ".m4v", ".avi", ".mkv"}
+            extensiones = {".mp4", ".mov", ".webm", ".m4v", ".avi", ".mkv", ".webp"}
             extension = Path(nombre).suffix.lower()
-            if extension not in extensiones and video and (video.mimetype or "").startswith("video/"):
+            mime = (video.mimetype or "") if video else ""
+            if extension not in extensiones and mime.startswith("video/"):
                 extension = ".mp4"
             if not video or extension not in extensiones:
-                mensaje = "Elegí un video MP4, MOV, WEBM, M4V, AVI o MKV."
+                mensaje = "Elegí un video MP4, MOV, WEBM, M4V, AVI, MKV o una imagen WEBP animada."
             else:
                 destino = upload_dir / f"ruiz_video_{uuid.uuid4().hex}{extension}"
                 video.save(destino)
