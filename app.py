@@ -116,8 +116,8 @@ def imprenta_ruiz():
     html = html.replace(location_anchor, location_buttons, 1)
     location_ui = '''
 <style>
-.location-split{display:flex;align-items:stretch;pointer-events:auto;background:transparent;z-index:25!important}
-.location-hotspot{height:100%;border:0;background:transparent;cursor:pointer}
+.location-split{display:flex;align-items:stretch;pointer-events:auto;background:transparent;z-index:999!important;isolation:isolate}
+.location-hotspot{position:relative;z-index:1000;height:100%;border:0;background:transparent;cursor:pointer;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:rgba(7,27,59,.18)}
 .location-hotspot:focus-visible{outline:3px solid #078de8;outline-offset:-4px;border-radius:18px}
 .front-hotspot{width:34%}
 .map-hotspot{width:66%}
