@@ -126,16 +126,16 @@ def imprenta_ruiz():
     html = html.replace(location_anchor, location_buttons, 1)
     location_ui = '''
 <style>
-.rulito-widget{position:fixed;right:6px;bottom:96px;z-index:25;width:230px;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none}
+.rulito-widget{position:fixed;right:6px;bottom:96px;z-index:25;width:190px;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none}
 .rulito-widget .mascota-float{position:static;width:145px;max-height:205px;pointer-events:none;animation:robot-float 3.2s ease-in-out infinite}
-.rulito-bubble{position:relative;width:215px;margin:0 4px 6px;padding:13px 13px 11px;border:3px solid #078da8;border-radius:20px 20px 5px 20px;background:linear-gradient(145deg,#ffffff,#e9fbff);box-shadow:0 8px 22px rgba(0,29,58,.28);color:#071b3b;font:700 14px/1.25 Arial,sans-serif;text-align:left;pointer-events:auto}
-.rulito-bubble:after{content:"";position:absolute;right:22px;bottom:-14px;border:8px solid transparent;border-top-color:#078da8;border-right:0;transform:rotate(18deg)}
-.rulito-bubble strong,.rulito-bubble span{display:block}.rulito-bubble strong{font-size:15px;margin-bottom:4px}.rulito-bubble b{color:#087c9a}
-.rulito-prices-btn{display:block;margin-top:9px;border:0;border-radius:999px;padding:8px 11px;background:#087c9a;color:#fff;font:900 12px Arial;cursor:pointer;box-shadow:0 3px 8px #087c9a55}
+.rulito-bubble{position:relative;width:172px;margin:0 4px 5px;padding:9px 10px 8px;border:2px solid #078da8;border-radius:16px 16px 4px 16px;background:linear-gradient(145deg,#ffffff,#e9fbff);box-shadow:0 6px 15px rgba(0,29,58,.24);color:#071b3b;font:700 11px/1.2 Arial,sans-serif;text-align:left;pointer-events:auto}
+.rulito-bubble:after{content:"";position:absolute;right:18px;bottom:-10px;border:6px solid transparent;border-top-color:#078da8;border-right:0;transform:rotate(18deg)}
+.rulito-bubble strong,.rulito-bubble span{display:block}.rulito-bubble strong{font-size:12px;margin-bottom:3px}.rulito-bubble b{color:#087c9a}
+.rulito-prices-btn{display:block;margin-top:6px;border:0;border-radius:999px;padding:6px 8px;background:#087c9a;color:#fff;font:900 10px Arial;cursor:pointer;box-shadow:0 3px 8px #087c9a55}
 .rulito-prices-btn:active{transform:scale(.97)}
 .rulito-prices-modal{display:none;position:fixed;inset:0;z-index:80;background:rgba(3,16,36,.78);align-items:center;justify-content:center;padding:14px}
 .rulito-prices-modal.is-open{display:flex}.rulito-prices-card{position:relative;width:min(700px,96vw);max-height:88vh;overflow:auto;border-radius:22px;padding:20px;background:#fff;box-shadow:0 20px 55px #0008;color:#071b3b;font-family:Arial,sans-serif}.rulito-prices-card h2{margin:0 38px 4px 0;font-size:23px}.rulito-prices-card>p{margin:0 0 14px;color:#516274;font-weight:700}.rulito-price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.rulito-price-group{padding:11px;border-radius:13px;background:#f0fbff;border-left:4px solid #078da8}.rulito-price-group h3{margin:0 0 6px;font-size:15px;color:#087c9a}.rulito-price-group p{margin:3px 0;font-size:13px;font-weight:700}.rulito-price-close{position:absolute;right:12px;top:10px;border:0;border-radius:10px;background:#071b3b;color:#fff;padding:7px 10px;font-weight:900;cursor:pointer}
-@media(max-width:620px){.rulito-widget{right:3px;bottom:82px;width:190px}.rulito-widget .mascota-float{width:112px;max-height:165px}.rulito-bubble{width:178px;padding:10px;font-size:12px}.rulito-bubble strong{font-size:13px}.rulito-price-grid{grid-template-columns:1fr}.rulito-prices-card{padding:16px}.rulito-prices-card h2{font-size:20px}}
+@media(max-width:620px){.rulito-widget{right:3px;bottom:82px;width:170px}.rulito-widget .mascota-float{width:112px;max-height:165px}.rulito-bubble{width:152px;padding:8px;font-size:10px}.rulito-bubble strong{font-size:11px}.rulito-price-grid{grid-template-columns:1fr}.rulito-prices-card{padding:16px}.rulito-prices-card h2{font-size:20px}}
 .location-split{display:flex;align-items:stretch;pointer-events:auto;background:transparent;z-index:999!important;isolation:isolate}
 .location-hotspot{position:relative;z-index:1000;height:100%;border:0;background:transparent;cursor:pointer;pointer-events:auto;touch-action:manipulation;-webkit-tap-highlight-color:rgba(7,27,59,.18)}
 .location-hotspot:focus-visible{outline:3px solid #078de8;outline-offset:-4px;border-radius:18px}
