@@ -132,7 +132,7 @@ def imprenta_ruiz():
 @media(max-width:620px){.location-action{padding:8px 10px;font-size:12px}.location-actions{gap:6px}.ruiz-modal-card{padding:15px}.ruiz-modal-card h2{font-size:19px}.ruiz-modal{padding:9px}}
 </style>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
-  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Frente de Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_rejas_exact.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
+  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Frente de Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
 </div>
 <div class="ruiz-modal" id="mapModal" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="mapModalTitle">Cómo llegar a Imprenta Ruiz</h2><iframe class="ruiz-map-frame" title="Mapa de Chacabuco 470, Salta" src="https://www.google.com/maps?q=Chacabuco%20470%2C%20Salta&output=embed" loading="lazy"></iframe><a class="ruiz-map-link" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener">Abrir ubicación en Google Maps</a></div>
