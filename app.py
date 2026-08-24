@@ -126,16 +126,16 @@ def imprenta_ruiz():
 .ruiz-modal-card{position:relative;width:min(920px,96vw);max-height:92vh;overflow:auto;background:#fff;border-radius:20px;padding:22px;box-shadow:0 20px 55px rgba(0,0,0,.4);text-align:center}
 .ruiz-modal-card h2{margin:4px 35px 15px;color:#071b3b;font:900 24px Arial}
 .ruiz-close{position:absolute;right:14px;top:10px;border:0;border-radius:12px;background:#071b3b;color:#fff;padding:8px 12px;font:900 14px Arial;cursor:pointer}
-.ruiz-front-image,.ruiz-map-image{display:block;width:100%;max-height:64vh;object-fit:contain;border-radius:14px;background:#eef3f7}
+.ruiz-front-image,.ruiz-map-image{display:block;width:100%;max-height:64vh;object-fit:contain;border-radius:14px;background:#eef3f7}.missing-front{padding:58px 22px;color:#071b3b;font:700 17px Arial;box-sizing:border-box}
 .ruiz-map-frame{display:block;width:100%;height:min(52vh,480px);border:0;border-radius:14px;margin-bottom:12px}
 .ruiz-map-link{display:inline-block;background:#1769d1;color:#fff;text-decoration:none;border-radius:12px;padding:11px 16px;font:900 15px Arial}
 @media(max-width:620px){.location-action{padding:8px 10px;font-size:12px}.location-actions{gap:6px}.ruiz-modal-card{padding:15px}.ruiz-modal-card h2{font-size:19px}.ruiz-modal{padding:9px}}
 </style>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
-  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Frente de Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_chacabuco_470.jpg" alt="Frente de Imprenta Ruiz en Chacabuco 470"></div>
+  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Frente de Imprenta Ruiz</h2><div class="ruiz-front-image missing-front">Acá voy a mostrar la foto exacta de tu frente. No voy a usar la imagen del vecino.</div></div>
 </div>
 <div class="ruiz-modal" id="mapModal" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
-  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="mapModalTitle">Cómo llegar a Imprenta Ruiz</h2><iframe class="ruiz-map-frame" title="Mapa de Chacabuco 470, Salta" src="https://www.google.com/maps?q=Chacabuco%20470%2C%20Salta&output=embed" loading="lazy"></iframe><img class="ruiz-map-image" src="/static/mapa_chacabuco_470.jpg" alt="Mapa y frente de Chacabuco 470"><a class="ruiz-map-link" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener">Abrir ubicación en Google Maps</a></div>
+  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="mapModalTitle">Cómo llegar a Imprenta Ruiz</h2><iframe class="ruiz-map-frame" title="Mapa de Chacabuco 470, Salta" src="https://www.google.com/maps?q=Chacabuco%20470%2C%20Salta&output=embed" loading="lazy"></iframe><a class="ruiz-map-link" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener">Abrir ubicación en Google Maps</a></div>
 </div>
 <script>
 (function(){
