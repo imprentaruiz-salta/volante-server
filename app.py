@@ -104,7 +104,7 @@ def index():
 def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
-    animated_mascot = '<img class="mascota-float mascota-nueva mascota-video" style="width:220px;max-height:320px;object-fit:contain;z-index:20;pointer-events:none;filter:drop-shadow(0 10px 8px rgba(0,20,40,.35))" src="https://volante-server.onrender.com/static/uploads/ruiz_video_3adb1dbf345e4e1299a3fc3aa98ccc23.webp" alt="Muñeco animado de Imprenta Ruiz">'
+    animated_mascot = '<img class="mascota-float mascota-nueva mascota-video" style="width:220px;max-height:320px;object-fit:contain;z-index:20;pointer-events:none;filter:drop-shadow(0 10px 8px rgba(0,20,40,.35))" src="/static/video_muneco_ruiz_transparente.webp" alt="Muñeco animado de Imprenta Ruiz">'
     mascot_start = html.find('<img class="mascota-float"')
     if mascot_start >= 0:
         mascot_end = html.find('>', mascot_start)
