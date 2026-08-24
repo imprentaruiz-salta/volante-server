@@ -14,8 +14,10 @@ import sqlite3
 import base64
 import requests
 from datetime import datetime
+from pathlib import Path
 from PIL import Image
-from flask import Flask, request, jsonify, render_template, send_file, redirect
+from werkzeug.utils import secure_filename
+from flask import Flask, request, jsonify, render_template, send_file, redirect, url_for
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
 
@@ -169,6 +171,30 @@ def imprenta_ruiz():
 """
     return html.replace("</head>", social_preview + "</head>", 1)
 
+
+@app.route("/imprenta-ruiz/subir-video", methods=["GET", "POST"])
+def imprenta_ruiz_subir_video():
+    """Carga temporal de videos del muñeco para procesarlos desde Render."""
+    upload_dir = Path(app.static_folder) / "uploads"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    mensaje = ""
+    enlace = ""
+    if request.method == "POST":
+        if request.content_length and request.content_length > 150 * 1024 * 1024:
+            mensaje = "El video supera el límite de 150 MB."
+        else:
+            video = request.files.get("video")
+            nombre = secure_filename(video.filename or "") if video else ""
+            extensiones = {".mp4", ".mov", ".webm", ".m4v", ".avi", ".mkv"}
+            extension = Path(nombre).suffix.lower()
+            if not video or not nombre or extension not in extensiones:
+                mensaje = "Elegí un video MP4, MOV, WEBM, M4V, AVI o MKV."
+            else:
+                destino = upload_dir / f"ruiz_video_{uuid.uuid4().hex}{extension}"
+                video.save(destino)
+                enlace = url_for("static", filename=f"uploads/{destino.name}", _external=True)
+                mensaje = "Video cargado correctamente."
+    return f'''<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Subir video — Imprenta Ruiz</title><style>body{{margin:0;background:#071b3b;font-family:Arial,sans-serif;color:#071b3b;display:grid;place-items:center;min-height:100vh;padding:18px;box-sizing:border-box}}main{{width:min(520px,100%);background:#fff;border-radius:22px;padding:24px;box-shadow:0 18px 50px #0006}}h1{{margin:0 0 8px;font-size:25px}}p{{color:#4d5b6b;line-height:1.45}}input{{width:100%;padding:14px;border:2px dashed #168bb1;border-radius:14px;box-sizing:border-box;background:#f1fbff;margin:12px 0 16px}}button{{width:100%;border:0;border-radius:14px;padding:14px;background:#087c9a;color:#fff;font-weight:900;font-size:16px;cursor:pointer}}.ok{{margin-top:16px;padding:13px;border-radius:12px;background:#e7f8ee;color:#146b3c;font-weight:800;word-break:break-word}}a{{color:#075fa8}}</style></head><body><main><h1>🎬 Subir video del muñeco</h1><p>Elegí el video desde tu celular. Podés subir MP4 o MOV de hasta 150 MB. Después de cargarlo, copiá el enlace y mandámelo por este chat.</p><form method="post" enctype="multipart/form-data"><input type="file" name="video" accept="video/*,.mp4,.mov,.webm,.m4v,.avi,.mkv" required><button type="submit">Subir video</button></form>{f"<div class='ok'>{mensaje}<br><a href='{enlace}' target='_blank'>Abrir o descargar el video</a></div>" if enlace else (f"<div class='ok'>{mensaje}</div>" if mensaje else "")}</main></body></html>'''
 
 @app.route("/health")
 def health():
