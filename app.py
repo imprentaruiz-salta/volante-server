@@ -105,7 +105,7 @@ def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
     # Servir la mascota desde Render para evitar enlaces externos que expiran.
-    animated_mascot = '<img class="mascota-float" src="/static/ruiz_mascota_nueva_final.png" alt="Mascota animada de Imprenta Ruiz">'
+    animated_mascot = '<img class="mascota-float" src="/static/video_muneco_ruiz_transparente.gif" alt="Mascota animada de Imprenta Ruiz">'
     mascot_start = html.find('<img class="mascota-float"')
     if mascot_start >= 0:
         mascot_end = html.find('>', mascot_start)
