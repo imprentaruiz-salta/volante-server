@@ -104,8 +104,8 @@ def index():
 def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
-    # El video recibido era una captura del sitio, no el muñeco; se deja el sitio limpio hasta recibir el video correcto.
-    animated_mascot = ''
+    # Recuperar la mascota animada que ya funcionaba correctamente.
+    animated_mascot = '<img class="mascota-float" src="https://share.zapia.com/364edisw4oof6c0bxul0tz" alt="Mascota animada de Imprenta Ruiz">'
     mascot_start = html.find('<img class="mascota-float"')
     if mascot_start >= 0:
         mascot_end = html.find('>', mascot_start)
