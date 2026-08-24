@@ -100,8 +100,18 @@ def index():
 
 @app.route("/imprenta-ruiz")
 def imprenta_ruiz():
-    """Página pública de Imprenta Ruiz, sin branding del publicador."""
-    return render_template("ruiz.html")
+    """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
+    html = render_template("ruiz.html")
+    social_preview = """
+<meta property="og:type" content="website">
+<meta property="og:title" content="Imprenta Ruiz">
+<meta property="og:description" content="Precios y trabajos web de Imprenta Ruiz.">
+<meta property="og:image" content="https://share.zapia.com/w3qk7m0or5i5s9i2cjysws">
+<meta property="og:url" content="https://volante-server.onrender.com/imprenta-ruiz">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://share.zapia.com/w3qk7m0or5i5s9i2cjysws">
+"""
+    return html.replace("</head>", social_preview + "</head>", 1)
 
 
 @app.route("/health")
