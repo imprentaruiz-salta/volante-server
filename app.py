@@ -140,10 +140,20 @@ def imprenta_ruiz():
 <script>
 (function(){
   function closeAll(){document.querySelectorAll('.ruiz-modal.is-open').forEach(function(m){m.classList.remove('is-open')})}
-  document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(){closeAll();var m=document.getElementById(b.getAttribute('data-open-modal'));if(m)m.classList.add('is-open')})})
+  function openModal(id){closeAll();var m=document.getElementById(id);if(m)m.classList.add('is-open')}
+  document.querySelectorAll('[data-open-modal]').forEach(function(b){b.addEventListener('click',function(){openModal(b.getAttribute('data-open-modal'))})})
   document.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',closeAll)})
   document.querySelectorAll('.ruiz-modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)closeAll()})})
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()})
+  /* Respaldo para teléfonos: si la mascota o la imagen recibe el toque,
+     detectamos igualmente las dos zonas del botón Cómo llegar. */
+  document.addEventListener('click',function(e){
+    var c=document.querySelector('.canvas');if(!c)return;
+    var r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+    if(x>=.10&&x<=.90&&y>=.70&&y<=.83){
+      e.preventDefault();e.stopPropagation();openModal(x<.43?'frontModal':'mapModal');
+    }
+  },true);
 })();
 </script>
 '''
