@@ -104,6 +104,12 @@ def index():
 def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
+    # Agregar la tarjeta Polaroid al carrusel sin depender de una plantilla pesada.
+    if 'id="precios-polaroid"' not in html:
+        polaroid_card = '<button class="price-card polaroid-card" type="button" onclick="document.getElementById(\'precios-polaroid\').classList.add(\'open\')"><div class="price-icon orange">🖼️</div><div class="price-info"><h2>Fotos Polaroid</h2><strong>Ver precios</strong><small>individual · packs</small></div></button>'
+        html = html.replace('<article class="price-card"><div class="price-icon yellow">🧊</div>', polaroid_card + '<article class="price-card"><div class="price-icon yellow">🧊</div>', 1)
+        polaroid_modal = '<div class="web-modal" id="precios-polaroid" role="dialog" aria-modal="true" aria-label="Precios Fotos Polaroid"><div class="web-box"><div class="web-head"><h2>Precios Fotos Polaroid</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-polaroid\').classList.remove(\'open\')">×</button></div><p class="web-sub">Fotos estilo Polaroid Mitsubishi. Medida final: 8,5×10,5 cm.</p><div class="inkjet-prices"><div><span>Individual</span><b>$3.000</b></div><div><span>Pack de 4</span><b>$10.000</b></div><div><span>Pack de 10</span><b>$22.000</b></div></div></div></div>'
+        html = html.replace('</body>', polaroid_modal + '</body>', 1)
     # Rulito: mascota animada con globo de bienvenida y acceso a todos los precios.
     animated_mascot = '''<div class="rulito-widget" aria-label="Rulito, asistente de Imprenta Ruiz">
       <div class="rulito-bubble">
