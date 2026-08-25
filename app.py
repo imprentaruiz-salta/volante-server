@@ -162,6 +162,7 @@ def imprenta_ruiz():
       <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$4.000</b> · 13×18: <b>$5.000</b></p><p>15×15: <b>$5.000</b> · 15×20: <b>$6.000</b></p><p>20×30: <b>$14.000</b> · A4: <b>$12.000</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$3.000</b> · 13×18: <b>$3.500</b></p><p>15×15: <b>$3.500</b> · 15×20: <b>$4.000</b></p><p>A4: <b>$6.000</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$4.500</b> · 15×15: <b>$5.500</b></p><p>15×20: <b>$7.000</b></p></div>
+      <div class="rulito-price-group"><h3>Polaroid Mitsubishi</h3><p>Individual: <b>$3.000</b></p><p>Pack de 4: <b>$10.000</b></p><p>Pack de 10: <b>$22.000</b></p><p>Medida: 8,5×10,5 cm</p></div>
       <div class="rulito-price-group"><h3>Almanaques</h3><p>5×8: <b>$2.000</b> · 9×6: <b>$2.500</b></p><p>A4: <b>$6.000</b> · A3: <b>$12.000</b> · A3+: <b>$15.000</b></p></div>
       <div class="rulito-price-group"><h3>Otros trabajos</h3><p>Plastificado: consultar brillo o mate.</p><p>Diseños web: consultar según proyecto.</p></div>
     </div>
@@ -194,6 +195,9 @@ def imprenta_ruiz():
     '📷 Kodak 10×15: $4.500',
     '📷 Kodak 15×15: $5.500',
     '📷 Kodak 15×20: $7.000',
+    '🖼️ Polaroid individual: $3.000 · 8,5×10,5 cm',
+    '🖼️ Polaroid pack de 4: $10.000',
+    '🖼️ Polaroid pack de 10: $22.000',
     '📅 Almanaque 5×8: $2.000',
     '📅 Almanaque 9×6: $2.500',
     '📅 Almanaque A4: $6.000',
