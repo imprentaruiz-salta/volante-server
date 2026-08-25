@@ -104,10 +104,19 @@ def index():
 def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
-    # Agregar la tarjeta Polaroid al carrusel sin depender de una plantilla pesada.
+    # Carrusel de tres páginas: todas las tarjetas conservan el mismo tamaño.
+    # La segunda página reúne las fotos y la tercera los servicios restantes.
+    track_start = html.find('<div class="price-track">')
+    track_end_marker = '</div></div><div class="dots"><i></i><i></i></div>'
+    track_end = html.find(track_end_marker, track_start)
+    if track_start >= 0 and track_end >= 0:
+        track_end += len(track_end_marker)
+        three_slide_carousel = '''<div class="price-track" data-three-slides="polaroid">
+<div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$900</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$700</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$2.500</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$6.000</strong><small>por hoja</small></div></article></div>
+<div class="price-slide"><button class="price-card mitsubishi-card" type="button" onclick="document.getElementById('precios-mitsubishi').classList.add('open')"><div class="price-icon purple">🖼️</div><div class="price-info"><h2>Fotos Mitsubishi</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card inkjet-card" type="button" onclick="document.getElementById('precios-inkjet').classList.add('open')"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Fotos Inkjet</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card kodak-card" type="button" onclick="document.getElementById('precios-kodak').classList.add('open')"><div class="price-icon pink">📷</div><div class="price-info"><h2>Fotos Kodak</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card polaroid-card" type="button" onclick="document.getElementById('precios-polaroid').classList.add('open')"><div class="price-icon orange">🖼️</div><div class="price-info"><h2>Fotos Polaroid</h2><strong>Ver precios</strong><small>individual · packs</small></div></button></div>
+<div class="price-slide"><button class="price-card web-work-card" type="button" onclick="document.getElementById('trabajos-web').classList.add('open')"><div class="price-icon blue">🌐</div><div class="price-info"><h2>Trabajos web interactivos</h2><strong>Ver sitios</strong><small>Fleming · Abigail</small></div></button><article class="price-card"><div class="price-icon yellow">🧊</div><div class="price-info"><h2>Plastificado</h2><strong>Consultar</strong><small>brillo o mate</small></div></article><button class="price-card almanaques-card" type="button" onclick="document.getElementById('precios-almanaques').classList.add('open')"><div class="price-icon orange">📅</div><div class="price-info"><h2>Almanaques</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button></div></div><div class="dots"><i></i><i></i><i></i></div>'''
+        html = html[:track_start] + three_slide_carousel + html[track_end:]
     if 'id="precios-polaroid"' not in html:
-        polaroid_card = '<button class="price-card polaroid-card" type="button" onclick="document.getElementById(\'precios-polaroid\').classList.add(\'open\')"><div class="price-icon orange">🖼️</div><div class="price-info"><h2>Fotos Polaroid</h2><strong>Ver precios</strong><small>individual · packs</small></div></button>'
-        html = html.replace('<article class="price-card"><div class="price-icon yellow">🧊</div>', polaroid_card + '<article class="price-card"><div class="price-icon yellow">🧊</div>', 1)
         polaroid_modal = '<div class="web-modal" id="precios-polaroid" role="dialog" aria-modal="true" aria-label="Precios Fotos Polaroid"><div class="web-box"><div class="web-head"><h2>Precios Fotos Polaroid</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-polaroid\').classList.remove(\'open\')">×</button></div><p class="web-sub">Fotos estilo Polaroid Mitsubishi. Medida final: 8,5×10,5 cm.</p><div class="inkjet-prices"><div><span>Individual</span><b>$3.000</b></div><div><span>Pack de 4</span><b>$10.000</b></div><div><span>Pack de 10</span><b>$22.000</b></div></div></div></div>'
         html = html.replace('</body>', polaroid_modal + '</body>', 1)
     # Rulito: mascota animada con globo de bienvenida y acceso a todos los precios.
@@ -130,6 +139,9 @@ def imprenta_ruiz():
     html = html.replace(location_anchor, location_buttons, 1)
     location_ui = '''
 <style>
+.price-track[data-three-slides="polaroid"]{width:300%;animation:price-slide-three 24s ease-in-out infinite}
+.price-track[data-three-slides="polaroid"] .price-slide{width:33.333333%;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+@keyframes price-slide-three{0%,24%{transform:translateX(0)}33%,57%{transform:translateX(-33.333333%)}66%,90%{transform:translateX(-66.666666%)}100%{transform:translateX(0)}}
 .rulito-widget{position:fixed;right:6px;bottom:96px;z-index:25;width:190px;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none}
 .rulito-widget .mascota-float{position:static;width:145px;max-height:205px;pointer-events:none;animation:robot-float 3.2s ease-in-out infinite}
 .rulito-bubble{position:relative;width:150px;min-height:44px;margin:0 3px 7px;padding:9px 9px 8px;border:2px solid #202020;border-radius:50%;background:#fff;box-shadow:4px 5px 0 #202020,0 6px 10px rgba(0,0,0,.16);color:#111;font:700 10px/1.2 Arial,sans-serif;text-align:center;pointer-events:auto}
