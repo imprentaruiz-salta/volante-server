@@ -114,7 +114,7 @@ def imprenta_ruiz():
         three_slide_carousel = '''<div class="price-track" data-three-slides="polaroid">
 <div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$900</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$700</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$2.500</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$6.000</strong><small>por hoja</small></div></article></div>
 <div class="price-slide"><button class="price-card mitsubishi-card" type="button" onclick="document.getElementById('precios-mitsubishi').classList.add('open')"><div class="price-icon purple">🖼️</div><div class="price-info"><h2>Fotos Mitsubishi</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card inkjet-card" type="button" onclick="document.getElementById('precios-inkjet').classList.add('open')"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Fotos Inkjet</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card kodak-card" type="button" onclick="document.getElementById('precios-kodak').classList.add('open')"><div class="price-icon pink">📷</div><div class="price-info"><h2>Fotos Kodak</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card polaroid-card" type="button" onclick="document.getElementById('precios-polaroid').classList.add('open')"><div class="price-icon orange">🖼️</div><div class="price-info"><h2>Fotos Polaroid</h2><strong>Ver precios</strong><small>individual · packs</small></div></button></div>
-<div class="price-slide"><button class="price-card web-work-card" type="button" onclick="document.getElementById('trabajos-web').classList.add('open')"><div class="price-icon blue">🌐</div><div class="price-info"><h2>Trabajos web interactivos</h2><strong>Ver sitios</strong><small>Fleming · Abigail</small></div></button><button class="price-card plastificado-card" type="button" onclick="document.getElementById('precios-plastificado').classList.add('open')"><div class="price-icon yellow">🧊</div><div class="price-info"><h2>Plastificado</h2><strong>Ver precios</strong><small>A4 · Oficio · A3</small></div></button><button class="price-card almanaques-card" type="button" onclick="document.getElementById('precios-almanaques').classList.add('open')"><div class="price-icon orange">📅</div><div class="price-info"><h2>Almanaques</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button></div></div><div class="dots"><i></i><i></i><i></i></div>'''
+<div class="price-slide"><button class="price-card web-work-card" type="button" onclick="document.getElementById('trabajos-web').classList.add('open')"><div class="price-icon blue">🌐</div><div class="price-info"><h2>Trabajos web interactivos</h2><strong>Ver sitios</strong><small>Fleming · Abigail</small></div></button><button class="price-card plastificado-card" type="button" onclick="document.getElementById('precios-plastificado').classList.add('open')"><div class="price-icon yellow">🧊</div><div class="price-info"><h2>Plastificado</h2><strong>Ver precios</strong><small>A4 · Oficio · A3</small></div></button><button class="price-card almanaques-card" type="button" onclick="document.getElementById('precios-almanaques').classList.add('open')"><div class="price-icon orange">📅</div><div class="price-info"><h2>Almanaques</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card tira-card" type="button" onclick="document.getElementById('precios-tira').classList.add('open')"><div class="price-icon pink">🎞️</div><div class="price-info"><h2>Tira de 4 fotos</h2><strong>$6.000</strong><small>7×19 cm vertical</small></div></button></div></div><div class="dots"><i></i><i></i><i></i></div>'''
         html = html[:track_start] + three_slide_carousel + html[track_end:]
     if 'id="precios-polaroid"' not in html:
         polaroid_modal = '<div class="web-modal" id="precios-polaroid" role="dialog" aria-modal="true" aria-label="Precios Fotos Polaroid"><div class="web-box"><div class="web-head"><h2>Precios Fotos Polaroid</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-polaroid\').classList.remove(\'open\')">×</button></div><p class="web-sub">Fotos estilo Polaroid Mitsubishi. Medida final: 8,5×10,5 cm.</p><div class="inkjet-prices"><div><span>Individual</span><b>$3.000</b></div><div><span>Pack de 4</span><b>$10.000</b></div><div><span>Pack de 10</span><b>$22.000</b></div></div></div></div>'
@@ -122,6 +122,9 @@ def imprenta_ruiz():
     if 'id="precios-plastificado"' not in html:
         plastificado_modal = '<div class="web-modal" id="precios-plastificado" role="dialog" aria-modal="true" aria-label="Precios de plastificado"><div class="web-box"><div class="web-head"><h2>Precios de plastificado</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-plastificado\').classList.remove(\'open\')">×</button></div><p class="web-sub">Plastificado en caliente. Valores por hoja, llevando el cliente la impresión lista.</p><div class="inkjet-prices"><div><span>A4</span><b>$3.000</b></div><div><span>Oficio</span><b>$4.000</b></div><div><span>A3</span><b>$6.000</b></div></div></div></div>'
         html = html.replace('</body>', plastificado_modal + '</body>', 1)
+    if 'id="precios-tira"' not in html:
+        tira_modal = '<div class="web-modal" id="precios-tira" role="dialog" aria-modal="true" aria-label="Precio de tira vertical de 4 fotos"><div class="web-box"><div class="web-head"><h2>Tira vertical de 4 fotos</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tira\').classList.remove(\'open\')">×</button></div><p class="web-sub">Cuatro fotos en una tira vertical tipo cabina. Medida aproximada: 7×19 cm.</p><div class="inkjet-prices"><div><span>1 tira</span><b>$6.000</b></div><div><span>2 tiras</span><b>$10.000</b></div><div><span>Con diseño especial</span><b>$7.000</b></div></div></div></div>'
+        html = html.replace('</body>', tira_modal + '</body>', 1)
     # Rulito: mascota animada con globo de bienvenida y acceso a todos los precios.
     animated_mascot = '''<div class="rulito-widget" aria-label="Rulito, asistente de Imprenta Ruiz">
       <div class="rulito-bubble">
@@ -142,6 +145,7 @@ def imprenta_ruiz():
     html = html.replace(location_anchor, location_buttons, 1)
     location_ui = '''
 <style>
+.plastificado-card,.tira-card{cursor:pointer;text-align:left;padding:0}
 .price-track[data-three-slides="polaroid"]{width:300%;animation:price-slide-three 24s ease-in-out infinite}
 .price-track[data-three-slides="polaroid"] .price-slide{width:33.333333%;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
 @keyframes price-slide-three{0%,24%{transform:translateX(0)}33%,57%{transform:translateX(-33.333333%)}66%,90%{transform:translateX(-66.666666%)}100%{transform:translateX(0)}}
@@ -185,7 +189,7 @@ def imprenta_ruiz():
       <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$4.500</b> · 15×15: <b>$5.500</b></p><p>15×20: <b>$7.000</b></p></div>
       <div class="rulito-price-group"><h3>Polaroid Mitsubishi</h3><p>Individual: <b>$3.000</b></p><p>Pack de 4: <b>$10.000</b></p><p>Pack de 10: <b>$22.000</b></p><p>Medida: 8,5×10,5 cm</p></div>
       <div class="rulito-price-group"><h3>Almanaques</h3><p>5×8: <b>$2.000</b> · 9×6: <b>$2.500</b></p><p>A4: <b>$6.000</b> · A3: <b>$12.000</b> · A3+: <b>$15.000</b></p></div>
-      <div class="rulito-price-group"><h3>Plastificado</h3><p>A4: <b>$3.000</b></p><p>Oficio: <b>$4.000</b></p><p>A3: <b>$6.000</b></p><p>Diseños web: consultar según proyecto.</p></div>
+      <div class="rulito-price-group"><h3>Plastificado</h3><p>A4: <b>$3.000</b></p><p>Oficio: <b>$4.000</b></p><p>A3: <b>$6.000</b></p><p>Tira vertical de 4 fotos: <b>$6.000</b> · 7×19 cm</p><p>Diseños web: consultar según proyecto.</p></div>
     </div>
   </div>
 </div>
@@ -227,6 +231,7 @@ def imprenta_ruiz():
     '🧊 Plastificado A4: $3.000',
     '🧊 Plastificado Oficio: $4.000',
     '🧊 Plastificado A3: $6.000',
+    '🎞️ Tira vertical de 4 fotos: $6.000 · 7×19 cm',
     '💻 Diseños web: consultar'
   ];
   var rulitoIndex=0;
