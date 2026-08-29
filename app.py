@@ -857,7 +857,7 @@ def carnet_procesar():
 
 
 # ---------------------------------------------------------------------------
-# Arranque
+@app.route("/figuritas") def figuritas_page():     return render_template("figuritas.html", imprenta_wpp=IMPRENTA_WHATSAPP)  app.add_url_rule("/figuritas", "figuritas_page", lambda: render_template("figuritas.html", imprenta_wpp=IMPRENTA_WHATSAPP)) # Arranque
 # ---------------------------------------------------------------------------
 init_pedidos_db()
 
