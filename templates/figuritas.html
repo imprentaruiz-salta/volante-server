@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Figuritas Ruiz — Mundial 2026</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: #0a0a14;
+  color: #eee;
+  font-family: 'Arial', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 900;
+  color: #ffd700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(255,215,0,0.6);
+  margin-bottom: 4px;
+  text-align: center;
+}
+.subtitulo {
+  font-size: 11px;
+  color: rgba(255,215,0,0.4);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.layout {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 1100px;
+}
+
+/* ══ PANEL CONTROLES ══ */
+.panel {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 20px;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.seccion {
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  padding-bottom: 14px;
+}
+.seccion:last-child { border-bottom: none; padding-bottom: 0; }
+
+.sec-titulo {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: rgba(255,215,0,0.7);
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+input[type=text], input[type=number], select, textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: white;
+  padding: 8px 12px;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input[type=text]:focus, input[type=number]:focus, select:focus {
+  border-color: rgba(255,215,0,0.5);
+}
+select option { background: #1a1a2e; }
+
+/* Color picker row */
+.color-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.color-swatch {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.15s;
+  flex-shrink: 0;
+}
+.color-swatch:hover { transform: scale(1.15); }
+.color-swatch.activo { border-color: white; transform: scale(1.1); }
+
+input[type=color] {
+  width: 36px; height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: transparent;
+  cursor: pointer;
+  padding: 2px;
+}
+
+/* Upload foto */
+.upload-area {
+  border: 2px dashed rgba(255,215,0,0.35);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+.upload-area:hover {
+  border-color: rgba(255,215,0,0.7);
+  background: rgba(255,215,0,0.04);
+}
+.upload-area input[type=file] {
+  position: absolute; inset: 0;
+  opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.upload-icon { font-size: 28px; margin-bottom: 6px; }
+.upload-txt { font-size: 12px; color: rgba(255,255,255,0.45); }
+
+/* Camiseta selector */
+.camiseta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+.cam-opt {
+  border-radius: 8px;
+  height: 44px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.cam-opt:hover { transform: scale(1.08); }
+.cam-opt.activo { border-color: white; }
+
+/* Botones acción */
+.btn {
+  padding: 11px 0;
+  border-radius: 10px;
+  border: none;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.btn:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-print {
+  background: linear-gradient(135deg,#ffd700,#ffaa00);
+  color: #0a0a14;
+}
+.btn-reset {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.12);
+  font-size: 11px;
+}
+.btn-secondary {
+  background: linear-gradient(135deg,#20c997,#0d9488);
+  color: #061313;
+}
+.btn-whatsapp {
+  background: #25d366;
+  color: #052e16;
+}
+.acciones-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.acciones-grid .btn { font-size: 10px; letter-spacing: .8px; }
+.ayuda {
+  font-size: 10px;
+  line-height: 1.45;
+  color: rgba(255,255,255,.42);
+  margin-top: 8px;
+}
+
+/* ══ PREVIEW FIGURITA ══ */
+.preview-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.preview-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+/* Figurita — proporción real 50×65mm a pantalla */
+.figurita {
+  width: 220px;
+  height: 286px;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.15),
+    0 8px 40px rgba(0,0,0,0.7),
+    0 0 60px rgba(0,0,0,0.4);
+  flex-shrink: 0;
+  cursor: default;
+  user-select: none;
+}
+
+/* Fondo degradado (color principal + secundario) */
+.fig-fondo {
+  position: absolute;
+  inset: 0;
+  transition: background 0.3s;
+}
+
+/* Patrón de fondo (diagonal, puntos, etc.) */
+.fig-patron {
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  transition: all 0.3s;
+}
+
+/* Banda superior con nombre del equipo */
+.fig-banda-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  overflow: hidden;
+}
+.fig-equipo-txt {
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+}
+
+/* Número (grande, esquina) */
+.fig-numero {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  font-size: 28px;
+  font-weight: 900;
+  z-index: 6;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+  line-height: 1;
+}
+
+/* Zona foto jugador */
+.fig-foto-zona {
+  position: absolute;
+  top: 32px;
+  left: 0; right: 0;
+  height: 160px;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.fig-foto-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* Camiseta SVG superpuesta sobre foto */
+.fig-camiseta-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 85px;
+  z-index: 4;
+  opacity: 0.82;
+}
+
+/* Placeholder si no hay foto */
+.fig-foto-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60px;
+  opacity: 0.25;
+}
+
+/* Banda inferior — datos jugador */
+.fig-banda-bot {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 94px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px 10px;
+  z-index: 5;
+}
+
+.fig-nombre {
+  font-size: 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  text-align: center;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+  line-height: 1.1;
+  margin-bottom: 3px;
+}
+.fig-apellido {
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.9);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.fig-posicion {
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  text-align: center;
+  opacity: 0.8;
+  padding: 2px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+/* Estrellas decorativas */
+.fig-estrellas {
+  position: absolute;
+  bottom: 92px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  z-index: 6;
+}
+.fig-estrellas span {
+  font-size: 8px;
+  text-shadow: 0 0 4px rgba(255,215,0,0.8);
+}
+
+/* Brillo esquina */
+.fig-brillo {
+  position: absolute;
+  top: -40px; left: -40px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Borde dorado */
+.fig-borde {
+  position: absolute;
+  inset: 3px;
+  border-radius: 9px;
+  border: 1.5px solid rgba(255,215,0,0.4);
+  z-index: 7;
+  pointer-events: none;
+}
+
+/* Medidas reales info */
+.medidas-info {
+  background: rgba(255,215,0,0.06);
+  border: 1px solid rgba(255,215,0,0.2);
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 11px;
+  color: rgba(255,215,0,0.6);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Grilla impresión (múltiples figuritas) */
+.grilla-preview {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  margin-top: 8px;
+}
+.grilla-mini {
+  border-radius: 4px;
+  height: 60px;
+  opacity: 0.5;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+/* Impresión */
+@media print {
+  body { background: white; padding: 0; }
+  .panel, .preview-label, .medidas-info, .btn, h1, .subtitulo { display: none !important; }
+  .layout { gap: 0; }
+  .preview-wrap { gap: 0; }
+  .figurita {
+    width: 189px;   /* 50mm a 96dpi */
+    height: 245px;  /* 65mm a 96dpi */
+    box-shadow: none;
+    border-radius: 4px;
+  }
+}
+</style>
+</head>
+<body>
+
+<h1>⚽ Hacé tu figurita</h1>
+<div class="subtitulo">Imprenta Ruiz · Salta · Mundial 2026</div>
+
+<div class="layout">
+
+  <!-- ══ PANEL IZQUIERDO ══ -->
+  <div class="panel">
+
+    <!-- FOTO -->
+    <div class="seccion">
+      <div class="sec-titulo">📸 Foto del jugador</div>
+      <div class="upload-area" id="uploadArea">
+        <input type="file" id="inputFoto" accept="image/*">
+        <div class="upload-icon">📷</div>
+        <div class="upload-txt" id="uploadTxt">Tocá para subir una foto</div>
+      </div>
+    </div>
+
+    <!-- DATOS JUGADOR -->
+    <div class="seccion">
+      <div class="sec-titulo">👤 Datos del jugador</div>
+      <label>Nombre</label>
+      <input type="text" id="inNombre" placeholder="Lionel" maxlength="18">
+      <br><br>
+      <label>Apellido</label>
+      <input type="text" id="inApellido" placeholder="MESSI" maxlength="14">
+      <br><br>
+      <label>Número</label>
+      <input type="number" id="inNumero" value="10" min="1" max="99">
+      <br><br>
+      <label>Posición</label>
+      <select id="inPosicion">
+        <option>Arquero</option>
+        <option>Defensor</option>
+        <option>Lateral Derecho</option>
+        <option>Lateral Izquierdo</option>
+        <option>Volante</option>
+        <option>Mediocampista</option>
+        <option selected>Delantero</option>
+        <option>Capitán</option>
+      </select>
+      <br><br>
+      <label>Nombre del equipo</label>
+      <input type="text" id="inEquipo" placeholder="ARGENTINA" maxlength="20">
+    </div>
+
+    <!-- COLORES -->
+    <div class="seccion">
+      <div class="sec-titulo">🎨 Colores del fondo</div>
+      <label>Color principal</label>
+      <div class="color-row" id="paleta1">
+        <div class="color-swatch activo" style="background:#1a3cc8" data-color="#1a3cc8" data-target="1"></div>
+        <div class="color-swatch" style="background:#c8001a" data-color="#c8001a" data-target="1"></div>
+        <div class="color-swatch" style="background:#1ac83c" data-color="#1ac83c" data-target="1"></div>
+        <div class="color-swatch" style="background:#c8a000" data-color="#c8a000" data-target="1"></div>
+        <div class="color-swatch" style="background:#8b00c8" data-color="#8b00c8" data-target="1"></div>
+        <div class="color-swatch" style="background:#000000" data-color="#000000" data-target="1"></div>
+        <div class="color-swatch" style="background:#ffffff;border:1px solid #555" data-color="#ffffff" data-target="1"></div>
+        <input type="color" id="colorPersonal1" value="#1a3cc8" title="Color personalizado">
+      </div>
+      <br>
+      <label>Color secundario (banda)</label>
+      <div class="color-row" id="paleta2">
+        <div class="color-swatch activo" style="background:#ffffff;border:1px solid #555" data-color="#ffffff" data-target="2"></div>
+        <div class="color-swatch" style="background:#ffd700" data-color="#ffd700" data-target="2"></div>
+        <div class="color-swatch" style="background:#1a3cc8" data-color="#1a3cc8" data-target="2"></div>
+        <div class="color-swatch" style="background:#c8001a" data-color="#c8001a" data-target="2"></div>
+        <div class="color-swatch" style="background:#111111" data-color="#111111" data-target="2"></div>
+        <div class="color-swatch" style="background:#1ac83c" data-color="#1ac83c" data-target="2"></div>
+        <input type="color" id="colorPersonal2" value="#ffffff" title="Color personalizado">
+      </div>
+      <br>
+      <label>Patrón de fondo</label>
+      <select id="inPatron">
+        <option value="none">Sin patrón</option>
+        <option value="diagonal">Diagonal</option>
+        <option value="puntos">Puntos</option>
+        <option value="cuadros">Cuadros</option>
+        <option value="rayas">Rayas horizontales</option>
+      </select>
+    </div>
+
+    <!-- CAMISETA -->
+    <div class="seccion">
+      <div class="sec-titulo">👕 Estilo de camiseta</div>
+      <div class="camiseta-grid" id="camisetaGrid">
+        <div class="cam-opt activo" data-cam="clasica" title="Clásica" style="background:linear-gradient(160deg,#1a3cc8,#0d1f6a)">⚽</div>
+        <div class="cam-opt" data-cam="rayas_v" title="Rayas verticales" style="background:repeating-linear-gradient(90deg,#1a3cc8 0,#1a3cc8 10px,white 10px,white 20px)"></div>
+        <div class="cam-opt" data-cam="rayas_h" title="Rayas horizontales" style="background:repeating-linear-gradient(0deg,#1a3cc8 0,#1a3cc8 8px,white 8px,white 16px)"></div>
+        <div class="cam-opt" data-cam="bicolor" title="Bicolor" style="background:linear-gradient(90deg,#1a3cc8 50%,#c8001a 50%)"></div>
+        <div class="cam-opt" data-cam="diagonal" title="Diagonal" style="background:linear-gradient(45deg,#1a3cc8 50%,white 50%)"></div>
+        <div class="cam-opt" data-cam="banda" title="Banda central" style="background:linear-gradient(90deg,#1a3cc8 30%,white 30%,white 70%,#1a3cc8 70%)"></div>
+        <div class="cam-opt" data-cam="cuello_v" title="Cuello V" style="background:#1a3cc8">V</div>
+        <div class="cam-opt" data-cam="alternativa" title="Alternativa oscura" style="background:linear-gradient(160deg,#111,#333)">★</div>
+      </div>
+    </div>
+
+    <!-- ESTRELLAS -->
+    <div class="seccion">
+      <div class="sec-titulo">⭐ Estrellas del equipo</div>
+      <select id="inEstrellas">
+        <option value="0">Sin estrellas</option>
+        <option value="1">★ 1 estrella</option>
+        <option value="2">★★ 2 estrellas</option>
+        <option value="3" selected>★★★ 3 estrellas</option>
+        <option value="4">★★★★ 4 estrellas</option>
+        <option value="5">★★★★★ 5 estrellas</option>
+      </select>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="seccion">
+      <div class="sec-titulo">🖨️ Imprimir</div>
+      <div class="medidas-info">Figurita real: <strong>50 × 65 mm</strong> · Impresión directa en A4/A3</div>
+      <br>
+      <button class="btn btn-print" onclick="descargarPNG()">⬇️ Descargar figurita</button>
+      <br><br>
+      <div class="acciones-grid">
+        <button class="btn btn-secondary" onclick="compartirFigurita()">↗️ Compartir</button>
+        <button class="btn btn-whatsapp" onclick="pedirImpresion()">💬 Pedir copias</button>
+      </div>
+      <p class="ayuda">La descarga queda lista para compartir. Para imprimir varias en A4, elegí “Pedir copias” o usá la vista de impresión.</p>
+      <button class="btn btn-reset" onclick="imprimirFigurita()">🖨️ Vista de impresión</button>
+      <br>
+      <button class="btn btn-reset" onclick="resetear()">↺ Resetear todo</button>
+    </div>
+
+  </div>
+
+  <!-- ══ PREVIEW ══ -->
+  <div class="preview-wrap">
+    <div class="preview-label">Vista previa en tiempo real</div>
+
+    <div class="figurita" id="figurita">
+      <div class="fig-fondo" id="figFondo"></div>
+      <div class="fig-patron" id="figPatron"></div>
+      <div class="fig-brillo"></div>
+
+      <div class="fig-banda-top" id="figBandaTop">
+        <span class="fig-equipo-txt" id="figEquipoTxt">ARGENTINA</span>
+      </div>
+
+      <div class="fig-numero" id="figNumero">10</div>
+
+      <div class="fig-foto-zona" id="figFotoZona">
+        <div class="fig-foto-placeholder" id="figPlaceholder">👤</div>
+        <img class="fig-foto-img" id="figFotoImg" style="display:none" src="" alt="">
+        <svg class="fig-camiseta-overlay" id="figCamiseta" viewBox="0 0 120 85" xmlns="http://www.w3.org/2000/svg">
+          <!-- Camiseta estilo futbol -->
+          <defs>
+            <linearGradient id="camGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop id="camStop1" offset="0%" stop-color="#1a3cc8"/>
+              <stop id="camStop2" offset="100%" stop-color="#0d1f6a"/>
+            </linearGradient>
+          </defs>
+          <!-- Cuerpo camiseta -->
+          <path id="camBody" d="M 30 20 L 10 35 L 22 40 L 20 80 L 100 80 L 98 40 L 110 35 L 90 20 L 75 10 Q 60 18 45 10 Z"
+            fill="url(#camGrad)" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+          <!-- Cuello -->
+          <path id="camCuello" d="M 45 10 Q 60 22 75 10 Q 68 5 60 6 Q 52 5 45 10 Z"
+            fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+          <!-- Mangas sombra -->
+          <path d="M 10 35 L 22 40 L 30 20 L 20 18 Z" fill="rgba(0,0,0,0.15)"/>
+          <path d="M 110 35 L 98 40 L 90 20 L 100 18 Z" fill="rgba(0,0,0,0.15)"/>
+          <!-- Número en camiseta -->
+          <text id="camNumTxt" x="60" y="58" text-anchor="middle" font-size="22" font-weight="900"
+            fill="rgba(255,255,255,0.9)" font-family="Arial"
+            text-shadow="1px 1px 2px rgba(0,0,0,0.5)">10</text>
+        </svg>
+      </div>
+
+      <div class="fig-estrellas" id="figEstrellas">
+        <span>★</span><span>★</span><span>★</span>
+      </div>
+
+      <div class="fig-banda-bot" id="figBandaBot">
+        <div class="fig-nombre" id="figNombre">Lionel</div>
+        <div class="fig-apellido" id="figApellido">MESSI</div>
+        <div class="fig-posicion" id="figPosicion">Delantero</div>
+      </div>
+
+      <div class="fig-borde"></div>
+    </div>
+
+    <div class="medidas-info">
+      Tamaño de impresión: <strong>50 × 65 mm</strong>
+    </div>
+
+    <div style="font-size:10px;color:rgba(255,255,255,0.2);text-align:center;margin-top:4px;">
+      🖨️ Imprenta Ruiz · Chacabuco 470, Salta · 387-212-9700
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ══ ESTADO ══
+const estado = {
+  color1: '#1a3cc8',
+  color2: '#ffffff',
+  patron: 'none',
+  camiseta: 'clasica',
+  foto: null
+};
+
+const CAMPOS = ['inNombre','inApellido','inNumero','inEquipo','inPosicion','inEstrellas','inPatron'];
+function guardarBorrador() {
+  try {
+    const datos = {};
+    CAMPOS.forEach(id => datos[id] = document.getElementById(id).value);
+    datos.color1 = estado.color1; datos.color2 = estado.color2; datos.camiseta = estado.camiseta;
+    localStorage.setItem('figuritasRuizBorrador', JSON.stringify(datos));
+  } catch (_) {}
+}
+function recuperarBorrador() {
+  try {
+    const datos = JSON.parse(localStorage.getItem('figuritasRuizBorrador') || 'null');
+    if (!datos) return;
+    CAMPOS.forEach(id => { if (datos[id] !== undefined) document.getElementById(id).value = datos[id]; });
+    if (datos.color1) estado.color1 = datos.color1;
+    if (datos.color2) estado.color2 = datos.color2;
+    if (datos.camiseta) estado.camiseta = datos.camiseta;
+  } catch (_) {}
+}
+
+// ══ ELEMENTOS ══
+const figFondo    = document.getElementById('figFondo');
+const figPatron   = document.getElementById('figPatron');
+const figBandaTop = document.getElementById('figBandaTop');
+const figBandaBot = document.getElementById('figBandaBot');
+const figNumero   = document.getElementById('figNumero');
+const figNombre   = document.getElementById('figNombre');
+const figApellido = document.getElementById('figApellido');
+const figEquipoTxt= document.getElementById('figEquipoTxt');
+const figPosicion = document.getElementById('figPosicion');
+const figEstrellas= document.getElementById('figEstrellas');
+const figFotoImg  = document.getElementById('figFotoImg');
+const figPlaceholder= document.getElementById('figPlaceholder');
+const camBody     = document.getElementById('camBody');
+const camStop1    = document.getElementById('camStop1');
+const camStop2    = document.getElementById('camStop2');
+const camNumTxt   = document.getElementById('camNumTxt');
+const camCuello   = document.getElementById('camCuello');
+
+// ══ ACTUALIZAR PREVIEW ══
+function actualizar() {
+  const c1 = estado.color1;
+  const c2 = estado.color2;
+  const num = document.getElementById('inNumero').value || '10';
+  const nombre = document.getElementById('inNombre').value || 'Nombre';
+  const apellido = document.getElementById('inApellido').value || 'APELLIDO';
+  const equipo = document.getElementById('inEquipo').value || 'EQUIPO';
+  const posicion = document.getElementById('inPosicion').value;
+  const estrellas = parseInt(document.getElementById('inEstrellas').value);
+  const patron = document.getElementById('inPatron').value;
+
+  // Fondo
+  figFondo.style.background = `linear-gradient(160deg, ${c1} 0%, ${darken(c1, 0.35)} 100%)`;
+
+  // Patrón
+  figPatron.style.background = getPatron(patron, c2);
+
+  // Bandas
+  figBandaTop.style.background = `linear-gradient(90deg, transparent, ${c2}22, ${c2}44, ${c2}22, transparent)`;
+  figBandaBot.style.background = `linear-gradient(0deg, ${darken(c1,0.5)}ee 0%, ${darken(c1,0.35)}cc 100%)`;
+
+  // Colores texto — contraste con c1
+  const textColor = luminance(c1) > 0.4 ? '#111' : '#fff';
+  const textColor2 = luminance(c2) > 0.4 ? '#111' : '#fff';
+
+  figNumero.style.color = c2;
+  figNombre.style.color = textColor;
+  figApellido.style.color = textColor;
+  figPosicion.style.color = textColor;
+  figPosicion.style.borderColor = `${textColor}44`;
+  figEquipoTxt.style.color = c2;
+
+  // Datos texto
+  figNumero.textContent = num;
+  figNombre.textContent = nombre;
+  figApellido.textContent = apellido.toUpperCase();
+  figEquipoTxt.textContent = equipo.toUpperCase();
+  figPosicion.textContent = posicion;
+  camNumTxt.textContent = num;
+
+  // Estrellas
+  figEstrellas.innerHTML = '★'.repeat(estrellas).split('').map(s =>
+    `<span style="color:#ffd700;text-shadow:0 0 6px rgba(255,215,0,0.9)">${s}</span>`
+  ).join('');
+
+  // Camiseta
+  actualizarCamiseta(c1, c2);
+}
+
+function getPatron(p, c2) {
+  switch(p) {
+    case 'diagonal': return `repeating-linear-gradient(45deg, ${c2} 0, ${c2} 1px, transparent 0, transparent 14px)`;
+    case 'puntos':   return `radial-gradient(circle, ${c2} 1px, transparent 1px) 0 0 / 12px 12px`;
+    case 'cuadros':  return `repeating-conic-gradient(${c2}18 0% 25%, transparent 0% 50%) 0 0 / 14px 14px`;
+    case 'rayas':    return `repeating-linear-gradient(0deg, ${c2} 0, ${c2} 1px, transparent 0, transparent 10px)`;
+    default: return 'none';
+  }
+}
+
+function actualizarCamiseta(c1, c2) {
+  const cam = estado.camiseta;
+  switch(cam) {
+    case 'clasica':
+      camStop1.setAttribute('stop-color', c1);
+      camStop2.setAttribute('stop-color', darken(c1, 0.3));
+      camBody.setAttribute('fill', 'url(#camGrad)');
+      break;
+    case 'rayas_v':
+      camBody.setAttribute('fill', c1);
+      camBody.setAttribute('fill-opacity','1');
+      // Simplificado: alternamos con patrón visual
+      camStop1.setAttribute('stop-color', c1);
+      camStop2.setAttribute('stop-color', c2);
+      break;
+    case 'bicolor':
+      camStop1.setAttribute('stop-color', c1);
+      camStop2.setAttribute('stop-color', c2);
+      break;
+    case 'alternativa':
+      camStop1.setAttribute('stop-color', '#1a1a1a');
+      camStop2.setAttribute('stop-color', '#333');
+      break;
+    default:
+      camStop1.setAttribute('stop-color', c1);
+      camStop2.setAttribute('stop-color', darken(c1,0.3));
+  }
+  const textC = luminance(c1) > 0.4 ? '#111' : '#fff';
+  camNumTxt.setAttribute('fill', textC);
+}
+
+// ══ UTILIDADES COLOR ══
+function darken(hex, amount) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = Math.max(0, (num >> 16) - Math.round(255 * amount));
+  const g = Math.max(0, ((num >> 8) & 0xff) - Math.round(255 * amount));
+  const b = Math.max(0, (num & 0xff) - Math.round(255 * amount));
+  return '#' + [r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function luminance(hex) {
+  const num = parseInt(hex.replace('#',''), 16);
+  const r = (num >> 16) / 255;
+  const g = ((num >> 8) & 0xff) / 255;
+  const b = (num & 0xff) / 255;
+  return 0.299*r + 0.587*g + 0.114*b;
+}
+
+// ══ FOTO ══
+document.getElementById('inputFoto').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    estado.foto = ev.target.result;
+    figFotoImg.src = ev.target.result;
+    figFotoImg.style.display = 'block';
+    figPlaceholder.style.display = 'none';
+    document.getElementById('uploadTxt').textContent = '✓ ' + file.name;
+    guardarBorrador();
+  };
+  reader.readAsDataURL(file);
+});
+
+// ══ PALETA COLORES ══
+document.querySelectorAll('.color-swatch').forEach(sw => {
+  sw.addEventListener('click', function() {
+    const target = this.dataset.target;
+    document.querySelectorAll(`.color-swatch[data-target="${target}"]`).forEach(s => s.classList.remove('activo'));
+    this.classList.add('activo');
+    if (target === '1') {
+      estado.color1 = this.dataset.color;
+      document.getElementById('colorPersonal1').value = this.dataset.color;
+    } else {
+      estado.color2 = this.dataset.color;
+      document.getElementById('colorPersonal2').value = this.dataset.color;
+    }
+    actualizar();
+  });
+});
+
+document.getElementById('colorPersonal1').addEventListener('input', function() {
+  estado.color1 = this.value;
+  document.querySelectorAll('.color-swatch[data-target="1"]').forEach(s => s.classList.remove('activo'));
+  actualizar();
+});
+document.getElementById('colorPersonal2').addEventListener('input', function() {
+  estado.color2 = this.value;
+  document.querySelectorAll('.color-swatch[data-target="2"]').forEach(s => s.classList.remove('activo'));
+  actualizar();
+});
+
+// ══ CAMISETA ══
+document.querySelectorAll('.cam-opt').forEach(opt => {
+  opt.addEventListener('click', function() {
+    document.querySelectorAll('.cam-opt').forEach(o => o.classList.remove('activo'));
+    this.classList.add('activo');
+    estado.camiseta = this.dataset.cam;
+    actualizar();
+  });
+});
+
+// ══ INPUTS ══
+CAMPOS.forEach(id => {
+  document.getElementById(id).addEventListener('input', () => { actualizar(); guardarBorrador(); });
+});
+
+// ══ EXPORTAR Y COMPARTIR ══
+function datosActuales() {
+  return {
+    nombre: document.getElementById('inNombre').value || 'Nombre',
+    apellido: (document.getElementById('inApellido').value || 'APELLIDO').toUpperCase(),
+    numero: document.getElementById('inNumero').value || '10',
+    equipo: (document.getElementById('inEquipo').value || 'EQUIPO').toUpperCase(),
+    posicion: document.getElementById('inPosicion').value || 'Delantero',
+    estrellas: parseInt(document.getElementById('inEstrellas').value || '3'),
+    color1: estado.color1,
+    color2: estado.color2,
+    patron: document.getElementById('inPatron').value,
+    foto: estado.foto
+  };
+}
+function escXML(value) {
+  return String(value).replace(/[<>&'"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c]));
+}
+function crearSVG(d) {
+  const estrellas = '★'.repeat(Math.max(0, Math.min(5, d.estrellas)));
+  const patron = d.patron === 'puntos'
+    ? `<pattern id="pat" width="32" height="32" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="3" fill="${d.color2}" opacity=".28"/></pattern>`
+    : d.patron === 'diagonal'
+    ? `<pattern id="pat" width="38" height="38" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="38" stroke="${d.color2}" stroke-width="3" opacity=".22"/></pattern>`
+    : `<pattern id="pat" width="42" height="42" patternUnits="userSpaceOnUse"><rect width="42" height="42" fill="transparent"/></pattern>`;
+  const foto = d.foto ? `<image href="${d.foto}" x="150" y="260" width="700" height="600" preserveAspectRatio="xMidYMid slice" clip-path="url(#fotoClip)"/>` : `<text x="500" y="570" text-anchor="middle" font-size="150">👤</text>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1300" viewBox="0 0 1000 1300">
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${d.color1}"/><stop offset="1" stop-color="${darken(d.color1,.35)}"/></linearGradient>
+      ${patron}
+      <clipPath id="fotoClip"><rect x="150" y="260" width="700" height="600" rx="24"/></clipPath>
+      <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="12" flood-opacity=".3"/></filter>
+    </defs>
+    <rect width="1000" height="1300" rx="42" fill="url(#bg)"/>
+    <rect width="1000" height="1300" rx="42" fill="url(#pat)"/>
+    <circle cx="100" cy="120" r="180" fill="#fff" opacity=".10"/>
+    <path d="M70 170 Q500 80 930 170" fill="none" stroke="${d.color2}" stroke-width="4" opacity=".55"/>
+    <text x="500" y="120" text-anchor="middle" fill="${d.color2}" font-family="Arial,sans-serif" font-weight="900" font-size="38" letter-spacing="5">${escXML(d.equipo)}</text>
+    <text x="500" y="180" text-anchor="middle" fill="${d.color2}" opacity=".8" font-family="Arial,sans-serif" font-size="24" letter-spacing="4">RUIZ · MUNDIAL 2026</text>
+    <rect x="125" y="235" width="750" height="650" rx="32" fill="#111" opacity=".18" filter="url(#shadow)"/>
+    ${foto}
+    <path d="M150 780 Q500 690 850 780 L850 890 L150 890Z" fill="${darken(d.color1,.5)}" opacity=".92"/>
+    <text x="500" y="838" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-weight="900" font-size="58">${escXML(d.nombre)}</text>
+    <text x="500" y="905" text-anchor="middle" fill="${d.color2}" font-family="Arial,sans-serif" font-weight="900" font-size="78" letter-spacing="3">${escXML(d.apellido)}</text>
+    <circle cx="150" cy="330" r="88" fill="${d.color2}" opacity=".96"/>
+    <text x="150" y="370" text-anchor="middle" fill="${luminance(d.color1) > .4 ? '#111' : d.color1}" font-family="Arial,sans-serif" font-weight="900" font-size="112">${escXML(d.numero)}</text>
+    <text x="500" y="960" text-anchor="middle" fill="#fff" opacity=".86" font-family="Arial,sans-serif" font-size="28" letter-spacing="3">${escXML(d.posicion.toUpperCase())}</text>
+    <text x="500" y="1030" text-anchor="middle" fill="#ffd700" font-family="Arial,sans-serif" font-weight="900" font-size="42" letter-spacing="8">${escXML(estrellas)}</text>
+    <rect x="46" y="46" width="908" height="1208" rx="30" fill="none" stroke="#ffd700" stroke-width="5" opacity=".72"/>
+    <text x="500" y="1170" text-anchor="middle" fill="#fff" opacity=".65" font-family="Arial,sans-serif" font-size="22" letter-spacing="3">IMPRENTA RUIZ · SALTA</text>
+  </svg>`;
+}
+function svgComoBlob(d) {
+  return new Promise((resolve, reject) => {
+    const svg = crearSVG(d);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1000; canvas.height = 1300;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('export')), 'image/png');
+    };
+    img.onerror = reject;
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+async function descargarPNG() {
+  try {
+    const blob = await svgComoBlob(datosActuales());
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `figurita-${datosActuales().apellido.toLowerCase().replace(/[^a-z0-9]+/g,'-') || 'ruiz'}.png`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (_) { alert('No se pudo preparar la descarga. Probá con “Vista de impresión”.'); }
+}
+async function compartirFigurita() {
+  try {
+    const d = datosActuales();
+    const blob = await svgComoBlob(d);
+    const file = new File([blob], 'mi-figurita-ruiz.png', {type:'image/png'});
+    if (navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}))) {
+      await navigator.share({title:'Mi figurita del Mundial 2026', text:`${d.nombre} ${d.apellido} · ${d.equipo}`, files:[file]});
+    } else {
+      await descargarPNG();
+      alert('La figurita se descargó. Desde ahí podés compartirla por WhatsApp.');
+    }
+  } catch (_) {}
+}
+function pedirImpresion() {
+  const d = datosActuales();
+  const texto = `Hola, quiero imprimir figuritas.\\n\\nNombre: ${d.nombre} ${d.apellido}\\nEquipo: ${d.equipo}\\nCantidad: `;
+  window.open('https://wa.me/543872101274?text=' + encodeURIComponent(texto), '_blank');
+}
+
+// ══ IMPRIMIR ══
+function imprimirFigurita() {
+  window.print();
+}
+
+// ══ RESETEAR ══
+function resetear() {
+  document.getElementById('inNombre').value = 'Lionel';
+  document.getElementById('inApellido').value = 'MESSI';
+  document.getElementById('inNumero').value = '10';
+  document.getElementById('inEquipo').value = 'ARGENTINA';
+  document.getElementById('inPosicion').value = 'Delantero';
+  document.getElementById('inEstrellas').value = '3';
+  document.getElementById('inPatron').value = 'none';
+  estado.color1 = '#1a3cc8';
+  estado.color2 = '#ffffff';
+  estado.camiseta = 'clasica';
+  estado.foto = null;
+  try { localStorage.removeItem('figuritasRuizBorrador'); } catch (_) {}
+  document.querySelectorAll('.color-swatch[data-target="1"]').forEach((s,i) => s.classList.toggle('activo', i===0));
+  document.querySelectorAll('.color-swatch[data-target="2"]').forEach((s,i) => s.classList.toggle('activo', i===0));
+  document.querySelectorAll('.cam-opt').forEach((o,i) => o.classList.toggle('activo', i===0));
+  figFotoImg.style.display = 'none';
+  figPlaceholder.style.display = 'flex';
+  document.getElementById('uploadTxt').textContent = 'Tocá para subir una foto';
+  actualizar();
+}
+
+// Iniciar
+recuperarBorrador();
+actualizar();
+</script>
+</body>
+</html>
