@@ -51,7 +51,7 @@ section{padding:92px 0}.section-head{max-width:720px;margin-bottom:36px}.section
   if(reduce)return;
   document.querySelectorAll('.tiles').forEach(function(carousel){
     let direction=1, paused=false, last=performance.now(), resumeTimer;
-    const speed=.055;
+    const speed=.14;
     function move(now){
       const dt=Math.min(now-last,40); last=now;
       const max=carousel.scrollWidth-carousel.clientWidth;
