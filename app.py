@@ -940,6 +940,126 @@ def carnet_procesar():
     return jsonify({"image": img_b64})
 
 
+
+# ---------------------------------------------------------------------------
+# Presupuestos profesionales para Belén (backend propio)
+# ---------------------------------------------------------------------------
+QUOTE_DIR = os.environ.get("QUOTE_DIR", "/tmp/ruiz_presupuestos")
+os.makedirs(QUOTE_DIR, exist_ok=True)
+
+
+def _quote_cors(resp):
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS, GET"
+    return resp
+
+
+def _money(value):
+    return f"${float(value):,.0f}".replace(",", ".")
+
+
+def _make_quote_pdf(payload, quote_id, path):
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib import colors
+    from reportlab.lib.enums import TA_LEFT, TA_RIGHT
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import cm
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+
+    items = payload.get("items") or []
+    normalized = []
+    for raw in items:
+        qty = float(raw.get("cantidad", raw.get("quantity", 1)) or 1)
+        unit = float(raw.get("precio_unit", raw.get("unit_price", 0)) or 0)
+        subtotal = float(raw.get("subtotal", qty * unit) or 0)
+        normalized.append({
+            "descripcion": str(raw.get("descripcion", raw.get("description", "Trabajo de impresión"))),
+            "cantidad": qty,
+            "precio_unit": unit,
+            "subtotal": subtotal,
+        })
+    total = sum(item["subtotal"] for item in normalized)
+    nombre = str(payload.get("nombre", "Cliente"))
+    telefono = str(payload.get("telefono", payload.get("phone", "")))
+    nota = str(payload.get("nota", "Presupuesto solicitado a través de Belén."))
+
+    doc = SimpleDocTemplate(path, pagesize=A4, topMargin=1.5*cm, bottomMargin=1.8*cm,
+                            leftMargin=1.8*cm, rightMargin=1.8*cm,
+                            title=f"Presupuesto {quote_id} — Imprenta Ruiz",
+                            author="Imprenta Ruiz")
+    styles = getSampleStyleSheet()
+    blue = colors.HexColor("#1565C0")
+    dark = colors.HexColor("#263238")
+    light = colors.HexColor("#E3F2FD")
+    story = []
+    story.append(Paragraph("<font color='#1565C0' size='20'><b>IMPRENTA RUIZ</b></font>", styles["Normal"]))
+    story.append(Paragraph("Chacabuco 470 — Salta Capital · WhatsApp +54 9 387 210-1274 · impr.ruiz@gmail.com", ParagraphStyle("head", fontSize=8.5, textColor=dark)))
+    story.append(Spacer(1, 0.25*cm))
+    story.append(HRFlowable(width="100%", thickness=2, color=blue, spaceAfter=10))
+    story.append(Paragraph("<font color='#1565C0' size='16'><b>PRESUPUESTO</b></font>", styles["Normal"]))
+    story.append(Paragraph(f"N.º {quote_id} · Válido por 48 horas", ParagraphStyle("meta", fontSize=9, textColor=dark)))
+    story.append(Spacer(1, 0.25*cm))
+    cliente = f"<b>Cliente:</b> {nombre}"
+    if telefono: cliente += f" &nbsp;&nbsp; <b>WhatsApp:</b> {telefono}"
+    story.append(Paragraph(cliente, ParagraphStyle("client", fontSize=10, backColor=light, borderPad=8, textColor=dark)))
+    story.append(Spacer(1, 0.35*cm))
+    rows = [[Paragraph("<b>Descripción</b>", styles["Normal"]), Paragraph("<b>Cant.</b>", styles["Normal"]), Paragraph("<b>P. unit.</b>", styles["Normal"]), Paragraph("<b>Subtotal</b>", styles["Normal"])]]
+    for item in normalized:
+        q = str(int(item["cantidad"])) if item["cantidad"].is_integer() else str(item["cantidad"])
+        rows.append([Paragraph(item["descripcion"], ParagraphStyle("d", fontSize=9, textColor=dark)),
+                     Paragraph(q, ParagraphStyle("q", fontSize=9, alignment=TA_RIGHT)),
+                     Paragraph(_money(item["precio_unit"]), ParagraphStyle("u", fontSize=9, alignment=TA_RIGHT)),
+                     Paragraph(_money(item["subtotal"]), ParagraphStyle("s", fontSize=9, alignment=TA_RIGHT, textColor=blue))])
+    table = Table(rows, colWidths=[9.2*cm, 1.8*cm, 2.7*cm, 3.0*cm])
+    table.setStyle(TableStyle([("BACKGROUND", (0,0), (-1,0), blue), ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+                               ("GRID", (0,0), (-1,-1), .4, colors.HexColor("#CFD8DC")),
+                               ("ROWBACKGROUNDS", (0,1), (-1,-1), [colors.white, colors.HexColor("#F5F5F5")]),
+                               ("VALIGN", (0,0), (-1,-1), "MIDDLE"), ("TOPPADDING", (0,0), (-1,-1), 7), ("BOTTOMPADDING", (0,0), (-1,-1), 7)]))
+    story.append(table)
+    story.append(Spacer(1, 0.3*cm))
+    total_table = Table([["", "", Paragraph("<b>TOTAL</b>", ParagraphStyle("tl", fontSize=12, textColor=blue, alignment=TA_RIGHT)), Paragraph(f"<b>{_money(total)}</b>", ParagraphStyle("tv", fontSize=12, textColor=blue, alignment=TA_RIGHT))]], colWidths=[9.2*cm, 1.8*cm, 2.7*cm, 3.0*cm])
+    total_table.setStyle(TableStyle([("LINEABOVE", (2,0), (-1,0), 1.5, blue), ("TOPPADDING", (2,0), (-1,0), 8)]))
+    story.append(total_table)
+    story.append(Spacer(1, 0.35*cm))
+    story.append(Paragraph(f"📝 {nota}", ParagraphStyle("note", fontSize=9, textColor=dark, backColor=colors.HexColor("#F5F5F5"), borderPad=7)))
+    doc.build(story)
+    return total
+
+
+@app.route("/api/presupuesto", methods=["POST", "OPTIONS"])
+def api_presupuesto():
+    """Genera un PDF de presupuesto para el flujo de Belén."""
+    if request.method == "OPTIONS":
+        return _quote_cors(jsonify({"ok": True}))
+    payload = request.get_json(silent=True) or {}
+    items = payload.get("items") or []
+    if not items:
+        return _quote_cors(jsonify({"error": "Falta el detalle del presupuesto."})), 400
+    quote_id = "P-" + datetime.utcnow().strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:4].upper()
+    path = os.path.join(QUOTE_DIR, quote_id + ".pdf")
+    try:
+        total = _make_quote_pdf(payload, quote_id, path)
+    except Exception as exc:
+        app.logger.exception("No se pudo generar el presupuesto")
+        return _quote_cors(jsonify({"error": "No se pudo generar el PDF."})), 500
+    response = jsonify({"ok": True, "quote_id": quote_id, "total": total,
+                        "pdf_url": request.host_url.rstrip("/") + "/api/presupuesto/" + quote_id + ".pdf"})
+    return _quote_cors(response)
+
+
+@app.route("/api/presupuesto/<quote_id>.pdf", methods=["GET", "OPTIONS"])
+def api_presupuesto_pdf(quote_id):
+    if request.method == "OPTIONS":
+        return _quote_cors(jsonify({"ok": True}))
+    if not re.fullmatch(r"P-[0-9]{8}-[0-9]{6}-[A-F0-9]{4}", quote_id):
+        return _quote_cors(jsonify({"error": "Presupuesto no encontrado."})), 404
+    path = os.path.join(QUOTE_DIR, quote_id + ".pdf")
+    if not os.path.isfile(path):
+        return _quote_cors(jsonify({"error": "Presupuesto no encontrado."})), 404
+    return _quote_cors(send_file(path, mimetype="application/pdf", as_attachment=False, download_name=quote_id + ".pdf"))
+
+
 # ---------------------------------------------------------------------------
 # Arranque
 # ---------------------------------------------------------------------------
