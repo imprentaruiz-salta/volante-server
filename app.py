@@ -199,9 +199,9 @@ def imprenta_ruiz():
 </div>
 <div class="belen-widget" id="belenWidget" aria-label="Belen, asistente virtual de Imprenta Ruiz">
   <div class="belen-nudge" id="belenNudge">👋 Hola, soy <b>Belen</b>.<br>¿Necesitás ayuda con tu trabajo?</div>
-  <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir chat con Belen" aria-expanded="false"><img src="/static/belen-asistente.png" alt="Belen, asistente virtual de Imprenta Ruiz"></button>
+  <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir chat con Belen" aria-expanded="false"><img src="/static/belen-asistente.jpg" alt="Belen, asistente virtual de Imprenta Ruiz"></button>
   <section class="belen-panel" id="belenPanel" role="dialog" aria-modal="false" aria-labelledby="belenTitle">
-    <header class="belen-head"><img src="/static/belen-asistente.png" alt=""><div><strong id="belenTitle">Belen</strong><span>Asistente virtual · Imprenta Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Belen">×</button></header>
+    <header class="belen-head"><img src="/static/belen-asistente.jpg" alt=""><div><strong id="belenTitle">Belen</strong><span>Asistente virtual · Imprenta Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Belen">×</button></header>
     <div class="belen-messages" id="belenMessages" aria-live="polite"><div class="belen-bubble">Hola, soy Belen, la asistente virtual de Imprenta Ruiz. Puedo orientarte sobre impresiones, fotos, anillado y presupuestos.</div><div class="belen-bubble">¿Qué necesitás realizar?</div></div>
     <div class="belen-options"><button type="button" data-belen-text="Quiero conocer los precios">Precios</button><button type="button" data-belen-text="Necesito hacer impresiones">Impresiones</button><button type="button" data-belen-text="Quiero imprimir fotos">Fotos</button><button class="belen-quote" type="button">Pedir presupuesto</button></div>
     <form class="belen-form" id="belenChatForm"><input id="belenInput" type="text" placeholder="Escribí tu consulta…" autocomplete="off" aria-label="Consulta para Belen"><button type="submit" aria-label="Enviar consulta">➤</button></form>
