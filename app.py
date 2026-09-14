@@ -12,6 +12,7 @@ import json
 import uuid
 import sqlite3
 import base64
+import re
 import requests
 from datetime import datetime
 from pathlib import Path
@@ -939,6 +940,152 @@ def carnet_procesar():
 
     return jsonify({"image": img_b64})
 
+
+
+# ---------------------------------------------------------------------------
+# Cerebro de Belén: endpoint OpenAI-compatible respaldado por Gemini
+# ---------------------------------------------------------------------------
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+AI_SALES_LLM_CONFIG_API_KEY = os.environ.get("AI_SALES_LLM_CONFIG_API_KEY", "")
+
+BELEN_SYSTEM_PROMPT = """Sos Belén, la asistente virtual de Imprenta Ruiz, en Salta Capital.
+Atendés exclusivamente impresiones, fotografías, libros en PDF, anillado,
+plastificado, almanaques, tiras de fotos y presupuestos de Imprenta Ruiz.
+Hablá en español argentino, de manera cordial, clara y breve. Hacé una sola
+pregunta por vez y nunca inventes precios, disponibilidad ni datos del cliente.
+
+Precios vigentes:
+- Impresión color: $1.250 por faz.
+- Blanco y negro: $1.250 por faz.
+- Anillado: $4.000.
+- A4 autoadhesivo fotográfico: $7.500 por hoja.
+- Fotos Mitsubishi: 10x15 $5.000; 13x18 $6.000; 15x15 $6.000;
+  15x20 $7.500; 20x30 $17.500; A4 $15.000.
+- Fotos Inkjet: 10x15 $4.000; 13x18 $4.500; 15x15 $4.500;
+  15x20 $5.000; A4 $7.500.
+- Fotos Kodak: 10x15 $5.500; 15x15 $6.500; 15x20 $8.500.
+- Polaroid Mitsubishi 8,5x10,5 cm: individual $4.000; pack de 4 $12.000;
+  pack de 10 $25.000.
+- Almanaques: 5x8 $2.500; 9x6 $3.000; A4 $7.500; A3 $15.000; A3+ $18.000.
+- Plastificado: 6,7x9,8 $2.000; 7,6x11 $2.500; A4 $4.000;
+  Oficio $5.000; A3 $7.500.
+- Tira vertical de 4 fotos: 1 tira $7.500; 2 tiras $10.000;
+  diseño especial $7.000.
+
+Para imprimir documentos pedí, según corresponda, cantidad de hojas,
+formato, una o dos caras, color o blanco y negro, tipo de papel y si requiere
+anillado o diseño. Para fotos pedí cantidad, medida, tipo de papel o marca y
+si hay una indicación especial. Calculá subtotales y total mostrando el detalle.
+Los presupuestos no incluyen diseño ni corte especial salvo que se indique.
+Antes de generar un PDF, resumí el pedido, mostrale el total y preguntá de
+forma explícita si desea recibir el presupuesto en PDF por WhatsApp. No
+consideres una respuesta ambigua como confirmación. Si confirma, informá que
+el pedido quedó listo para la generación del presupuesto; no afirmes que un
+archivo fue enviado si el sistema no devuelve una confirmación real de envío.
+Nunca hables de útiles escolares ni de otros negocios.
+"""
+
+
+def _chat_text(value):
+    if isinstance(value, str):
+        return value
+    if isinstance(value, list):
+        parts = []
+        for part in value:
+            if isinstance(part, dict) and part.get("type") in ("text", "input_text"):
+                parts.append(str(part.get("text", "")))
+            elif isinstance(part, str):
+                parts.append(part)
+        return "".join(parts)
+    return str(value or "")
+
+
+def _gemini_contents(messages):
+    contents = []
+    for message in messages:
+        role = message.get("role", "user")
+        if role == "system":
+            continue
+        contents.append({
+            "role": "model" if role == "assistant" else "user",
+            "parts": [{"text": _chat_text(message.get("content"))}],
+        })
+    return contents
+
+
+def _openai_response(text, model, request_id=None):
+    return {
+        "id": request_id or ("chatcmpl-" + uuid.uuid4().hex),
+        "object": "chat.completion",
+        "created": int(datetime.utcnow().timestamp()),
+        "model": model,
+        "choices": [{"index": 0, "message": {"role": "assistant", "content": text},
+                     "finish_reason": "stop"}],
+    }
+
+
+@app.route("/api/chat/completions", methods=["POST", "OPTIONS"])
+def api_chat_completions():
+    """OpenAI-compatible brain endpoint for LiveAvatar FULL mode."""
+    if request.method == "OPTIONS":
+        response = jsonify({"ok": True})
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type"
+        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        return response
+    supplied = request.headers.get("Authorization", "")
+    if not AI_SALES_LLM_CONFIG_API_KEY or supplied != "Bearer " + AI_SALES_LLM_CONFIG_API_KEY:
+        return jsonify({"error": {"message": "Unauthorized"}}), 401
+    if not GEMINI_API_KEY:
+        app.logger.error("GEMINI_API_KEY no está configurada")
+        return jsonify({"error": {"message": "El cerebro de Belén no está disponible."}}), 503
+    payload = request.get_json(silent=True) or {}
+    messages = payload.get("messages") or []
+    if not messages:
+        return jsonify({"error": {"message": "Faltan mensajes."}}), 400
+    system_parts = [BELEN_SYSTEM_PROMPT]
+    for message in messages:
+        if message.get("role") == "system":
+            text = _chat_text(message.get("content"))
+            if text:
+                system_parts.append(text)
+    body = {
+        "system_instruction": {"parts": [{"text": "\n\n".join(system_parts)}]},
+        "contents": _gemini_contents(messages),
+        "generationConfig": {"temperature": 0.35, "maxOutputTokens": 700},
+    }
+    url = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL + ":generateContent"
+    try:
+        upstream = requests.post(url, params={"key": GEMINI_API_KEY}, json=body, timeout=55)
+        result = upstream.json()
+    except Exception:
+        app.logger.exception("No se pudo consultar Gemini")
+        return jsonify({"error": {"message": "No se pudo consultar el cerebro de Belén."}}), 502
+    if not upstream.ok:
+        app.logger.error("Gemini respondió %s", upstream.status_code)
+        return jsonify({"error": {"message": "El cerebro de Belén no respondió correctamente."}}), 502
+    try:
+        text = result["candidates"][0]["content"]["parts"][0]["text"]
+    except (KeyError, IndexError, TypeError):
+        return jsonify({"error": {"message": "Gemini no devolvió una respuesta utilizable."}}), 502
+    response_data = _openai_response(text, payload.get("model", "belen-gemini"))
+    if payload.get("stream"):
+        from flask import Response
+        chunk = {"id": response_data["id"], "object": "chat.completion.chunk",
+                 "created": response_data["created"], "model": response_data["model"],
+                 "choices": [{"index": 0, "delta": {"role": "assistant", "content": text}, "finish_reason": None}]}
+        done = {"id": response_data["id"], "object": "chat.completion.chunk",
+                "created": response_data["created"], "model": response_data["model"],
+                "choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}]}
+        stream = "data: " + json.dumps(chunk, ensure_ascii=False) + "\n\n" + "data: " + json.dumps(done) + "\n\n" + "data: [DONE]\n\n"
+        stream_response = Response(stream, mimetype="text/event-stream")
+        stream_response.headers["Cache-Control"] = "no-cache"
+        stream_response.headers["Access-Control-Allow-Origin"] = "*"
+        return stream_response
+    response = jsonify(response_data)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
 
 # ---------------------------------------------------------------------------
