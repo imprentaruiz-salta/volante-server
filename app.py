@@ -198,8 +198,8 @@ def imprenta_ruiz():
         <div class="whatsapp-form-field"><label for="whatsappArchivo">¿Deseás adjuntar un archivo?</label><input id="whatsappArchivo" name="archivo" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.xls,.xlsx,.ppt,.pptx"></div>
         <div class="whatsapp-form-field full"><label for="whatsappDetalle">Detalles del trabajo</label><textarea id="whatsappDetalle" name="detalle" placeholder="Cantidad, tamaño, medidas u otra indicación"></textarea></div>
       </div>
-      <p class="whatsapp-form-note">Si elegís un archivo, WhatsApp se abrirá con tus datos y después podrás adjuntarlo tocando el clip 📎.</p>
-      <div class="whatsapp-form-actions"><button class="whatsapp-form-cancel" type="button" data-whatsapp-close>Cancelar</button><button class="whatsapp-form-submit" type="submit">Enviar por WhatsApp</button></div>
+      <p class="whatsapp-form-note" id="contactFormNote">Si elegís un archivo, WhatsApp se abrirá con tus datos y después podrás adjuntarlo tocando el clip 📎.</p>
+      <div class="whatsapp-form-actions"><button class="whatsapp-form-cancel" type="button" data-whatsapp-close>Cancelar</button><button class="whatsapp-form-submit" id="contactFormSubmit" type="submit">Enviar por WhatsApp</button></div>
     </form>
   </div>
 </div>
@@ -232,8 +232,19 @@ def imprenta_ruiz():
   var pricesModal=document.getElementById('rulitoPricesModal');
   var whatsappModal=document.getElementById('whatsappFormModal');
   var whatsappForm=document.getElementById('whatsappQuoteForm');
-  function openWhatsAppForm(){closeAll();if(whatsappModal)whatsappModal.classList.add('is-open')}
-  document.querySelectorAll('.send-option.whatsapp').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();openWhatsAppForm()})});
+  var contactChannel='whatsapp';
+  var contactTitle=document.getElementById('whatsappFormTitle');
+  var contactNote=document.getElementById('contactFormNote');
+  var contactSubmit=document.getElementById('contactFormSubmit');
+  function openContactForm(channel){
+    contactChannel=channel||'whatsapp';closeAll();
+    if(contactTitle)contactTitle.textContent=contactChannel==='telegram'?'✈️ Consultar por Telegram':'📲 Consultar por WhatsApp';
+    if(contactNote)contactNote.textContent=contactChannel==='telegram'?'Si elegís un archivo, Telegram se abrirá con el mensaje y podrás adjuntarlo manualmente en el chat.':'Si elegís un archivo, WhatsApp se abrirá con tus datos y después podrás adjuntarlo tocando el clip 📎.';
+    if(contactSubmit)contactSubmit.textContent=contactChannel==='telegram'?'Enviar por Telegram':'Enviar por WhatsApp';
+    if(whatsappModal)whatsappModal.classList.add('is-open');
+  }
+  document.querySelectorAll('.send-option.whatsapp').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();openContactForm('whatsapp')})});
+  document.querySelectorAll('.send-option.telegram').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();openContactForm('telegram')})});
   document.querySelectorAll('[data-whatsapp-close]').forEach(function(b){b.addEventListener('click',closeAll)});
   if(whatsappModal)whatsappModal.addEventListener('click',function(e){if(e.target===whatsappModal)closeAll()});
   if(whatsappForm)whatsappForm.addEventListener('submit',function(e){
@@ -247,7 +258,12 @@ def imprenta_ruiz():
     var archivo=document.getElementById('whatsappArchivo').files[0];
     var archivoTexto=archivo?'Sí — '+archivo.name+' (lo adjunto en el chat)':'No';
     var mensaje=['Hola Imprenta Ruiz, quiero hacer una consulta.','*Nombre:* '+nombre+' '+apellido,'*Celular:* '+celular,'*Producto o trabajo:* '+producto,'*Detalles:* '+detalle,'*¿Adjunto archivo?:* '+archivoTexto,'*Horario para llamarme:* '+horario].join('\\n');
-    window.open('https://wa.me/5493872101274?text='+encodeURIComponent(mensaje),'_blank','noopener');
+    if(contactChannel==='telegram'){
+      try{if(navigator.clipboard)navigator.clipboard.writeText(mensaje)}catch(err){}
+      window.open('https://t.me/imptaruiz?text='+encodeURIComponent(mensaje),'_blank','noopener');
+    }else{
+      window.open('https://wa.me/5493872101274?text='+encodeURIComponent(mensaje),'_blank','noopener');
+    }
     closeAll();
   });
   var belenWidget=document.getElementById('belenWidget');
