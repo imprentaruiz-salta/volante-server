@@ -172,13 +172,35 @@ def imprenta_ruiz():
 .ruiz-front-image,.ruiz-map-image{display:block;width:100%;max-height:64vh;object-fit:contain;border-radius:14px;background:#eef3f7}.missing-front{padding:58px 22px;color:#071b3b;font:700 17px Arial;box-sizing:border-box}
 .ruiz-map-frame{display:block;width:100%;height:min(52vh,480px);border:0;border-radius:14px;margin-bottom:12px}
 .ruiz-map-link{display:inline-block;background:#1769d1;color:#fff;text-decoration:none;border-radius:12px;padding:11px 16px;font:900 15px Arial}
-@media(max-width:620px){.location-hotspot{min-height:100%}.ruiz-modal-card{padding:15px}.ruiz-modal-card h2{font-size:19px}.ruiz-modal{padding:9px}}
+.whatsapp-form-modal{display:none;position:fixed;inset:0;z-index:100;background:rgba(3,16,36,.82);align-items:center;justify-content:center;padding:12px}
+.whatsapp-form-modal.is-open{display:flex}.whatsapp-form-card{position:relative;width:min(560px,96vw);max-height:92vh;overflow:auto;border-radius:22px;padding:22px;background:#fff;box-shadow:0 20px 55px #0009;color:#071b3b;font-family:Arial,sans-serif}.whatsapp-form-card h2{margin:0 40px 5px 0;font-size:22px}.whatsapp-form-card>p{margin:0 0 15px;color:#516274;font-weight:700;font-size:13px}.whatsapp-form-close{position:absolute;right:12px;top:10px;border:0;border-radius:10px;background:#071b3b;color:#fff;padding:7px 10px;font-weight:900;cursor:pointer}.whatsapp-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left}.whatsapp-form-field{display:flex;flex-direction:column;gap:4px}.whatsapp-form-field.full{grid-column:1/-1}.whatsapp-form-field label{font-size:12px;font-weight:900;color:#071b3b}.whatsapp-form-field input,.whatsapp-form-field select,.whatsapp-form-field textarea{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:10px;padding:10px;font:600 13px Arial;color:#071b3b;background:#fff}.whatsapp-form-field textarea{min-height:70px;resize:vertical}.whatsapp-form-note{margin:10px 0 0;color:#64748b;font-size:11px;line-height:1.3}.whatsapp-form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}.whatsapp-form-submit{border:0;border-radius:12px;background:linear-gradient(145deg,#27c768,#0a9f4d);color:#fff;padding:11px 17px;font:900 14px Arial;cursor:pointer}.whatsapp-form-cancel{border:1px solid #cbd5e1;border-radius:12px;background:#fff;color:#071b3b;padding:10px 15px;font:900 14px Arial;cursor:pointer}
+@media(max-width:620px){.location-hotspot{min-height:100%}.ruiz-modal-card{padding:15px}.ruiz-modal-card h2{font-size:19px}.ruiz-modal{padding:9px}.whatsapp-form-card{padding:17px}.whatsapp-form-grid{grid-template-columns:1fr}.whatsapp-form-field.full{grid-column:auto}.whatsapp-form-actions{justify-content:stretch}.whatsapp-form-actions button{flex:1}}
 </style>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
 </div>
 <div class="ruiz-modal" id="mapModal" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="mapModalTitle">Cómo llegar a Imprenta Ruiz</h2><iframe class="ruiz-map-frame" title="Mapa de Chacabuco 470, Salta" src="https://www.google.com/maps?q=Chacabuco%20470%2C%20Salta&output=embed" loading="lazy"></iframe><a class="ruiz-map-link" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener">Abrir ubicación en Google Maps</a></div>
+</div>
+<div class="whatsapp-form-modal" id="whatsappFormModal" role="dialog" aria-modal="true" aria-labelledby="whatsappFormTitle">
+  <div class="whatsapp-form-card">
+    <button class="whatsapp-form-close" type="button" data-whatsapp-close>Cerrar ✕</button>
+    <h2 id="whatsappFormTitle">📲 Consultar por WhatsApp</h2>
+    <p>Completá tus datos y contanos qué trabajo necesitás realizar.</p>
+    <form id="whatsappQuoteForm">
+      <div class="whatsapp-form-grid">
+        <div class="whatsapp-form-field"><label for="whatsappNombre">Nombre *</label><input id="whatsappNombre" name="nombre" type="text" autocomplete="given-name" required></div>
+        <div class="whatsapp-form-field"><label for="whatsappApellido">Apellido *</label><input id="whatsappApellido" name="apellido" type="text" autocomplete="family-name" required></div>
+        <div class="whatsapp-form-field"><label for="whatsappCelular">Celular *</label><input id="whatsappCelular" name="celular" type="tel" autocomplete="tel" placeholder="Ej.: 387 210-1274" required></div>
+        <div class="whatsapp-form-field"><label for="whatsappProducto">Producto o trabajo *</label><select id="whatsappProducto" name="producto" required><option value="">Elegí una opción</option><option>Impresión color</option><option>Impresión blanco y negro</option><option>Libro en PDF</option><option>Anillado</option><option>A4 autoadhesivo</option><option>Fotos Mitsubishi</option><option>Fotos Inkjet</option><option>Fotos Kodak</option><option>Fotos Polaroid</option><option>Almanaques</option><option>Plastificado</option><option>Tira de 4 fotos</option><option>Otro trabajo</option></select></div>
+        <div class="whatsapp-form-field"><label for="whatsappHorario">¿En qué horario te podemos llamar? *</label><select id="whatsappHorario" name="horario" required><option value="">Elegí un horario</option><option>De 9 a 11 h</option><option>De 11 a 13 h</option><option>De 14 a 16 h</option><option>De 16 a 18 h</option><option>Cualquier horario</option></select></div>
+        <div class="whatsapp-form-field"><label for="whatsappArchivo">¿Deseás adjuntar un archivo?</label><input id="whatsappArchivo" name="archivo" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.xls,.xlsx,.ppt,.pptx"></div>
+        <div class="whatsapp-form-field full"><label for="whatsappDetalle">Detalles del trabajo</label><textarea id="whatsappDetalle" name="detalle" placeholder="Cantidad, tamaño, medidas u otra indicación"></textarea></div>
+      </div>
+      <p class="whatsapp-form-note">Si elegís un archivo, WhatsApp se abrirá con tus datos y después podrás adjuntarlo tocando el clip 📎.</p>
+      <div class="whatsapp-form-actions"><button class="whatsapp-form-cancel" type="button" data-whatsapp-close>Cancelar</button><button class="whatsapp-form-submit" type="submit">Enviar por WhatsApp</button></div>
+    </form>
+  </div>
 </div>
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
   <div class="rulito-prices-card"><button class="rulito-price-close" type="button" data-rulito-close>Cerrar ✕</button><h2 id="rulitoPricesTitle">🧾 Precios de Imprenta Ruiz</h2><p>Estos son los precios actuales. Si necesitás otro trabajo, preguntame.</p>
@@ -195,9 +217,29 @@ def imprenta_ruiz():
 </div>
 <script>
 (function(){
-  function closeAll(){document.querySelectorAll('.ruiz-modal.is-open,.rulito-prices-modal.is-open').forEach(function(m){m.classList.remove('is-open')})}
+  function closeAll(){document.querySelectorAll('.ruiz-modal.is-open,.rulito-prices-modal.is-open,.whatsapp-form-modal.is-open').forEach(function(m){m.classList.remove('is-open')})}
   function openModal(id){closeAll();var m=document.getElementById(id);if(m)m.classList.add('is-open')}
   var pricesModal=document.getElementById('rulitoPricesModal');
+  var whatsappModal=document.getElementById('whatsappFormModal');
+  var whatsappForm=document.getElementById('whatsappQuoteForm');
+  function openWhatsAppForm(){closeAll();if(whatsappModal)whatsappModal.classList.add('is-open')}
+  document.querySelectorAll('.send-option.whatsapp').forEach(function(b){b.addEventListener('click',function(e){e.preventDefault();openWhatsAppForm()})});
+  document.querySelectorAll('[data-whatsapp-close]').forEach(function(b){b.addEventListener('click',closeAll)});
+  if(whatsappModal)whatsappModal.addEventListener('click',function(e){if(e.target===whatsappModal)closeAll()});
+  if(whatsappForm)whatsappForm.addEventListener('submit',function(e){
+    e.preventDefault();
+    var nombre=document.getElementById('whatsappNombre').value.trim();
+    var apellido=document.getElementById('whatsappApellido').value.trim();
+    var celular=document.getElementById('whatsappCelular').value.trim();
+    var producto=document.getElementById('whatsappProducto').value;
+    var horario=document.getElementById('whatsappHorario').value;
+    var detalle=document.getElementById('whatsappDetalle').value.trim()||'Sin detalles adicionales';
+    var archivo=document.getElementById('whatsappArchivo').files[0];
+    var archivoTexto=archivo?'Sí — '+archivo.name+' (lo adjunto en el chat)':'No';
+    var mensaje=['Hola Imprenta Ruiz, quiero hacer una consulta.','*Nombre:* '+nombre+' '+apellido,'*Celular:* '+celular,'*Producto o trabajo:* '+producto,'*Detalles:* '+detalle,'*¿Adjunto archivo?:* '+archivoTexto,'*Horario para llamarme:* '+horario].join('\\n');
+    window.open('https://wa.me/5493872101274?text='+encodeURIComponent(mensaje),'_blank','noopener');
+    closeAll();
+  });
   var rulitoMessage=document.querySelector('.rulito-message');
   var rulitoMessages=[
     '👋 Hola, bienvenidos a Imprenta Ruiz',
