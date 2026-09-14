@@ -294,7 +294,7 @@ def imprenta_ruiz():
       if(!tokenRes.ok||!tokenData.session_token)throw new Error(tokenData.error||'No se pudo iniciar la sesión');
       var SDK=window.LiveAvatarSDK;
       if(!SDK||!SDK.LiveAvatarSession)throw new Error('No se pudo cargar el modo FULL');
-      belenSession=new SDK.LiveAvatarSession(tokenData.session_token,{voiceChat:true});
+      belenSession=new SDK.LiveAvatarSession(tokenData.session_token,{voiceChat:false});
       belenSession.on('session.stream_ready',function(){if(belenVideo)belenSession.attach(belenVideo);setBelenStatus('Belén está lista. Podés hablarle.');if(belenMic)belenMic.textContent='🎙️ Micrófono activo'});
       belenSession.on('session.disconnected',function(){belenSession=null;if(belenMic)belenMic.textContent='🎙️ Hablar';setBelenStatus('Sesión finalizada. Tocá «Hablar» para volver a iniciar.')});
       await belenSession.start();
@@ -307,7 +307,7 @@ def imprenta_ruiz():
   if(belenLauncher)belenLauncher.addEventListener('click',function(){toggleBelen()});
   if(belenClose)belenClose.addEventListener('click',function(){toggleBelen(false)});
   if(belenNudge)belenNudge.addEventListener('click',function(){toggleBelen(true)});
-  if(belenMic)belenMic.addEventListener('click',function(){if(!belenSession)startBelenFullMode()});
+  if(belenMic)belenMic.addEventListener('click',async function(){if(!belenSession){await startBelenFullMode();return}try{if(belenSession.voiceChat.state==='INACTIVE'){setBelenStatus('Activando micrófono…');await belenSession.voiceChat.start();setBelenStatus('Micrófono activo. Hablale a Belén.');belenMic.textContent='🎙️ Micrófono activo'}}catch(err){console.error(err);setBelenStatus('No se pudo activar el micrófono. Revisá el permiso del navegador.')}});
   if(belenStop)belenStop.addEventListener('click',function(){stopBelenFullMode()});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')toggleBelen(false)});
   var rulitoMessage=document.querySelector('.rulito-message');
