@@ -12,7 +12,6 @@ import json
 import uuid
 import sqlite3
 import base64
-import re
 import requests
 from datetime import datetime
 from pathlib import Path
@@ -182,9 +181,7 @@ def imprenta_ruiz():
 /* Marco de Belen: contenido amplio para los controles, presentación más compacta. */
 .belen-panel{transform:translateY(-50%) scale(.88);transform-origin:right center}.belen-panel.is-open{animation:belen-fixed-in-compact .22s ease-out}@keyframes belen-fixed-in-compact{from{opacity:0;transform:translateY(-47%) scale(.84)}to{opacity:1;transform:translateY(-50%) scale(.88)}}
 @media(max-width:620px){.belen-panel{transform:translateY(-50%) scale(.82)}.belen-panel.is-open{animation:belen-fixed-in-compact-mobile .22s ease-out}@keyframes belen-fixed-in-compact-mobile{from{opacity:0;transform:translateY(-47%) scale(.78)}to{opacity:1;transform:translateY(-50%) scale(.82)}}}
-.belen-fullmode{display:flex;flex-direction:column;min-height:0;flex:1;background:#102f35}.belen-fullmode video{display:block;width:100%;height:auto;min-height:260px;flex:1;object-fit:cover;background:#102f35}.belen-full-controls{display:flex;gap:7px;padding:8px;background:#153f48}.belen-full-controls button{flex:1;border:0;border-radius:10px;padding:9px 7px;background:#25b463;color:#fff;font:800 11px Arial;cursor:pointer}.belen-full-controls #belenStop{background:#b42335}.belen-status{padding:7px 9px;background:#fff;color:#516274;font:700 10px/1.25 Arial;text-align:center;min-height:26px;box-sizing:border-box}
 </style>
-<script src="/static/liveavatar-sdk.js"></script>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
 </div>
@@ -216,8 +213,8 @@ def imprenta_ruiz():
   <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir a Belen, asistente virtual" aria-expanded="false"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt="Belen, asistente virtual de Imprenta Ruiz"></button>
   <section class="belen-panel" id="belenPanel" role="dialog" aria-modal="false" aria-labelledby="belenTitle">
     <header class="belen-head"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt=""><div><strong id="belenTitle">Belen</strong><span>Asistente virtual · Imprenta Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Belen">×</button></header>
-    <div class="belen-fullmode" id="belenFullMode"><video id="belenVideo" autoplay playsinline></video><div class="belen-full-controls"><button type="button" id="belenMic" aria-label="Activar micrófono">🎙️ Hablar</button><button type="button" id="belenStop" aria-label="Finalizar sesión">■ Finalizar</button></div><div class="belen-status" id="belenStatus">Tocá «Hablar» para iniciar la sesión.</div></div>
-    <div class="belen-foot">Belén funciona en modo FULL: conversa en vivo y usa el cerebro de Gemini.</div>
+    <iframe class="belen-live-frame" id="belenLiveFrame" title="Belen, asistente virtual de Imprenta Ruiz" data-src="https://embed.liveavatar.com/v1/fca1a3c1-88b5-47ac-9110-a1ff8f2fb7f2?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
+    <div class="belen-foot">Podés hablarle a Belen usando el micrófono.</div>
   </section>
 </div>
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
@@ -279,36 +276,11 @@ def imprenta_ruiz():
   var belenLauncher=document.getElementById('belenLauncher');
   var belenClose=document.getElementById('belenClose');
   var belenNudge=document.getElementById('belenNudge');
-  var belenVideo=document.getElementById('belenVideo');
-  var belenMic=document.getElementById('belenMic');
-  var belenStop=document.getElementById('belenStop');
-  var belenStatus=document.getElementById('belenStatus');
-  var belenSession=null, belenStarting=false;
-  function setBelenStatus(text){if(belenStatus)belenStatus.textContent=text}
-  async function startBelenFullMode(){
-    if(belenSession||belenStarting)return;
-    belenStarting=true;setBelenStatus('Conectando a Belén…');
-    try{
-      var tokenRes=await fetch('/api/liveavatar/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
-      var tokenData=await tokenRes.json();
-      if(!tokenRes.ok||!tokenData.session_token)throw new Error(tokenData.error||'No se pudo iniciar la sesión');
-      var SDK=window.LiveAvatarSDK;
-      if(!SDK||!SDK.LiveAvatarSession)throw new Error('No se pudo cargar el modo FULL');
-      belenSession=new SDK.LiveAvatarSession(tokenData.session_token,{voiceChat:false});
-      belenSession.on('session.stream_ready',function(){if(belenVideo)belenSession.attach(belenVideo);setBelenStatus('Belén está lista. Podés hablarle.');if(belenMic)belenMic.textContent='🎙️ Micrófono activo'});
-      belenSession.on('session.disconnected',function(){belenSession=null;if(belenMic)belenMic.textContent='🎙️ Hablar';setBelenStatus('Sesión finalizada. Tocá «Hablar» para volver a iniciar.')});
-      await belenSession.start();
-      setBelenStatus('Belén está lista. Podés hablarle.');
-    }catch(err){console.error(err);belenSession=null;setBelenStatus('No se pudo iniciar la sesión. Probá nuevamente.');}
-    finally{belenStarting=false}
-  }
-  async function stopBelenFullMode(){if(belenSession){await belenSession.stop();belenSession=null}if(belenVideo)belenVideo.srcObject=null;if(belenMic)belenMic.textContent='🎙️ Hablar';setBelenStatus('Sesión finalizada. Tocá «Hablar» para volver a iniciar.')}
-  function toggleBelen(force){var open=typeof force==='boolean'?force:!belenPanel.classList.contains('is-open');if(open){belenPanel.classList.add('is-open');belenWidget.classList.add('belen-open');belenLauncher.setAttribute('aria-expanded','true');if(belenNudge)belenNudge.style.display='none';startBelenFullMode()}else{belenPanel.classList.remove('is-open');belenWidget.classList.remove('belen-open');belenLauncher.setAttribute('aria-expanded','false')}}
+  var belenFrame=document.getElementById('belenLiveFrame');
+  function toggleBelen(force){var open=typeof force==='boolean'?force:!belenPanel.classList.contains('is-open');if(open){belenPanel.classList.add('is-open');belenWidget.classList.add('belen-open');belenLauncher.setAttribute('aria-expanded','true');if(belenNudge)belenNudge.style.display='none';if(belenFrame&&belenFrame.getAttribute('src')==='about:blank'){window.setTimeout(function(){if(belenFrame.getAttribute('src')==='about:blank')belenFrame.src=belenFrame.getAttribute('data-src')},180)}}else{belenPanel.classList.remove('is-open');belenWidget.classList.remove('belen-open');belenLauncher.setAttribute('aria-expanded','false')}}
   if(belenLauncher)belenLauncher.addEventListener('click',function(){toggleBelen()});
   if(belenClose)belenClose.addEventListener('click',function(){toggleBelen(false)});
   if(belenNudge)belenNudge.addEventListener('click',function(){toggleBelen(true)});
-  if(belenMic)belenMic.addEventListener('click',async function(){if(!belenSession){await startBelenFullMode();return}try{if(belenSession.voiceChat.state==='INACTIVE'){setBelenStatus('Activando micrófono…');await belenSession.voiceChat.start();setBelenStatus('Micrófono activo. Hablale a Belén.');belenMic.textContent='🎙️ Micrófono activo'}}catch(err){console.error(err);setBelenStatus('No se pudo activar el micrófono. Revisá el permiso del navegador.')}});
-  if(belenStop)belenStop.addEventListener('click',function(){stopBelenFullMode()});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')toggleBelen(false)});
   var rulitoMessage=document.querySelector('.rulito-message');
   var rulitoMessages=[
@@ -966,331 +938,6 @@ def carnet_procesar():
     img_b64 = base64.b64encode(buf.read()).decode("utf-8")
 
     return jsonify({"image": img_b64})
-
-
-
-# ---------------------------------------------------------------------------
-# Cerebro de Belén: endpoint OpenAI-compatible respaldado por Gemini
-# ---------------------------------------------------------------------------
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
-AI_SALES_LLM_CONFIG_API_KEY = os.environ.get("AI_SALES_LLM_CONFIG_API_KEY", "")
-
-BELEN_SYSTEM_PROMPT = """Sos Belén, la asistente virtual de Imprenta Ruiz, en Salta Capital.
-Atendés exclusivamente impresiones, fotografías, libros en PDF, anillado,
-plastificado, almanaques, tiras de fotos y presupuestos de Imprenta Ruiz.
-Hablá en español argentino, de manera cordial, clara y breve. Hacé una sola
-pregunta por vez y nunca inventes precios, disponibilidad ni datos del cliente.
-
-Precios vigentes:
-- Impresión color: $1.250 por faz.
-- Blanco y negro: $1.250 por faz.
-- Anillado: $4.000.
-- A4 autoadhesivo fotográfico: $7.500 por hoja.
-- Fotos Mitsubishi: 10x15 $5.000; 13x18 $6.000; 15x15 $6.000;
-  15x20 $7.500; 20x30 $17.500; A4 $15.000.
-- Fotos Inkjet: 10x15 $4.000; 13x18 $4.500; 15x15 $4.500;
-  15x20 $5.000; A4 $7.500.
-- Fotos Kodak: 10x15 $5.500; 15x15 $6.500; 15x20 $8.500.
-- Polaroid Mitsubishi 8,5x10,5 cm: individual $4.000; pack de 4 $12.000;
-  pack de 10 $25.000.
-- Almanaques: 5x8 $2.500; 9x6 $3.000; A4 $7.500; A3 $15.000; A3+ $18.000.
-- Plastificado: 6,7x9,8 $2.000; 7,6x11 $2.500; A4 $4.000;
-  Oficio $5.000; A3 $7.500.
-- Tira vertical de 4 fotos: 1 tira $7.500; 2 tiras $10.000;
-  diseño especial $7.000.
-
-Para imprimir documentos pedí, según corresponda, cantidad de hojas,
-formato, una o dos caras, color o blanco y negro, tipo de papel y si requiere
-anillado o diseño. Para fotos pedí cantidad, medida, tipo de papel o marca y
-si hay una indicación especial. Calculá subtotales y total mostrando el detalle.
-Los presupuestos no incluyen diseño ni corte especial salvo que se indique.
-Antes de generar un PDF, resumí el pedido, mostrale el total y preguntá de
-forma explícita si desea recibir el presupuesto en PDF por WhatsApp. No
-consideres una respuesta ambigua como confirmación. Si confirma, informá que
-el pedido quedó listo para la generación del presupuesto; no afirmes que un
-archivo fue enviado si el sistema no devuelve una confirmación real de envío.
-Nunca hables de útiles escolares ni de otros negocios.
-"""
-
-
-def _chat_text(value):
-    if isinstance(value, str):
-        return value
-    if isinstance(value, list):
-        parts = []
-        for part in value:
-            if isinstance(part, dict) and part.get("type") in ("text", "input_text"):
-                parts.append(str(part.get("text", "")))
-            elif isinstance(part, str):
-                parts.append(part)
-        return "".join(parts)
-    return str(value or "")
-
-
-def _gemini_contents(messages):
-    contents = []
-    for message in messages:
-        role = message.get("role", "user")
-        if role == "system":
-            continue
-        contents.append({
-            "role": "model" if role == "assistant" else "user",
-            "parts": [{"text": _chat_text(message.get("content"))}],
-        })
-    return contents
-
-
-def _openai_response(text, model, request_id=None):
-    return {
-        "id": request_id or ("chatcmpl-" + uuid.uuid4().hex),
-        "object": "chat.completion",
-        "created": int(datetime.utcnow().timestamp()),
-        "model": model,
-        "choices": [{"index": 0, "message": {"role": "assistant", "content": text},
-                     "finish_reason": "stop"}],
-    }
-
-
-@app.route("/api/chat/completions", methods=["POST", "OPTIONS"])
-def api_chat_completions():
-    """OpenAI-compatible brain endpoint for LiveAvatar FULL mode."""
-    if request.method == "OPTIONS":
-        response = jsonify({"ok": True})
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Headers"] = "Authorization, Content-Type"
-        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-        return response
-    supplied = request.headers.get("Authorization", "")
-    if not AI_SALES_LLM_CONFIG_API_KEY or supplied != "Bearer " + AI_SALES_LLM_CONFIG_API_KEY:
-        return jsonify({"error": {"message": "Unauthorized"}}), 401
-    if not GEMINI_API_KEY:
-        app.logger.error("GEMINI_API_KEY no está configurada")
-        return jsonify({"error": {"message": "El cerebro de Belén no está disponible."}}), 503
-    payload = request.get_json(silent=True) or {}
-    messages = payload.get("messages") or []
-    if not messages:
-        return jsonify({"error": {"message": "Faltan mensajes."}}), 400
-    system_parts = [BELEN_SYSTEM_PROMPT]
-    for message in messages:
-        if message.get("role") == "system":
-            text = _chat_text(message.get("content"))
-            if text:
-                system_parts.append(text)
-    body = {
-        "system_instruction": {"parts": [{"text": "\n\n".join(system_parts)}]},
-        "contents": _gemini_contents(messages),
-        "generationConfig": {"temperature": 0.35, "maxOutputTokens": 700},
-    }
-    url = "https://generativelanguage.googleapis.com/v1beta/models/" + GEMINI_MODEL + ":generateContent"
-    try:
-        upstream = requests.post(url, params={"key": GEMINI_API_KEY}, json=body, timeout=55)
-        result = upstream.json()
-    except Exception:
-        app.logger.exception("No se pudo consultar Gemini")
-        return jsonify({"error": {"message": "No se pudo consultar el cerebro de Belén."}}), 502
-    if not upstream.ok:
-        app.logger.error("Gemini respondió %s", upstream.status_code)
-        return jsonify({"error": {"message": "El cerebro de Belén no respondió correctamente."}}), 502
-    try:
-        text = result["candidates"][0]["content"]["parts"][0]["text"]
-    except (KeyError, IndexError, TypeError):
-        return jsonify({"error": {"message": "Gemini no devolvió una respuesta utilizable."}}), 502
-    response_data = _openai_response(text, payload.get("model", "belen-gemini"))
-    if payload.get("stream"):
-        from flask import Response
-        chunk = {"id": response_data["id"], "object": "chat.completion.chunk",
-                 "created": response_data["created"], "model": response_data["model"],
-                 "choices": [{"index": 0, "delta": {"role": "assistant", "content": text}, "finish_reason": None}]}
-        done = {"id": response_data["id"], "object": "chat.completion.chunk",
-                "created": response_data["created"], "model": response_data["model"],
-                "choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}]}
-        stream = "data: " + json.dumps(chunk, ensure_ascii=False) + "\n\n" + "data: " + json.dumps(done) + "\n\n" + "data: [DONE]\n\n"
-        stream_response = Response(stream, mimetype="text/event-stream")
-        stream_response.headers["Cache-Control"] = "no-cache"
-        stream_response.headers["Access-Control-Allow-Origin"] = "*"
-        return stream_response
-    response = jsonify(response_data)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
-
-
-# ---------------------------------------------------------------------------
-# Sesiones FULL Mode de Belén
-# ---------------------------------------------------------------------------
-LIVEAVATAR_API_KEY = os.environ.get("LIVEAVATAR_API_KEY", "")
-LIVEAVATAR_AVATAR_ID = os.environ.get("AI_SALES_AVATAR_ID", "513fd1b7-7ef9-466d-9af2-344e51eeb833")
-LIVEAVATAR_VOICE_ID = os.environ.get("AI_SALES_VOICE_ID", "4f3b1e99-b580-4f05-9b67-a5f585be0232")
-LIVEAVATAR_CONTEXT_ID = os.environ.get("AI_SALES_CONTEXT_ID", "87f500b2-57dd-4bfa-ac11-fd2c7d7edb73")
-LIVEAVATAR_LLM_CONFIGURATION_ID = os.environ.get("LLM_CONFIGURATION_ID", "08f7de6a-d44d-46b3-bdf0-ad96efb5a4ab")
-
-
-@app.route("/api/liveavatar/session", methods=["POST", "OPTIONS"])
-def api_liveavatar_session():
-    """Emite un token efímero para que el navegador inicie una sesión FULL."""
-    if request.method == "OPTIONS":
-        response = jsonify({"ok": True})
-        response.headers["Access-Control-Allow-Origin"] = "*"
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
-        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
-        return response
-    if not LIVEAVATAR_API_KEY:
-        return jsonify({"error": "La sesión de Belén todavía no está configurada."}), 503
-    payload_in = request.get_json(silent=True) or {}
-    name = str(payload_in.get("name", "Cliente") or "Cliente").strip()[:100]
-    email = str(payload_in.get("email", "") or "").strip()[:160]
-    opening = f"Hola {name}, soy Belén, la asistente de Imprenta Ruiz. ¿Qué trabajo necesitás presupuestar?"
-    dynamic = {"username": name, "opening_intro": opening}
-    if email:
-        dynamic["email"] = email
-    payload = {
-        "mode": "FULL",
-        "avatar_id": LIVEAVATAR_AVATAR_ID,
-        "avatar_persona": {
-            "voice_id": LIVEAVATAR_VOICE_ID,
-            "context_id": LIVEAVATAR_CONTEXT_ID,
-            "language": "es",
-        },
-        "llm_configuration_id": LIVEAVATAR_LLM_CONFIGURATION_ID,
-        "dynamic_variables": dynamic,
-        "max_session_duration": int(os.environ.get("AI_SALES_MAX_SESSION_DURATION", "300")),
-    }
-    try:
-        upstream = requests.post(
-            "https://api.liveavatar.com/v1/sessions/token",
-            headers={"X-API-KEY": LIVEAVATAR_API_KEY, "Content-Type": "application/json"},
-            json=payload,
-            timeout=30,
-        )
-        data = upstream.json()
-    except Exception:
-        app.logger.exception("No se pudo iniciar la sesión FULL de Belén")
-        return jsonify({"error": "No se pudo iniciar la sesión de Belén."}), 502
-    if not upstream.ok or not data.get("data"):
-        app.logger.error("LiveAvatar rechazó la sesión: %s", upstream.status_code)
-        return jsonify({"error": "LiveAvatar no pudo iniciar la sesión."}), 502
-    response = jsonify({"session_token": data["data"]["session_token"], "session_id": data["data"]["session_id"]})
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
-
-
-# ---------------------------------------------------------------------------
-# Presupuestos profesionales para Belén (backend propio)
-# ---------------------------------------------------------------------------
-QUOTE_DIR = os.environ.get("QUOTE_DIR", "/tmp/ruiz_presupuestos")
-os.makedirs(QUOTE_DIR, exist_ok=True)
-
-
-def _quote_cors(resp):
-    resp.headers["Access-Control-Allow-Origin"] = "*"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    resp.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS, GET"
-    return resp
-
-
-def _money(value):
-    return f"${float(value):,.0f}".replace(",", ".")
-
-
-def _make_quote_pdf(payload, quote_id, path):
-    from reportlab.lib.pagesizes import A4
-    from reportlab.lib import colors
-    from reportlab.lib.enums import TA_LEFT, TA_RIGHT
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.units import cm
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
-
-    items = payload.get("items") or []
-    normalized = []
-    for raw in items:
-        qty = float(raw.get("cantidad", raw.get("quantity", 1)) or 1)
-        unit = float(raw.get("precio_unit", raw.get("unit_price", 0)) or 0)
-        subtotal = float(raw.get("subtotal", qty * unit) or 0)
-        normalized.append({
-            "descripcion": str(raw.get("descripcion", raw.get("description", "Trabajo de impresión"))),
-            "cantidad": qty,
-            "precio_unit": unit,
-            "subtotal": subtotal,
-        })
-    total = sum(item["subtotal"] for item in normalized)
-    nombre = str(payload.get("nombre", "Cliente"))
-    telefono = str(payload.get("telefono", payload.get("phone", "")))
-    nota = str(payload.get("nota", "Presupuesto solicitado a través de Belén."))
-
-    doc = SimpleDocTemplate(path, pagesize=A4, topMargin=1.5*cm, bottomMargin=1.8*cm,
-                            leftMargin=1.8*cm, rightMargin=1.8*cm,
-                            title=f"Presupuesto {quote_id} — Imprenta Ruiz",
-                            author="Imprenta Ruiz")
-    styles = getSampleStyleSheet()
-    blue = colors.HexColor("#1565C0")
-    dark = colors.HexColor("#263238")
-    light = colors.HexColor("#E3F2FD")
-    story = []
-    story.append(Paragraph("<font color='#1565C0' size='20'><b>IMPRENTA RUIZ</b></font>", styles["Normal"]))
-    story.append(Paragraph("Chacabuco 470 — Salta Capital · WhatsApp +54 9 387 210-1274 · impr.ruiz@gmail.com", ParagraphStyle("head", fontSize=8.5, textColor=dark)))
-    story.append(Spacer(1, 0.25*cm))
-    story.append(HRFlowable(width="100%", thickness=2, color=blue, spaceAfter=10))
-    story.append(Paragraph("<font color='#1565C0' size='16'><b>PRESUPUESTO</b></font>", styles["Normal"]))
-    story.append(Paragraph(f"N.º {quote_id} · Válido por 48 horas", ParagraphStyle("meta", fontSize=9, textColor=dark)))
-    story.append(Spacer(1, 0.25*cm))
-    cliente = f"<b>Cliente:</b> {nombre}"
-    if telefono: cliente += f" &nbsp;&nbsp; <b>WhatsApp:</b> {telefono}"
-    story.append(Paragraph(cliente, ParagraphStyle("client", fontSize=10, backColor=light, borderPad=8, textColor=dark)))
-    story.append(Spacer(1, 0.35*cm))
-    rows = [[Paragraph("<b>Descripción</b>", styles["Normal"]), Paragraph("<b>Cant.</b>", styles["Normal"]), Paragraph("<b>P. unit.</b>", styles["Normal"]), Paragraph("<b>Subtotal</b>", styles["Normal"])]]
-    for item in normalized:
-        q = str(int(item["cantidad"])) if item["cantidad"].is_integer() else str(item["cantidad"])
-        rows.append([Paragraph(item["descripcion"], ParagraphStyle("d", fontSize=9, textColor=dark)),
-                     Paragraph(q, ParagraphStyle("q", fontSize=9, alignment=TA_RIGHT)),
-                     Paragraph(_money(item["precio_unit"]), ParagraphStyle("u", fontSize=9, alignment=TA_RIGHT)),
-                     Paragraph(_money(item["subtotal"]), ParagraphStyle("s", fontSize=9, alignment=TA_RIGHT, textColor=blue))])
-    table = Table(rows, colWidths=[9.2*cm, 1.8*cm, 2.7*cm, 3.0*cm])
-    table.setStyle(TableStyle([("BACKGROUND", (0,0), (-1,0), blue), ("TEXTCOLOR", (0,0), (-1,0), colors.white),
-                               ("GRID", (0,0), (-1,-1), .4, colors.HexColor("#CFD8DC")),
-                               ("ROWBACKGROUNDS", (0,1), (-1,-1), [colors.white, colors.HexColor("#F5F5F5")]),
-                               ("VALIGN", (0,0), (-1,-1), "MIDDLE"), ("TOPPADDING", (0,0), (-1,-1), 7), ("BOTTOMPADDING", (0,0), (-1,-1), 7)]))
-    story.append(table)
-    story.append(Spacer(1, 0.3*cm))
-    total_table = Table([["", "", Paragraph("<b>TOTAL</b>", ParagraphStyle("tl", fontSize=12, textColor=blue, alignment=TA_RIGHT)), Paragraph(f"<b>{_money(total)}</b>", ParagraphStyle("tv", fontSize=12, textColor=blue, alignment=TA_RIGHT))]], colWidths=[9.2*cm, 1.8*cm, 2.7*cm, 3.0*cm])
-    total_table.setStyle(TableStyle([("LINEABOVE", (2,0), (-1,0), 1.5, blue), ("TOPPADDING", (2,0), (-1,0), 8)]))
-    story.append(total_table)
-    story.append(Spacer(1, 0.35*cm))
-    story.append(Paragraph(f"📝 {nota}", ParagraphStyle("note", fontSize=9, textColor=dark, backColor=colors.HexColor("#F5F5F5"), borderPad=7)))
-    doc.build(story)
-    return total
-
-
-@app.route("/api/presupuesto", methods=["POST", "OPTIONS"])
-def api_presupuesto():
-    """Genera un PDF de presupuesto para el flujo de Belén."""
-    if request.method == "OPTIONS":
-        return _quote_cors(jsonify({"ok": True}))
-    payload = request.get_json(silent=True) or {}
-    items = payload.get("items") or []
-    if not items:
-        return _quote_cors(jsonify({"error": "Falta el detalle del presupuesto."})), 400
-    quote_id = "P-" + datetime.utcnow().strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:4].upper()
-    path = os.path.join(QUOTE_DIR, quote_id + ".pdf")
-    try:
-        total = _make_quote_pdf(payload, quote_id, path)
-    except Exception as exc:
-        app.logger.exception("No se pudo generar el presupuesto")
-        return _quote_cors(jsonify({"error": "No se pudo generar el PDF."})), 500
-    response = jsonify({"ok": True, "quote_id": quote_id, "total": total,
-                        "pdf_url": request.host_url.rstrip("/") + "/api/presupuesto/" + quote_id + ".pdf"})
-    return _quote_cors(response)
-
-
-@app.route("/api/presupuesto/<quote_id>.pdf", methods=["GET", "OPTIONS"])
-def api_presupuesto_pdf(quote_id):
-    if request.method == "OPTIONS":
-        return _quote_cors(jsonify({"ok": True}))
-    if not re.fullmatch(r"P-[0-9]{8}-[0-9]{6}-[A-F0-9]{4}", quote_id):
-        return _quote_cors(jsonify({"error": "Presupuesto no encontrado."})), 404
-    path = os.path.join(QUOTE_DIR, quote_id + ".pdf")
-    if not os.path.isfile(path):
-        return _quote_cors(jsonify({"error": "Presupuesto no encontrado."})), 404
-    return _quote_cors(send_file(path, mimetype="application/pdf", as_attachment=False, download_name=quote_id + ".pdf"))
 
 
 # ---------------------------------------------------------------------------
