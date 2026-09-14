@@ -182,7 +182,9 @@ def imprenta_ruiz():
 /* Marco de Belen: contenido amplio para los controles, presentación más compacta. */
 .belen-panel{transform:translateY(-50%) scale(.88);transform-origin:right center}.belen-panel.is-open{animation:belen-fixed-in-compact .22s ease-out}@keyframes belen-fixed-in-compact{from{opacity:0;transform:translateY(-47%) scale(.84)}to{opacity:1;transform:translateY(-50%) scale(.88)}}
 @media(max-width:620px){.belen-panel{transform:translateY(-50%) scale(.82)}.belen-panel.is-open{animation:belen-fixed-in-compact-mobile .22s ease-out}@keyframes belen-fixed-in-compact-mobile{from{opacity:0;transform:translateY(-47%) scale(.78)}to{opacity:1;transform:translateY(-50%) scale(.82)}}}
+.belen-fullmode{display:flex;flex-direction:column;min-height:0;flex:1;background:#102f35}.belen-fullmode video{display:block;width:100%;height:auto;min-height:260px;flex:1;object-fit:cover;background:#102f35}.belen-full-controls{display:flex;gap:7px;padding:8px;background:#153f48}.belen-full-controls button{flex:1;border:0;border-radius:10px;padding:9px 7px;background:#25b463;color:#fff;font:800 11px Arial;cursor:pointer}.belen-full-controls #belenStop{background:#b42335}.belen-status{padding:7px 9px;background:#fff;color:#516274;font:700 10px/1.25 Arial;text-align:center;min-height:26px;box-sizing:border-box}
 </style>
+<script src="/static/liveavatar-sdk.js"></script>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
 </div>
@@ -214,8 +216,8 @@ def imprenta_ruiz():
   <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir a Belen, asistente virtual" aria-expanded="false"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt="Belen, asistente virtual de Imprenta Ruiz"></button>
   <section class="belen-panel" id="belenPanel" role="dialog" aria-modal="false" aria-labelledby="belenTitle">
     <header class="belen-head"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt=""><div><strong id="belenTitle">Belen</strong><span>Asistente virtual · Imprenta Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Belen">×</button></header>
-    <iframe class="belen-live-frame" id="belenLiveFrame" title="Belen, asistente virtual de Imprenta Ruiz" data-src="https://embed.liveavatar.com/v1/fca1a3c1-88b5-47ac-9110-a1ff8f2fb7f2?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
-    <div class="belen-foot">Podés hablarle a Belen usando el micrófono.</div>
+    <div class="belen-fullmode" id="belenFullMode"><video id="belenVideo" autoplay playsinline></video><div class="belen-full-controls"><button type="button" id="belenMic" aria-label="Activar micrófono">🎙️ Hablar</button><button type="button" id="belenStop" aria-label="Finalizar sesión">■ Finalizar</button></div><div class="belen-status" id="belenStatus">Tocá «Hablar» para iniciar la sesión.</div></div>
+    <div class="belen-foot">Belén funciona en modo FULL: conversa en vivo y usa el cerebro de Gemini.</div>
   </section>
 </div>
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
@@ -277,11 +279,36 @@ def imprenta_ruiz():
   var belenLauncher=document.getElementById('belenLauncher');
   var belenClose=document.getElementById('belenClose');
   var belenNudge=document.getElementById('belenNudge');
-  var belenFrame=document.getElementById('belenLiveFrame');
-  function toggleBelen(force){var open=typeof force==='boolean'?force:!belenPanel.classList.contains('is-open');if(open){belenPanel.classList.add('is-open');belenWidget.classList.add('belen-open');belenLauncher.setAttribute('aria-expanded','true');if(belenNudge)belenNudge.style.display='none';if(belenFrame&&belenFrame.getAttribute('src')==='about:blank')belenFrame.src=belenFrame.getAttribute('data-src')}else{belenPanel.classList.remove('is-open');belenWidget.classList.remove('belen-open');belenLauncher.setAttribute('aria-expanded','false')}}
+  var belenVideo=document.getElementById('belenVideo');
+  var belenMic=document.getElementById('belenMic');
+  var belenStop=document.getElementById('belenStop');
+  var belenStatus=document.getElementById('belenStatus');
+  var belenSession=null, belenStarting=false;
+  function setBelenStatus(text){if(belenStatus)belenStatus.textContent=text}
+  async function startBelenFullMode(){
+    if(belenSession||belenStarting)return;
+    belenStarting=true;setBelenStatus('Conectando a Belén…');
+    try{
+      var tokenRes=await fetch('/api/liveavatar/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
+      var tokenData=await tokenRes.json();
+      if(!tokenRes.ok||!tokenData.session_token)throw new Error(tokenData.error||'No se pudo iniciar la sesión');
+      var SDK=window.LiveAvatarSDK;
+      if(!SDK||!SDK.LiveAvatarSession)throw new Error('No se pudo cargar el modo FULL');
+      belenSession=new SDK.LiveAvatarSession(tokenData.session_token,{voiceChat:true});
+      belenSession.on('session.stream_ready',function(){if(belenVideo)belenSession.attach(belenVideo);setBelenStatus('Belén está lista. Podés hablarle.');if(belenMic)belenMic.textContent='🎙️ Micrófono activo'});
+      belenSession.on('session.disconnected',function(){belenSession=null;if(belenMic)belenMic.textContent='🎙️ Hablar';setBelenStatus('Sesión finalizada. Tocá «Hablar» para volver a iniciar.')});
+      await belenSession.start();
+      setBelenStatus('Belén está lista. Podés hablarle.');
+    }catch(err){console.error(err);belenSession=null;setBelenStatus('No se pudo iniciar la sesión. Probá nuevamente.');}
+    finally{belenStarting=false}
+  }
+  async function stopBelenFullMode(){if(belenSession){await belenSession.stop();belenSession=null}if(belenVideo)belenVideo.srcObject=null;if(belenMic)belenMic.textContent='🎙️ Hablar';setBelenStatus('Sesión finalizada. Tocá «Hablar» para volver a iniciar.')}
+  function toggleBelen(force){var open=typeof force==='boolean'?force:!belenPanel.classList.contains('is-open');if(open){belenPanel.classList.add('is-open');belenWidget.classList.add('belen-open');belenLauncher.setAttribute('aria-expanded','true');if(belenNudge)belenNudge.style.display='none';startBelenFullMode()}else{belenPanel.classList.remove('is-open');belenWidget.classList.remove('belen-open');belenLauncher.setAttribute('aria-expanded','false')}}
   if(belenLauncher)belenLauncher.addEventListener('click',function(){toggleBelen()});
   if(belenClose)belenClose.addEventListener('click',function(){toggleBelen(false)});
   if(belenNudge)belenNudge.addEventListener('click',function(){toggleBelen(true)});
+  if(belenMic)belenMic.addEventListener('click',function(){if(!belenSession)startBelenFullMode()});
+  if(belenStop)belenStop.addEventListener('click',function(){stopBelenFullMode()});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')toggleBelen(false)});
   var rulitoMessage=document.querySelector('.rulito-message');
   var rulitoMessages=[
@@ -1084,6 +1111,65 @@ def api_chat_completions():
         stream_response.headers["Access-Control-Allow-Origin"] = "*"
         return stream_response
     response = jsonify(response_data)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
+# ---------------------------------------------------------------------------
+# Sesiones FULL Mode de Belén
+# ---------------------------------------------------------------------------
+LIVEAVATAR_API_KEY = os.environ.get("LIVEAVATAR_API_KEY", "")
+LIVEAVATAR_AVATAR_ID = os.environ.get("AI_SALES_AVATAR_ID", "513fd1b7-7ef9-466d-9af2-344e51eeb833")
+LIVEAVATAR_VOICE_ID = os.environ.get("AI_SALES_VOICE_ID", "4f3b1e99-b580-4f05-9b67-a5f585be0232")
+LIVEAVATAR_CONTEXT_ID = os.environ.get("AI_SALES_CONTEXT_ID", "87f500b2-57dd-4bfa-ac11-fd2c7d7edb73")
+LIVEAVATAR_LLM_CONFIGURATION_ID = os.environ.get("LLM_CONFIGURATION_ID", "08f7de6a-d44d-46b3-bdf0-ad96efb5a4ab")
+
+
+@app.route("/api/liveavatar/session", methods=["POST", "OPTIONS"])
+def api_liveavatar_session():
+    """Emite un token efímero para que el navegador inicie una sesión FULL."""
+    if request.method == "OPTIONS":
+        response = jsonify({"ok": True})
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+        return response
+    if not LIVEAVATAR_API_KEY:
+        return jsonify({"error": "La sesión de Belén todavía no está configurada."}), 503
+    payload_in = request.get_json(silent=True) or {}
+    name = str(payload_in.get("name", "Cliente") or "Cliente").strip()[:100]
+    email = str(payload_in.get("email", "") or "").strip()[:160]
+    opening = f"Hola {name}, soy Belén, la asistente de Imprenta Ruiz. ¿Qué trabajo necesitás presupuestar?"
+    dynamic = {"username": name, "opening_intro": opening}
+    if email:
+        dynamic["email"] = email
+    payload = {
+        "mode": "FULL",
+        "avatar_id": LIVEAVATAR_AVATAR_ID,
+        "avatar_persona": {
+            "voice_id": LIVEAVATAR_VOICE_ID,
+            "context_id": LIVEAVATAR_CONTEXT_ID,
+            "language": "es",
+        },
+        "llm_configuration_id": LIVEAVATAR_LLM_CONFIGURATION_ID,
+        "dynamic_variables": dynamic,
+        "max_session_duration": int(os.environ.get("AI_SALES_MAX_SESSION_DURATION", "300")),
+    }
+    try:
+        upstream = requests.post(
+            "https://api.liveavatar.com/v1/sessions/token",
+            headers={"X-API-KEY": LIVEAVATAR_API_KEY, "Content-Type": "application/json"},
+            json=payload,
+            timeout=30,
+        )
+        data = upstream.json()
+    except Exception:
+        app.logger.exception("No se pudo iniciar la sesión FULL de Belén")
+        return jsonify({"error": "No se pudo iniciar la sesión de Belén."}), 502
+    if not upstream.ok or not data.get("data"):
+        app.logger.error("LiveAvatar rechazó la sesión: %s", upstream.status_code)
+        return jsonify({"error": "LiveAvatar no pudo iniciar la sesión."}), 502
+    response = jsonify({"session_token": data["data"]["session_token"], "session_id": data["data"]["session_id"]})
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
