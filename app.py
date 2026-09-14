@@ -177,7 +177,7 @@ def imprenta_ruiz():
 .send-carousel{top:calc(50% + 18px)}.belen-widget{bottom:calc(50% + 42px)}.belen-launcher{width:56px;height:56px}.belen-nudge{right:64px;bottom:10px;width:160px}.belen-panel{width:min(280px,calc(100vw - 88px));height:min(600px,calc(100vh - 90px))}.belen-live-frame{aspect-ratio:9/16}
 @media(max-width:620px){.send-carousel{top:calc(50% + 16px)}.belen-widget{bottom:calc(50% + 37px)}.belen-launcher{width:48px;height:48px}.belen-nudge{right:56px;bottom:7px;width:140px}.belen-panel{right:65px;width:min(245px,calc(100vw - 78px));height:min(540px,calc(100vh - 85px))}}
 /* Tres bloques equilibrados: marca, precios y cómo llegar. */
-.prices-overlay{top:33.8%;height:32.8%}.location-split{left:18.5%;top:72.55%;width:62.5%;height:7.2%}
+.prices-overlay{top:33.8%;height:36.2%}.location-split{left:18.5%;top:72.55%;width:62.5%;height:7.2%}
 </style>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
