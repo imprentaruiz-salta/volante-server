@@ -217,7 +217,7 @@ def imprenta_ruiz():
   <section class="belen-panel" id="belenPanel" role="dialog" aria-modal="false" aria-labelledby="belenTitle">
     <header class="belen-head"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt=""><div><strong id="belenTitle">Belen</strong><span>Asistente virtual · Imprenta Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Belen">×</button></header>
     <iframe class="belen-live-frame" id="belenLiveFrame" title="Belen, asistente virtual de Imprenta Ruiz" data-src="https://embed.liveavatar.com/v1/fca1a3c1-88b5-47ac-9110-a1ff8f2fb7f2?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
-    <div class="belen-foot">Podés hablarle a Belen usando el micrófono.</div>
+    <div class="belen-foot">Podés hablarle a Belen usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>
   </section>
 </div>
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
