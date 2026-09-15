@@ -365,7 +365,7 @@ def imprenta_ruiz():
   function closeQuote(){if(modal)modal.classList.remove("is-open")}
   function addRow(desc,qty,unit){var row=document.createElement("div");row.className="quote-row";row.innerHTML='<input class="q-desc" placeholder="Descripción" value="'+(desc||"")+'" required><input class="q-qty" type="number" min="1" step="1" value="'+(qty||1)+'" required><input class="q-unit" type="number" min="0" step="1" placeholder="$ unit." value="'+(unit||"")+'" required><button type="button" class="quote-remove" aria-label="Quitar ítem">×</button>';row.querySelector(".quote-remove").addEventListener("click",function(){row.remove()});rows.appendChild(row)}
   if(open)open.addEventListener("click",function(){modal.classList.add("is-open");if(!rows.children.length)addRow()});if(close)close.addEventListener("click",closeQuote);if(modal)modal.addEventListener("click",function(e){if(e.target===modal)closeQuote()});if(add)add.addEventListener("click",function(){addRow()});
-  if(form)form.addEventListener("submit",async function(e){e.preventDefault();var items=[];rows.querySelectorAll(".quote-row").forEach(function(row){items.push({descripcion:row.querySelector(".q-desc").value.trim(),cantidad:Number(row.querySelector(".q-qty").value),precio_unit:Number(row.querySelector(".q-unit").value)})});if(!items.length)return;var payload={nombre:document.getElementById("quoteName").value.trim(),telefono:document.getElementById("quotePhone").value.trim(),nota:document.getElementById("quoteNote").value.trim(),items:items};result.classList.add("is-visible");result.textContent="Generando presupuesto…";try{var r=await fetch("/api/presupuesto",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"No se pudo generar");var wa="Hola, te envío el presupuesto de Imprenta Ruiz. Total: $"+Number(d.total).toLocaleString("es-AR")+". PDF: "+d.pdf_url;var phone=(payload.telefono||"").replace(/[^0-9]/g,"");if(phone.length===10)phone="549"+phone;result.innerHTML="Presupuesto generado. Total: $"+Number(d.total).toLocaleString("es-AR")+"<br><a href='"+d.pdf_url+"' target='_blank'>Abrir o descargar PDF</a>"+(payload.telefono?"<br><a class='quote-wa' target='_blank' href='https://wa.me/"+phone+"?text="+encodeURIComponent(wa)+"'>Preparar WhatsApp</a>":"")}catch(err){result.textContent="No se pudo generar el PDF. Revisá los datos e intentá nuevamente."}})
+  if(form)form.addEventListener("submit",async function(e){e.preventDefault();var items=[];rows.querySelectorAll(".quote-row").forEach(function(row){items.push({descripcion:row.querySelector(".q-desc").value.trim(),cantidad:Number(row.querySelector(".q-qty").value),precio_unit:Number(row.querySelector(".q-unit").value)})});if(!items.length)return;var payload={nombre:document.getElementById("quoteName").value.trim(),telefono:document.getElementById("quotePhone").value.trim(),nota:document.getElementById("quoteNote").value.trim(),items:items};result.classList.add("is-visible");result.textContent="Generando presupuesto…";try{var r=await fetch("/api/presupuesto",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"No se pudo generar");var wa="Hola, te envío el presupuesto de Imprenta Ruiz. Total: $"+Number(d.total).toLocaleString("es-AR")+". PDF: "+d.pdf_url;var phone=(payload.telefono||"").replace(/[^0-9]/g,"");if(phone.length===10)phone="549"+phone;result.innerHTML="Presupuesto generado. Total: $"+Number(d.total).toLocaleString("es-AR")+"<br><a href='"+d.pdf_url+"' target='_blank'>Abrir o descargar PDF</a>"+(payload.telefono?"<br><button type='button' class='quote-wa quote-send' id='quoteSend'>Confirmar y enviar por WhatsApp</button>":"");if(payload.telefono){document.getElementById("quoteSend").addEventListener("click",async function(){var btn=this;btn.disabled=true;btn.textContent="Registrando envío…";try{var sr=await fetch("/api/presupuesto/"+d.quote_id+"/enviar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telefono:payload.telefono,total:d.total})}),sd=await sr.json();if(!sr.ok||!sd.ok)throw new Error(sd.error||"No se pudo registrar");btn.textContent="✅ Envío confirmado";result.insertAdjacentHTML("beforeend","<br>El PDF quedó confirmado para enviarse al WhatsApp indicado.")}catch(x){btn.disabled=false;btn.textContent="Confirmar y enviar por WhatsApp";alert("No se pudo registrar el envío. Revisá el número e intentá nuevamente.")}})}}catch(err){result.textContent="No se pudo generar el PDF. Revisá los datos e intentá nuevamente."}})
 })();
 </script>
 '''
@@ -971,7 +971,42 @@ def carnet_procesar():
 # Presupuestos profesionales para Belén (backend propio)
 # ---------------------------------------------------------------------------
 QUOTE_DIR = os.environ.get("QUOTE_DIR", "/tmp/ruiz_presupuestos")
+QUOTE_DB = os.environ.get("QUOTE_DB", os.path.join(QUOTE_DIR, "queue.sqlite3"))
+QUOTE_QUEUE_KEY = os.environ.get("QUOTE_QUEUE_KEY", "")
 os.makedirs(QUOTE_DIR, exist_ok=True)
+
+
+def _init_quote_queue():
+    with sqlite3.connect(QUOTE_DB) as db:
+        db.execute("""CREATE TABLE IF NOT EXISTS quote_sends (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            quote_id TEXT NOT NULL UNIQUE,
+            phone TEXT NOT NULL,
+            pdf_url TEXT NOT NULL,
+            total REAL NOT NULL DEFAULT 0,
+            status TEXT NOT NULL DEFAULT 'pending',
+            created TEXT NOT NULL,
+            claimed TEXT DEFAULT '',
+            sent TEXT DEFAULT '',
+            error TEXT DEFAULT ''
+        )""")
+        db.commit()
+
+
+def _normalize_quote_phone(value):
+    digits = re.sub(r"[^0-9]", "", str(value or ""))
+    if digits.startswith("00"):
+        digits = digits[2:]
+    if digits.startswith("0"):
+        digits = digits[1:]
+    if len(digits) == 10:
+        digits = "549" + digits
+    if not digits.startswith("54") or len(digits) < 12:
+        return ""
+    return digits
+
+
+_init_quote_queue()
 
 
 def _quote_cors(resp):
@@ -1085,6 +1120,64 @@ def api_presupuesto_pdf(quote_id):
         return _quote_cors(jsonify({"error": "Presupuesto no encontrado."})), 404
     return _quote_cors(send_file(path, mimetype="application/pdf", as_attachment=False, download_name=quote_id + ".pdf"))
 
+
+
+@app.route("/api/presupuesto/<quote_id>/enviar", methods=["POST", "OPTIONS"])
+def api_presupuesto_enviar(quote_id):
+    """Registra el envío del PDF después de la confirmación del cliente."""
+    if request.method == "OPTIONS":
+        return _quote_cors(jsonify({"ok": True}))
+    if not re.fullmatch(r"P-[0-9]{8}-[0-9]{6}-[A-F0-9]{4}", quote_id):
+        return _quote_cors(jsonify({"error": "Presupuesto no encontrado."})), 404
+    payload = request.get_json(silent=True) or {}
+    phone = _normalize_quote_phone(payload.get("telefono", payload.get("phone", "")))
+    if not phone:
+        return _quote_cors(jsonify({"error": "Ingresá un WhatsApp argentino válido."})), 400
+    path = os.path.join(QUOTE_DIR, quote_id + ".pdf")
+    if not os.path.isfile(path):
+        return _quote_cors(jsonify({"error": "El PDF ya no está disponible."})), 404
+    with sqlite3.connect(QUOTE_DB) as db:
+        row = db.execute("SELECT pdf_url, total, status FROM quote_sends WHERE quote_id=?", (quote_id,)).fetchone()
+        if row and row[2] in ("pending", "claimed", "sent"):
+            return _quote_cors(jsonify({"ok": True, "status": row[2], "message": "El presupuesto ya está en proceso de envío."}))
+        pdf_url = request.host_url.rstrip("/") + "/api/presupuesto/" + quote_id + ".pdf"
+        now = datetime.utcnow().isoformat(timespec="seconds")
+        db.execute("INSERT OR REPLACE INTO quote_sends(quote_id,phone,pdf_url,total,status,created,claimed,sent,error) VALUES(?,?,?,?,?,?,?,?,?)",
+                   (quote_id, phone, pdf_url, float(payload.get("total", 0) or 0), "pending", now, "", "", ""))
+        db.commit()
+    return _quote_cors(jsonify({"ok": True, "status": "pending", "message": "Presupuesto confirmado y en cola de envío por WhatsApp."}))
+
+
+@app.route("/api/presupuesto/cola", methods=["GET"])
+def api_presupuesto_cola():
+    """Entrega un envío pendiente al proceso autorizado de WhatsApp."""
+    if not QUOTE_QUEUE_KEY or request.headers.get("X-Quote-Queue-Key", "") != QUOTE_QUEUE_KEY:
+        return jsonify({"error": "No autorizado."}), 401
+    with sqlite3.connect(QUOTE_DB) as db:
+        db.row_factory = sqlite3.Row
+        row = db.execute("SELECT * FROM quote_sends WHERE status='pending' ORDER BY id LIMIT 1").fetchone()
+        if not row:
+            return jsonify({"ok": True, "pending": None})
+        now = datetime.utcnow().isoformat(timespec="seconds")
+        db.execute("UPDATE quote_sends SET status='claimed', claimed=? WHERE id=?", (now, row["id"]))
+        db.commit()
+        return jsonify({"ok": True, "pending": {"id": row["id"], "quote_id": row["quote_id"], "phone": row["phone"], "pdf_url": row["pdf_url"], "total": row["total"]}})
+
+
+@app.route("/api/presupuesto/cola/<int:item_id>/resultado", methods=["POST"])
+def api_presupuesto_cola_resultado(item_id):
+    if not QUOTE_QUEUE_KEY or request.headers.get("X-Quote-Queue-Key", "") != QUOTE_QUEUE_KEY:
+        return jsonify({"error": "No autorizado."}), 401
+    payload = request.get_json(silent=True) or {}
+    ok = bool(payload.get("ok"))
+    with sqlite3.connect(QUOTE_DB) as db:
+        now = datetime.utcnow().isoformat(timespec="seconds")
+        if ok:
+            db.execute("UPDATE quote_sends SET status='sent', sent=?, error='' WHERE id=?", (now, item_id))
+        else:
+            db.execute("UPDATE quote_sends SET status='pending', claimed='', error=? WHERE id=?", (str(payload.get("error", "Error de envío"))[:400], item_id))
+        db.commit()
+    return jsonify({"ok": True})
 
 # ---------------------------------------------------------------------------
 # Arranque
