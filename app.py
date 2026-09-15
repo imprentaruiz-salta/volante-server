@@ -13,6 +13,7 @@ import uuid
 import sqlite3
 import base64
 import requests
+import re
 from datetime import datetime
 from pathlib import Path
 from PIL import Image
@@ -104,6 +105,8 @@ def index():
 def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
+    # El avatar conversa en vivo; este botón abre el emisor de presupuesto PDF.
+    html = html.replace('<div class="belen-foot">Podés hablarle a Belen usando el micrófono.</div>', '<div class="belen-foot">Podés hablarle a Belen usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>', 1)
     # Carrusel de tres páginas: todas las tarjetas conservan el mismo tamaño.
     # La segunda página reúne las fotos y la tercera los servicios restantes.
     track_start = html.find('<div class="price-track">')
@@ -342,7 +345,31 @@ def imprenta_ruiz():
 })();
 </script>
 '''
-    html = html.replace('</body>', location_ui + '</body>', 1)
+    quote_ui = '''
+<style>
+.belen-quote-open{display:block;width:100%;margin-top:7px;border:0;border-radius:9px;background:#1565c0;color:#fff;padding:8px 6px;font:800 11px Arial;cursor:pointer}
+.quote-modal{display:none;position:fixed;inset:0;z-index:110;background:rgba(3,16,36,.84);align-items:center;justify-content:center;padding:12px;font-family:Arial,sans-serif}.quote-modal.is-open{display:flex}.quote-card{position:relative;width:min(620px,96vw);max-height:94vh;overflow:auto;border-radius:20px;background:#fff;color:#071b3b;padding:20px;box-shadow:0 20px 60px #0009}.quote-card h2{margin:0 42px 5px 0;font-size:22px}.quote-card>p{margin:0 0 14px;color:#526579;font-size:13px;font-weight:700}.quote-close{position:absolute;right:12px;top:10px;border:0;border-radius:10px;background:#071b3b;color:#fff;padding:7px 10px;font-weight:900;cursor:pointer}.quote-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.quote-field{display:flex;flex-direction:column;gap:4px}.quote-field.full{grid-column:1/-1}.quote-field label{font-size:12px;font-weight:900}.quote-field input,.quote-field textarea{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:9px;padding:9px;font:600 13px Arial;color:#071b3b}.quote-field textarea{min-height:55px;resize:vertical}.quote-items{margin-top:14px}.quote-items h3{margin:0 0 7px;font-size:14px}.quote-row{display:grid;grid-template-columns:minmax(0,1fr) 76px 105px 30px;gap:6px;margin-bottom:7px}.quote-row input{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:8px;padding:8px;font:600 12px Arial}.quote-remove{border:0;border-radius:8px;background:#fee2e2;color:#991b1b;font-weight:900;cursor:pointer}.quote-add{border:1px solid #8bc5cc;border-radius:9px;background:#f2fbfb;color:#17606a;padding:7px 10px;font-weight:900;cursor:pointer}.quote-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}.quote-submit{border:0;border-radius:10px;background:#25b463;color:#fff;padding:10px 14px;font-weight:900;cursor:pointer}.quote-result{display:none;margin-top:13px;padding:11px;border-radius:11px;background:#e9f8ef;color:#14532d;font-size:13px;font-weight:800}.quote-result.is-visible{display:block}.quote-result a{color:#075fa8}.quote-wa{display:inline-block;margin-top:8px;border-radius:9px;background:#25b463;color:#fff;text-decoration:none;padding:8px 10px;font-size:12px}
+@media(max-width:620px){.quote-card{padding:16px}.quote-grid{grid-template-columns:1fr}.quote-field.full{grid-column:auto}.quote-row{grid-template-columns:minmax(0,1fr) 62px 90px 28px}.quote-row input{font-size:11px}.quote-actions button{flex:1}}
+</style>
+<div class="quote-modal" id="quoteModal" role="dialog" aria-modal="true" aria-labelledby="quoteTitle">
+  <div class="quote-card"><button class="quote-close" type="button" id="quoteClose">Cerrar ✕</button><h2 id="quoteTitle">📄 Presupuesto de Imprenta Ruiz</h2><p>Belén te ayuda a calcularlo; completá los renglones y generá el PDF para enviar.</p>
+    <form id="quoteForm"><div class="quote-grid"><div class="quote-field"><label for="quoteName">Cliente *</label><input id="quoteName" required></div><div class="quote-field"><label for="quotePhone">WhatsApp</label><input id="quotePhone" type="tel" placeholder="387 210-1274"></div><div class="quote-field full"><label for="quoteNote">Observación</label><textarea id="quoteNote" placeholder="Detalles, medidas o plazo"></textarea></div></div>
+      <div class="quote-items"><h3>Ítems del presupuesto</h3><div id="quoteRows"></div><button type="button" class="quote-add" id="quoteAdd">+ Agregar ítem</button></div>
+      <div class="quote-actions"><button type="submit" class="quote-submit">Generar PDF</button></div>
+    </form><div class="quote-result" id="quoteResult"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var modal=document.getElementById("quoteModal"), open=document.getElementById("belenQuoteOpen"), close=document.getElementById("quoteClose"), rows=document.getElementById("quoteRows"), add=document.getElementById("quoteAdd"), form=document.getElementById("quoteForm"), result=document.getElementById("quoteResult");
+  function closeQuote(){if(modal)modal.classList.remove("is-open")}
+  function addRow(desc,qty,unit){var row=document.createElement("div");row.className="quote-row";row.innerHTML='<input class="q-desc" placeholder="Descripción" value="'+(desc||"")+'" required><input class="q-qty" type="number" min="1" step="1" value="'+(qty||1)+'" required><input class="q-unit" type="number" min="0" step="1" placeholder="$ unit." value="'+(unit||"")+'" required><button type="button" class="quote-remove" aria-label="Quitar ítem">×</button>';row.querySelector(".quote-remove").addEventListener("click",function(){row.remove()});rows.appendChild(row)}
+  if(open)open.addEventListener("click",function(){modal.classList.add("is-open");if(!rows.children.length)addRow()});if(close)close.addEventListener("click",closeQuote);if(modal)modal.addEventListener("click",function(e){if(e.target===modal)closeQuote()});if(add)add.addEventListener("click",function(){addRow()});
+  if(form)form.addEventListener("submit",async function(e){e.preventDefault();var items=[];rows.querySelectorAll(".quote-row").forEach(function(row){items.push({descripcion:row.querySelector(".q-desc").value.trim(),cantidad:Number(row.querySelector(".q-qty").value),precio_unit:Number(row.querySelector(".q-unit").value)})});if(!items.length)return;var payload={nombre:document.getElementById("quoteName").value.trim(),telefono:document.getElementById("quotePhone").value.trim(),nota:document.getElementById("quoteNote").value.trim(),items:items};result.classList.add("is-visible");result.textContent="Generando presupuesto…";try{var r=await fetch("/api/presupuesto",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"No se pudo generar");var wa="Hola, te envío el presupuesto de Imprenta Ruiz. Total: $"+Number(d.total).toLocaleString("es-AR")+". PDF: "+d.pdf_url;result.innerHTML="Presupuesto generado. Total: $"+Number(d.total).toLocaleString("es-AR")+"<br><a href=\""+d.pdf_url+"\" target=\"_blank\">Abrir o descargar PDF</a>"+(payload.telefono?"<br><a class=\"quote-wa\" target=\"_blank\" href=\"https://wa.me/"+payload.telefono.replace(/\\D/g,"")+"?text="+encodeURIComponent(wa)+"\">Preparar WhatsApp</a>":"")}catch(err){result.textContent="No se pudo generar el PDF. Revisá los datos e intentá nuevamente."}})
+})();
+</script>
+'''
+    html = html.replace('</body>', location_ui + quote_ui + '</body>', 1)
     social_preview = """
 <meta property="og:type" content="website">
 <meta property="og:title" content="Imprenta Ruiz">
@@ -938,6 +965,125 @@ def carnet_procesar():
     img_b64 = base64.b64encode(buf.read()).decode("utf-8")
 
     return jsonify({"image": img_b64})
+
+
+# ---------------------------------------------------------------------------
+# Presupuestos profesionales para Belén (backend propio)
+# ---------------------------------------------------------------------------
+QUOTE_DIR = os.environ.get("QUOTE_DIR", "/tmp/ruiz_presupuestos")
+os.makedirs(QUOTE_DIR, exist_ok=True)
+
+
+def _quote_cors(resp):
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS, GET"
+    return resp
+
+
+def _money(value):
+    return f"${float(value):,.0f}".replace(",", ".")
+
+
+def _make_quote_pdf(payload, quote_id, path):
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib import colors
+    from reportlab.lib.enums import TA_LEFT, TA_RIGHT
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.units import cm
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+
+    items = payload.get("items") or []
+    normalized = []
+    for raw in items:
+        qty = float(raw.get("cantidad", raw.get("quantity", 1)) or 1)
+        unit = float(raw.get("precio_unit", raw.get("unit_price", 0)) or 0)
+        subtotal = float(raw.get("subtotal", qty * unit) or 0)
+        normalized.append({
+            "descripcion": str(raw.get("descripcion", raw.get("description", "Trabajo de impresión"))),
+            "cantidad": qty,
+            "precio_unit": unit,
+            "subtotal": subtotal,
+        })
+    total = sum(item["subtotal"] for item in normalized)
+    nombre = str(payload.get("nombre", "Cliente"))
+    telefono = str(payload.get("telefono", payload.get("phone", "")))
+    nota = str(payload.get("nota", "Presupuesto solicitado a través de Belén."))
+
+    doc = SimpleDocTemplate(path, pagesize=A4, topMargin=1.5*cm, bottomMargin=1.8*cm,
+                            leftMargin=1.8*cm, rightMargin=1.8*cm,
+                            title=f"Presupuesto {quote_id} — Imprenta Ruiz",
+                            author="Imprenta Ruiz")
+    styles = getSampleStyleSheet()
+    blue = colors.HexColor("#1565C0")
+    dark = colors.HexColor("#263238")
+    light = colors.HexColor("#E3F2FD")
+    story = []
+    story.append(Paragraph("<font color='#1565C0' size='20'><b>IMPRENTA RUIZ</b></font>", styles["Normal"]))
+    story.append(Paragraph("Chacabuco 470 — Salta Capital · WhatsApp +54 9 387 210-1274 · impr.ruiz@gmail.com", ParagraphStyle("head", fontSize=8.5, textColor=dark)))
+    story.append(Spacer(1, 0.25*cm))
+    story.append(HRFlowable(width="100%", thickness=2, color=blue, spaceAfter=10))
+    story.append(Paragraph("<font color='#1565C0' size='16'><b>PRESUPUESTO</b></font>", styles["Normal"]))
+    story.append(Paragraph(f"N.º {quote_id} · Válido por 48 horas", ParagraphStyle("meta", fontSize=9, textColor=dark)))
+    story.append(Spacer(1, 0.25*cm))
+    cliente = f"<b>Cliente:</b> {nombre}"
+    if telefono: cliente += f" &nbsp;&nbsp; <b>WhatsApp:</b> {telefono}"
+    story.append(Paragraph(cliente, ParagraphStyle("client", fontSize=10, backColor=light, borderPad=8, textColor=dark)))
+    story.append(Spacer(1, 0.35*cm))
+    rows = [[Paragraph("<b>Descripción</b>", styles["Normal"]), Paragraph("<b>Cant.</b>", styles["Normal"]), Paragraph("<b>P. unit.</b>", styles["Normal"]), Paragraph("<b>Subtotal</b>", styles["Normal"])]]
+    for item in normalized:
+        q = str(int(item["cantidad"])) if item["cantidad"].is_integer() else str(item["cantidad"])
+        rows.append([Paragraph(item["descripcion"], ParagraphStyle("d", fontSize=9, textColor=dark)),
+                     Paragraph(q, ParagraphStyle("q", fontSize=9, alignment=TA_RIGHT)),
+                     Paragraph(_money(item["precio_unit"]), ParagraphStyle("u", fontSize=9, alignment=TA_RIGHT)),
+                     Paragraph(_money(item["subtotal"]), ParagraphStyle("s", fontSize=9, alignment=TA_RIGHT, textColor=blue))])
+    table = Table(rows, colWidths=[9.2*cm, 1.8*cm, 2.7*cm, 3.0*cm])
+    table.setStyle(TableStyle([("BACKGROUND", (0,0), (-1,0), blue), ("TEXTCOLOR", (0,0), (-1,0), colors.white),
+                               ("GRID", (0,0), (-1,-1), .4, colors.HexColor("#CFD8DC")),
+                               ("ROWBACKGROUNDS", (0,1), (-1,-1), [colors.white, colors.HexColor("#F5F5F5")]),
+                               ("VALIGN", (0,0), (-1,-1), "MIDDLE"), ("TOPPADDING", (0,0), (-1,-1), 7), ("BOTTOMPADDING", (0,0), (-1,-1), 7)]))
+    story.append(table)
+    story.append(Spacer(1, 0.3*cm))
+    total_table = Table([["", "", Paragraph("<b>TOTAL</b>", ParagraphStyle("tl", fontSize=12, textColor=blue, alignment=TA_RIGHT)), Paragraph(f"<b>{_money(total)}</b>", ParagraphStyle("tv", fontSize=12, textColor=blue, alignment=TA_RIGHT))]], colWidths=[9.2*cm, 1.8*cm, 2.7*cm, 3.0*cm])
+    total_table.setStyle(TableStyle([("LINEABOVE", (2,0), (-1,0), 1.5, blue), ("TOPPADDING", (2,0), (-1,0), 8)]))
+    story.append(total_table)
+    story.append(Spacer(1, 0.35*cm))
+    story.append(Paragraph(f"📝 {nota}", ParagraphStyle("note", fontSize=9, textColor=dark, backColor=colors.HexColor("#F5F5F5"), borderPad=7)))
+    doc.build(story)
+    return total
+
+
+@app.route("/api/presupuesto", methods=["POST", "OPTIONS"])
+def api_presupuesto():
+    """Genera un PDF de presupuesto para el flujo de Belén."""
+    if request.method == "OPTIONS":
+        return _quote_cors(jsonify({"ok": True}))
+    payload = request.get_json(silent=True) or {}
+    items = payload.get("items") or []
+    if not items:
+        return _quote_cors(jsonify({"error": "Falta el detalle del presupuesto."})), 400
+    quote_id = "P-" + datetime.utcnow().strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:4].upper()
+    path = os.path.join(QUOTE_DIR, quote_id + ".pdf")
+    try:
+        total = _make_quote_pdf(payload, quote_id, path)
+    except Exception as exc:
+        app.logger.exception("No se pudo generar el presupuesto")
+        return _quote_cors(jsonify({"error": "No se pudo generar el PDF."})), 500
+    response = jsonify({"ok": True, "quote_id": quote_id, "total": total,
+                        "pdf_url": request.host_url.rstrip("/") + "/api/presupuesto/" + quote_id + ".pdf"})
+    return _quote_cors(response)
+
+
+@app.route("/api/presupuesto/<quote_id>.pdf", methods=["GET", "OPTIONS"])
+def api_presupuesto_pdf(quote_id):
+    if request.method == "OPTIONS":
+        return _quote_cors(jsonify({"ok": True}))
+    if not re.fullmatch(r"P-[0-9]{8}-[0-9]{6}-[A-F0-9]{4}", quote_id):
+        return _quote_cors(jsonify({"error": "Presupuesto no encontrado."})), 404
+    path = os.path.join(QUOTE_DIR, quote_id + ".pdf")
+    if not os.path.isfile(path):
+        return _quote_cors(jsonify({"error": "Presupuesto no encontrado."})), 404
+    return _quote_cors(send_file(path, mimetype="application/pdf", as_attachment=False, download_name=quote_id + ".pdf"))
 
 
 # ---------------------------------------------------------------------------
