@@ -108,6 +108,7 @@ def index():
 
 
 @app.route("/imprenta-ruiz")
+@app.route("/imprenta-ruiz/")
 def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
