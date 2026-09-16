@@ -216,8 +216,8 @@ def imprenta_ruiz():
 @media(max-width:620px){.belen-panel{transform:translateY(-50%) scale(.82)}.belen-panel.is-open{animation:belen-fixed-in-compact-mobile .22s ease-out}@keyframes belen-fixed-in-compact-mobile{from{opacity:0;transform:translateY(-47%) scale(.78)}to{opacity:1;transform:translateY(-50%) scale(.82)}}}
 /* Los tres accesos flotantes quedan más abajo para no tapar el carrusel. */
 .send-carousel{top:calc(50% + 225px)!important}
-.belen-widget{right:76px!important;top:calc(50% + 225px)!important;bottom:auto!important}
-@media(max-width:620px){.send-carousel{top:calc(50% + 195px)!important}.belen-widget{right:66px!important;top:calc(50% + 195px)!important;bottom:auto!important}}
+.belen-widget{right:auto!important;left:50%!important;top:calc(50% + 250px)!important;bottom:auto!important;transform:translateX(-50%)!important}
+@media(max-width:620px){.send-carousel{top:calc(50% + 195px)!important}.belen-widget{right:auto!important;left:50%!important;top:calc(50% + 205px)!important;bottom:auto!important;transform:translateX(-50%)!important}}
 </style>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
