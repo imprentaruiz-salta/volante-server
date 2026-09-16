@@ -1067,6 +1067,68 @@ def _money(value):
     return f"${float(value):,.0f}".replace(",", ".")
 
 
+def _quote_catalog_item(description, quantity, supplied_unit):
+    """Devuelve cantidad y precio oficiales cuando la descripción identifica un producto publicado."""
+    text = str(description or "").lower().replace("×", "x").replace("–", "-")
+    qty = max(1.0, float(quantity or 1))
+    supplied = max(0.0, float(supplied_unit or 0))
+
+    # Productos vendidos por paquete o volumen publicado.
+    if "volante" in text:
+        if qty in (500, 1000):
+            return qty, 200.0
+    if "tarjet" in text:
+        if qty in (50, 100):
+            return qty, 1000.0
+    if "polaroid" in text:
+        if "pack" in text and ("10" in text or "diez" in text):
+            return 1.0, 25000.0
+        if "pack" in text and ("4" in text or "cuatro" in text):
+            return 1.0, 12000.0
+        if "individual" in text:
+            return qty, 4000.0
+    if "tira" in text:
+        if "diseño especial" in text or "diseno especial" in text:
+            return 1.0, 7000.0
+        if qty == 2 or "2 tiras" in text or "dos tiras" in text:
+            return 1.0, 10000.0
+        if qty == 1:
+            return 1.0, 7500.0
+
+    # Productos por unidad, medida o faz.
+    if "anillado" in text:
+        return qty, 4000.0
+    if "autoadhesivo" in text:
+        return qty, 7500.0
+    if ("impresión" in text or "impresion" in text) and ("blanco" in text or "b/n" in text or "bn" in text):
+        return qty, 1250.0
+    if ("impresión" in text or "impresion" in text) and "color" in text:
+        return qty, 1250.0
+
+    photo_prices = {
+        "mitsubishi": {"10x15": 5000, "13x18": 6000, "15x15": 6000, "15x20": 7500, "20x30": 17500, "a4": 15000},
+        "inkjet": {"10x15": 4000, "13x18": 4500, "15x15": 4500, "15x20": 5000, "a4": 7500},
+        "kodak": {"10x15": 5500, "15x15": 6500, "15x20": 8500},
+    }
+    for brand, sizes in photo_prices.items():
+        if brand in text:
+            for size, price in sizes.items():
+                if size in text.replace(" ", ""):
+                    return qty, float(price)
+
+    if "almanaque" in text:
+        for size, price in {"5x8": 2500, "9x6": 3000, "a4": 7500, "a3+": 18000, "a3": 15000}.items():
+            if size in text.replace(" ", ""):
+                return qty, float(price)
+    if "plastific" in text:
+        for size, price in {"6,7x9,8": 2000, "7,6x11": 2500, "a4": 4000, "oficio": 5000, "a3": 7500}.items():
+            if size in text.replace(" ", "") or size.replace(",", ".") in text.replace(" ", ""):
+                return qty, float(price)
+
+    # Para trabajos de consulta conserva el valor que Belén haya calculado.
+    return qty, supplied
+
+
 def _make_quote_pdf(payload, quote_id, path):
     from reportlab.lib.pagesizes import A4
     from reportlab.lib import colors
@@ -1078,11 +1140,16 @@ def _make_quote_pdf(payload, quote_id, path):
     items = payload.get("items") or []
     normalized = []
     for raw in items:
-        qty = float(raw.get("cantidad", raw.get("quantity", 1)) or 1)
-        unit = float(raw.get("precio_unit", raw.get("unit_price", 0)) or 0)
-        subtotal = float(raw.get("subtotal", qty * unit) or 0)
+        description = str(raw.get("descripcion", raw.get("description", "Trabajo de impresión"))).strip() or "Trabajo de impresión"
+        supplied_qty = float(raw.get("cantidad", raw.get("quantity", 1)) or 1)
+        supplied_unit = float(raw.get("precio_unit", raw.get("unit_price", 0)) or 0)
+        qty, unit = _quote_catalog_item(description, supplied_qty, supplied_unit)
+        if qty <= 0 or unit < 0:
+            raise ValueError("Cantidad o precio inválido")
+        # El subtotal siempre se recalcula: nunca se acepta un total enviado desde el navegador.
+        subtotal = qty * unit
         normalized.append({
-            "descripcion": str(raw.get("descripcion", raw.get("description", "Trabajo de impresión"))),
+            "descripcion": description,
             "cantidad": qty,
             "precio_unit": unit,
             "subtotal": subtotal,
