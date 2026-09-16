@@ -367,6 +367,16 @@ def imprenta_ruiz():
   document.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',closeAll)})
   document.querySelectorAll('.ruiz-modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)closeAll()})})
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()})
+  /* Carrusel continuo y aleatorio: cambia de pantalla sin quedar fijo en una sola. */
+  var priceTrack=document.querySelector('.price-track[data-three-slides="polaroid"]');
+  if(priceTrack){
+    priceTrack.style.animation='none';
+    priceTrack.style.transition='transform .85s ease-in-out';
+    var priceOrder=[0,1,2,3], priceCursor=0;
+    function shufflePrices(){for(var i=priceOrder.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),tmp=priceOrder[i];priceOrder[i]=priceOrder[j];priceOrder[j]=tmp}}
+    function showRandomPrice(){if(priceCursor>=priceOrder.length){shufflePrices();priceCursor=0}var pos=priceOrder[priceCursor++];priceTrack.style.transform='translateX(-'+(pos*25)+'%)'}
+    shufflePrices();showRandomPrice();window.setInterval(showRandomPrice,5200);
+  }
   /* Respaldo para teléfonos: si la mascota o la imagen recibe el toque,
      detectamos igualmente las dos zonas del botón Cómo llegar. */
   document.addEventListener('click',function(e){
