@@ -1130,12 +1130,13 @@ def _quote_catalog_item(description, quantity, supplied_unit):
 
 
 def _make_quote_pdf(payload, quote_id, path):
-    from reportlab.lib.pagesizes import A4
     from reportlab.lib import colors
-    from reportlab.lib.enums import TA_LEFT, TA_RIGHT
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.pagesizes import A4
     from reportlab.lib.units import cm
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
+    from reportlab.pdfgen import canvas
+    from reportlab.pdfbase.pdfmetrics import stringWidth
+    from pypdf import PdfReader, PdfWriter
+    from xml.sax.saxutils import escape
 
     items = payload.get("items") or []
     normalized = []
@@ -1146,59 +1147,164 @@ def _make_quote_pdf(payload, quote_id, path):
         qty, unit = _quote_catalog_item(description, supplied_qty, supplied_unit)
         if qty <= 0 or unit < 0:
             raise ValueError("Cantidad o precio inválido")
-        # El subtotal siempre se recalcula: nunca se acepta un total enviado desde el navegador.
-        subtotal = qty * unit
-        normalized.append({
-            "descripcion": description,
-            "cantidad": qty,
-            "precio_unit": unit,
-            "subtotal": subtotal,
-        })
+        normalized.append({"descripcion": description, "cantidad": qty, "precio_unit": unit, "subtotal": qty * unit})
     total = sum(item["subtotal"] for item in normalized)
-    nombre = str(payload.get("nombre", "Cliente"))
-    telefono = str(payload.get("telefono", payload.get("phone", "")))
-    nota = str(payload.get("nota", "Presupuesto solicitado a través de Belén."))
-
-    doc = SimpleDocTemplate(path, pagesize=A4, topMargin=1.5*cm, bottomMargin=1.8*cm,
-                            leftMargin=1.8*cm, rightMargin=1.8*cm,
-                            title=f"Presupuesto {quote_id} — Imprenta Ruiz",
-                            author="Imprenta Ruiz")
-    styles = getSampleStyleSheet()
+    nombre = str(payload.get("nombre", "Cliente")).strip() or "Cliente"
+    telefono = str(payload.get("telefono", payload.get("phone", ""))).strip()
+    nota = str(payload.get("nota", "Presupuesto solicitado a través de Belén.")).strip()
     blue = colors.HexColor("#1565C0")
-    dark = colors.HexColor("#263238")
-    light = colors.HexColor("#E3F2FD")
-    story = []
-    story.append(Paragraph("<font color='#1565C0' size='20'><b>IMPRENTA RUIZ</b></font>", styles["Normal"]))
-    story.append(Paragraph("Chacabuco 470 — Salta Capital · WhatsApp +54 9 387 210-1274 · impr.ruiz@gmail.com", ParagraphStyle("head", fontSize=8.5, textColor=dark)))
-    story.append(Spacer(1, 0.25*cm))
-    story.append(HRFlowable(width="100%", thickness=2, color=blue, spaceAfter=10))
-    story.append(Paragraph("<font color='#1565C0' size='16'><b>PRESUPUESTO</b></font>", styles["Normal"]))
-    story.append(Paragraph(f"N.º {quote_id} · Válido por 48 horas", ParagraphStyle("meta", fontSize=9, textColor=dark)))
-    story.append(Spacer(1, 0.25*cm))
-    cliente = f"<b>Cliente:</b> {nombre}"
-    if telefono: cliente += f" &nbsp;&nbsp; <b>WhatsApp:</b> {telefono}"
-    story.append(Paragraph(cliente, ParagraphStyle("client", fontSize=10, backColor=light, borderPad=8, textColor=dark)))
-    story.append(Spacer(1, 0.35*cm))
-    rows = [[Paragraph("<b>Descripción</b>", styles["Normal"]), Paragraph("<b>Cant.</b>", styles["Normal"]), Paragraph("<b>P. unit.</b>", styles["Normal"]), Paragraph("<b>Subtotal</b>", styles["Normal"])]]
-    for item in normalized:
-        q = str(int(item["cantidad"])) if item["cantidad"].is_integer() else str(item["cantidad"])
-        rows.append([Paragraph(item["descripcion"], ParagraphStyle("d", fontSize=9, textColor=dark)),
-                     Paragraph(q, ParagraphStyle("q", fontSize=9, alignment=TA_RIGHT)),
-                     Paragraph(_money(item["precio_unit"]), ParagraphStyle("u", fontSize=9, alignment=TA_RIGHT)),
-                     Paragraph(_money(item["subtotal"]), ParagraphStyle("s", fontSize=9, alignment=TA_RIGHT, textColor=blue))])
-    table = Table(rows, colWidths=[9.2*cm, 1.8*cm, 2.7*cm, 3.0*cm])
-    table.setStyle(TableStyle([("BACKGROUND", (0,0), (-1,0), blue), ("TEXTCOLOR", (0,0), (-1,0), colors.white),
-                               ("GRID", (0,0), (-1,-1), .4, colors.HexColor("#CFD8DC")),
-                               ("ROWBACKGROUNDS", (0,1), (-1,-1), [colors.white, colors.HexColor("#F5F5F5")]),
-                               ("VALIGN", (0,0), (-1,-1), "MIDDLE"), ("TOPPADDING", (0,0), (-1,-1), 7), ("BOTTOMPADDING", (0,0), (-1,-1), 7)]))
-    story.append(table)
-    story.append(Spacer(1, 0.3*cm))
-    total_table = Table([["", "", Paragraph("<b>TOTAL</b>", ParagraphStyle("tl", fontSize=12, textColor=blue, alignment=TA_RIGHT)), Paragraph(f"<b>{_money(total)}</b>", ParagraphStyle("tv", fontSize=12, textColor=blue, alignment=TA_RIGHT))]], colWidths=[9.2*cm, 1.8*cm, 2.7*cm, 3.0*cm])
-    total_table.setStyle(TableStyle([("LINEABOVE", (2,0), (-1,0), 1.5, blue), ("TOPPADDING", (2,0), (-1,0), 8)]))
-    story.append(total_table)
-    story.append(Spacer(1, 0.35*cm))
-    story.append(Paragraph(f"📝 {nota}", ParagraphStyle("note", fontSize=9, textColor=dark, backColor=colors.HexColor("#F5F5F5"), borderPad=7)))
-    doc.build(story)
+    dark = colors.HexColor("#37474F")
+    pale_blue = colors.HexColor("#E3F2FD")
+    pale_green = colors.HexColor("#E8F5E9")
+    template = Path(__file__).with_name("presupuesto_plantilla_ruiz.pdf")
+    if not template.exists():
+        raise FileNotFoundError("No está la plantilla de presupuesto de Imprenta Ruiz")
+    W, H = A4
+    overlay_path = str(Path(path).with_suffix(".overlay.pdf"))
+    c = canvas.Canvas(overlay_path, pagesize=A4)
+    now = datetime.now().strftime("%d/%m/%Y %H:%M hs")
+
+    def money(value):
+        return _money(value)
+
+    def fit_text(text, max_width, font="Helvetica", size=8.5):
+        text = str(text)
+        if stringWidth(text, font, size) <= max_width:
+            return text
+        while len(text) > 3 and stringWidth(text + "…", font, size) > max_width:
+            text = text[:-1]
+        return text + "…"
+
+    # Page 1: conservar el encabezado/logo de la plantilla y reemplazar todos los datos variables.
+    c.setFillColor(colors.white)
+    c.rect(390, 700, 175, 135, fill=1, stroke=0)
+    c.rect(55, 300, 500, 405, fill=1, stroke=0)
+    c.rect(55, 0, 500, 320, fill=1, stroke=0)
+    c.setFillColor(blue)
+    c.setFont("Helvetica-Bold", 16)
+    c.drawRightString(540, 790, "PRESUPUESTO")
+    c.setFillColor(dark)
+    c.setFont("Helvetica", 8.5)
+    c.drawRightString(540, 770, f"N° {quote_id}")
+    c.drawRightString(540, 754, now)
+    c.setFillColor(colors.HexColor("#E65100"))
+    c.setFont("Helvetica-Bold", 9)
+    c.drawRightString(540, 738, "Válido 48 horas")
+
+    c.setFillColor(pale_blue)
+    c.roundRect(65, 676, 475, 20, 2, fill=1, stroke=0)
+    c.setFillColor(dark)
+    c.setFont("Helvetica-Bold", 9)
+    c.drawString(74, 683, "Para:")
+    c.setFont("Helvetica", 9)
+    c.drawString(105, 683, fit_text(nombre, 300))
+    if telefono:
+        c.drawRightString(532, 683, "WhatsApp: " + telefono)
+    c.setFillColor(pale_green)
+    c.rect(65, 650, 475, 18, fill=1, stroke=0)
+    c.setFillColor(colors.HexColor("#2E7D32"))
+    c.setFont("Helvetica", 8.5)
+    c.drawString(74, 656, "Pedido preparado por Belén — Imprenta Ruiz")
+    c.setFillColor(pale_green)
+    c.rect(65, 628, 475, 18, fill=1, stroke=0)
+    c.setFillColor(colors.HexColor("#2E7D32"))
+    c.drawString(74, 634, "Entrega y disponibilidad: confirmar con Imprenta Ruiz")
+
+    x0, x1, x2, x3, x4 = 65, 360, 420, 490, 540
+    y = 600
+    c.setFillColor(blue)
+    c.rect(65, y, 475, 25, fill=1, stroke=0)
+    c.setFillColor(colors.white)
+    c.setFont("Helvetica-Bold", 8.5)
+    c.drawString(73, y + 9, "Descripción")
+    c.drawRightString(x2 - 8, y + 9, "Cant.")
+    c.drawRightString(x3 - 8, y + 9, "P. Unit.")
+    c.drawRightString(x4 - 8, y + 9, "Subtotal")
+    row_y = y - 24
+    c.setFont("Helvetica", 8)
+    for index, item in enumerate(normalized[:10]):
+        c.setFillColor(colors.white if index % 2 == 0 else colors.HexColor("#F5F5F5"))
+        c.rect(65, row_y, 475, 24, fill=1, stroke=0)
+        c.setStrokeColor(colors.HexColor("#CFD8DC"))
+        c.rect(65, row_y, 475, 24, fill=0, stroke=1)
+        c.setFillColor(dark)
+        c.drawString(73, row_y + 8, fit_text(item["descripcion"], 278, size=7.8))
+        q = str(int(item["cantidad"])) if float(item["cantidad"]).is_integer() else str(item["cantidad"])
+        c.drawRightString(x2 - 8, row_y + 8, q)
+        c.drawRightString(x3 - 8, row_y + 8, money(item["precio_unit"]))
+        c.setFillColor(blue)
+        c.drawRightString(x4 - 8, row_y + 8, money(item["subtotal"]))
+        row_y -= 24
+    c.setStrokeColor(blue)
+    c.line(360, row_y - 5, 540, row_y - 5)
+    c.setFillColor(dark)
+    c.setFont("Helvetica", 9)
+    c.drawRightString(470, row_y - 22, "TOTAL")
+    c.setFillColor(blue)
+    c.setFont("Helvetica-Bold", 13)
+    c.drawRightString(535, row_y - 22, money(total))
+    c.setFillColor(pale_blue)
+    c.roundRect(65, 340, 475, 95, 7, fill=1, stroke=0)
+    c.setFillColor(blue)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawString(80, 410, "Detalle del presupuesto")
+    c.setFillColor(dark)
+    c.setFont("Helvetica", 8.5)
+    c.drawString(80, 392, "Los precios unitarios y subtotales fueron calculados según la lista oficial de Imprenta Ruiz.")
+    c.drawString(80, 376, "Para confirmar, revisá el detalle y respondé por WhatsApp o tocá el botón azul de Belén.")
+    c.setFillColor(blue)
+    c.setFont("Helvetica-Bold", 11)
+    c.drawString(80, 354, "Total del presupuesto: " + money(total))
+    if nota:
+        c.setFillColor(dark)
+        c.setFont("Helvetica-Oblique", 7.5)
+        c.drawString(80, 328, fit_text("Observación: " + nota, 450, size=7.5))
+    c.showPage()
+
+    # Page 2: pie de condiciones y contacto, con la misma identidad de la plantilla.
+    c.setFillColor(colors.white)
+    c.rect(0, 0, W, H, fill=1, stroke=0)
+    c.setFillColor(pale_green)
+    c.roundRect(55, 735, 485, 55, 7, fill=1, stroke=0)
+    c.setFillColor(dark)
+    c.setFont("Helvetica-Bold", 12)
+    c.drawString(72, 770, "¿Querés confirmar este presupuesto?")
+    c.setFont("Helvetica", 9)
+    c.drawString(72, 752, "Respondé por WhatsApp y coordinamos los detalles del trabajo.")
+    c.setFillColor(blue)
+    c.setFont("Helvetica-Bold", 14)
+    c.drawCentredString(W / 2, 650, "IMPRENTA RUIZ")
+    c.setFillColor(dark)
+    c.setFont("Helvetica", 10)
+    c.drawCentredString(W / 2, 628, "Chacabuco 470, Salta Capital")
+    c.drawCentredString(W / 2, 610, "WhatsApp: +54 9 387 210-1274")
+    c.drawCentredString(W / 2, 592, "impr.ruiz@gmail.com")
+    c.setStrokeColor(blue)
+    c.line(80, 565, 515, 565)
+    c.setFillColor(colors.HexColor("#607D8B"))
+    c.setFont("Helvetica", 8)
+    c.drawCentredString(W / 2, 540, "Precios expresados en pesos argentinos (ARS). Válido por 48 horas.")
+    c.drawCentredString(W / 2, 525, "Sujeto a disponibilidad y confirmación del pedido.")
+    c.setFillColor(blue)
+    c.setFont("Helvetica-Bold", 10)
+    c.drawCentredString(W / 2, 470, f"Presupuesto {quote_id}")
+    c.setFillColor(dark)
+    c.setFont("Helvetica", 9)
+    c.drawCentredString(W / 2, 448, "Gracias por elegir Imprenta Ruiz")
+    c.save()
+
+    base_reader = PdfReader(str(template))
+    over_reader = PdfReader(overlay_path)
+    writer = PdfWriter()
+    for index, base_page in enumerate(base_reader.pages[:2]):
+        base_page.merge_page(over_reader.pages[index])
+        writer.add_page(base_page)
+    with open(path, "wb") as output:
+        writer.write(output)
+    try:
+        os.remove(overlay_path)
+    except OSError:
+        pass
     return total
 
 
