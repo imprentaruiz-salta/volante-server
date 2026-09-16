@@ -22,6 +22,12 @@ from flask import Flask, request, jsonify, render_template, send_file, redirect,
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
 
+@app.after_request
+def cache_static_assets(response):
+    if request.path.startswith("/static/"):
+        response.headers.setdefault("Cache-Control", "public, max-age=31536000, immutable")
+    return response
+
 # Comandas del menú QR. Se guarda en SQLite para que el panel y los celulares
 # compartan los pedidos mientras el servidor está activo.
 PEDIDOS_DB = os.environ.get("PEDIDOS_DB", os.path.join(os.path.dirname(__file__), "pedidos.sqlite3"))
@@ -105,6 +111,20 @@ def index():
 def imprenta_ruiz():
     """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
+    # Las previsualizaciones antiguas venían incrustadas en base64 y hacían
+    # crecer la página más de medio megabyte. Se sirven como imágenes cacheables.
+    preview_assets = [
+        "/static/web-preview-fleming.jpg",
+        "/static/web-preview-abigail.jpg",
+        "/static/imprenta-ruiz-preview-card.jpg",
+    ]
+    preview_index = {"value": 0}
+    def externalize_preview(match):
+        i = preview_index["value"]
+        preview_index["value"] += 1
+        return 'src="' + (preview_assets[i] if i < len(preview_assets) else "/static/imprenta-ruiz-preview-card.jpg") + '"'
+    html = re.sub(r'src="data:image/[^;]+;base64,[^\"]+"', externalize_preview, html)
+    html = html.replace('alt="Vista previa de ', 'loading="lazy" alt="Vista previa de ')
     # El avatar conversa en vivo; este botón abre el emisor de presupuesto PDF.
     html = html.replace('<div class="belen-foot">Podés hablarle a Belen usando el micrófono.</div>', '<div class="belen-foot">Podés hablarle a Belen usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>', 1)
     # Carrusel de tres páginas: todas las tarjetas conservan el mismo tamaño.
@@ -371,6 +391,9 @@ def imprenta_ruiz():
 '''
     html = html.replace('</body>', location_ui + quote_ui + '</body>', 1)
     social_preview = """
+<link rel="icon" type="image/png" href="https://volante-server.onrender.com/static/imprenta-ruiz-favicon.png">
+<link rel="preload" as="image" href="https://volante-server.onrender.com/static/volante-ruiz-sin-hamburguesa.jpg">
+<meta name="theme-color" content="#071b3b">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Imprenta Ruiz">
 <meta property="og:description" content="Precios y trabajos web de Imprenta Ruiz.">
