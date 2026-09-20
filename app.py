@@ -140,7 +140,7 @@ def imprenta_ruiz():
 <div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$1.250</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$1.250</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$4.000</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$7.500</strong><small>por hoja</small></div></article></div>
 <div class="price-slide"><button class="price-card mitsubishi-card" type="button" onclick="document.getElementById('precios-mitsubishi').classList.add('open')"><div class="price-icon purple">🖼️</div><div class="price-info"><h2>Fotos Mitsubishi</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card inkjet-card" type="button" onclick="document.getElementById('precios-inkjet').classList.add('open')"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Fotos Inkjet</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card kodak-card" type="button" onclick="document.getElementById('precios-kodak').classList.add('open')"><div class="price-icon pink">📷</div><div class="price-info"><h2>Fotos Kodak</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card polaroid-card" type="button" onclick="document.getElementById('precios-polaroid').classList.add('open')"><div class="price-icon orange">🖼️</div><div class="price-info"><h2>Fotos Polaroid</h2><strong>Ver precios</strong><small>individual · packs</small></div></button></div>
 <div class="price-slide"><button class="price-card web-work-card" type="button" onclick="document.getElementById('trabajos-web').classList.add('open')"><div class="price-icon blue">🌐</div><div class="price-info"><h2>Trabajos web interactivos</h2><strong>Ver sitios</strong><small>Fleming · Abigail</small></div></button><button class="price-card plastificado-card" type="button" onclick="document.getElementById('precios-plastificado').classList.add('open')"><div class="price-icon yellow">🧊</div><div class="price-info"><h2>Plastificado</h2><strong>Ver precios</strong><small>6,7×9,8 · 7,6×11 · A4 · Oficio · A3</small></div></button><button class="price-card almanaques-card" type="button" onclick="document.getElementById('precios-almanaques').classList.add('open')"><div class="price-icon orange">📅</div><div class="price-info"><h2>Almanaques</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card tira-card" type="button" onclick="document.getElementById('precios-tira').classList.add('open')"><div class="price-icon pink">🎞️</div><div class="price-info"><h2>Tira de 4 fotos</h2><strong>$7.500</strong><small>7×19 cm vertical</small></div></button></div>
-<div class="price-slide"><button class="price-card flyer-price-card" type="button" onclick="document.getElementById('precios-volantes').classList.add('open')"><div class="price-icon blue">📄</div><div class="price-info"><h2>Volantes</h2><strong>$200 c/u</strong><small>500 y 1.000 unidades · tocá para ver precios</small></div></button><button class="price-card card-price-card" type="button" onclick="document.getElementById('precios-tarjetas').classList.add('open')"><div class="price-icon pink">💳</div><div class="price-info"><h2>Tarjetas 5×8 cm</h2><strong>$50.000 / $100.000</strong><small>50 / 100 u · tocá para ver características</small></div></button></div></div><div class="dots"><i></i><i></i><i></i><i></i></div>'''
+<div class="price-slide"><button class="price-card flyer-price-card" type="button" onclick="document.getElementById('precios-volantes').classList.add('open')"><div class="price-icon blue">📄</div><div class="price-info"><h2>Volantes</h2><strong>$180 / $170 c/u</strong><small>500 / 1.000 unidades · tocá para ver precios</small></div></button><button class="price-card card-price-card" type="button" onclick="document.getElementById('precios-tarjetas').classList.add('open')"><div class="price-icon pink">💳</div><div class="price-info"><h2>Tarjetas 5×8 cm</h2><strong>$45.000 / $80.000</strong><small>50 / 100 u · tocá para ver características</small></div></button></div></div><div class="dots"><i></i><i></i><i></i><i></i></div>'''
         html = html[:track_start] + three_slide_carousel + html[track_end:]
     if 'id="precios-polaroid"' not in html:
         polaroid_modal = '<div class="web-modal" id="precios-polaroid" role="dialog" aria-modal="true" aria-label="Precios Fotos Polaroid"><div class="web-box"><div class="web-head"><h2>Precios Fotos Polaroid</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-polaroid\').classList.remove(\'open\')">×</button></div><p class="web-sub">Fotos estilo Polaroid Mitsubishi. Medida final: 8,5×10,5 cm.</p><div class="inkjet-prices"><div><span>Individual</span><b>$4.000</b></div><div><span>Pack de 4</span><b>$12.000</b></div><div><span>Pack de 10</span><b>$25.000</b></div></div></div></div>'
@@ -152,10 +152,10 @@ def imprenta_ruiz():
         tira_modal = '<div class="web-modal" id="precios-tira" role="dialog" aria-modal="true" aria-label="Precio de tira vertical de 4 fotos"><div class="web-box"><div class="web-head"><h2>Tira vertical de 4 fotos</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tira\').classList.remove(\'open\')">×</button></div><p class="web-sub">Cuatro fotos en una tira vertical tipo cabina. Medida aproximada: 7×19 cm.</p><div class="inkjet-prices"><div><span>1 tira</span><b>$7.500</b></div><div><span>2 tiras</span><b>$10.000</b></div><div><span>Con diseño especial</span><b>$7.000</b></div></div></div></div>'
         html = html.replace('</body>', tira_modal + '</body>', 1)
     if 'id="precios-volantes"' not in html:
-        volantes_modal = '<div class="web-modal" id="precios-volantes" role="dialog" aria-modal="true" aria-label="Precios de volantes"><div class="web-box"><div class="web-head"><h2>Precios de volantes</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-volantes\').classList.remove(\'open\')">×</button></div><p class="web-sub">Precios especiales por cantidad.</p><div class="inkjet-prices"><div><span>500 unidades</span><b>$200 c/u · $100.000</b></div><div><span>1.000 unidades</span><b>$200 c/u · $200.000</b></div></div></div></div>'
+        volantes_modal = '<div class="web-modal" id="precios-volantes" role="dialog" aria-modal="true" aria-label="Precios de volantes"><div class="web-box"><div class="web-head"><h2>Precios de volantes</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-volantes\').classList.remove(\'open\')">×</button></div><p class="web-sub">Precios especiales por cantidad.</p><div class="inkjet-prices"><div><span>500 unidades</span><b>$180 c/u · $90.000</b></div><div><span>1.000 unidades</span><b>$170 c/u · $170.000</b></div></div></div></div>'
         html = html.replace('</body>', volantes_modal + '</body>', 1)
     if 'id="precios-tarjetas"' not in html:
-        tarjetas_modal = '<div class="web-modal" id="precios-tarjetas" role="dialog" aria-modal="true" aria-label="Precios de tarjetas"><div class="web-box"><div class="web-head"><h2>Tarjetas 5×8 cm</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tarjetas\').classList.remove(\'open\')">×</button></div><p class="web-sub">Tarjetas en papel mate de 300 g, impresión una sola faz, color o blanco y negro.</p><div class="inkjet-prices"><div><span>50 unidades</span><b>$50.000</b></div><div><span>100 unidades</span><b>$100.000</b></div><div><span>Medida</span><b>5×8 cm</b></div></div></div></div>'
+        tarjetas_modal = '<div class="web-modal" id="precios-tarjetas" role="dialog" aria-modal="true" aria-label="Precios de tarjetas"><div class="web-box"><div class="web-head"><h2>Tarjetas 5×8 cm</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tarjetas\').classList.remove(\'open\')">×</button></div><p class="web-sub">Tarjetas en papel mate de 300 g, impresión una sola faz, color o blanco y negro.</p><div class="inkjet-prices"><div><span>50 unidades</span><b>$45.000</b></div><div><span>100 unidades</span><b>$80.000</b></div><div><span>Medida</span><b>5×8 cm</b></div></div></div></div>'
         html = html.replace('</body>', tarjetas_modal + '</body>', 1)
     # Se retira la mascota anterior: el sitio usará a Belen como asistente virtual.
     mascot_start = html.find('<img class="mascota-float"')
@@ -172,9 +172,10 @@ def imprenta_ruiz():
     location_ui = '''
 <style>
 .plastificado-card,.tira-card{cursor:pointer;text-align:left;padding:0}
-.price-track[data-three-slides="polaroid"]{width:400%;animation:price-slide-four 32s ease-in-out infinite}
-.price-track[data-three-slides="polaroid"] .price-slide{width:25%;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.price-track[data-three-slides="polaroid"]{width:400%;animation:price-slide-four 48s ease-in-out infinite}
+.price-track[data-three-slides="polaroid"] .price-slide{width:25%;grid-template-columns:1fr 1fr}
 @keyframes price-slide-four{0%,18%{transform:translateX(0)}25%,43%{transform:translateX(-25%)}50%,68%{transform:translateX(-50%)}75%,93%{transform:translateX(-75%)}100%{transform:translateX(0)}}
+.price-track[data-three-slides="polaroid"]:hover,.price-track[data-three-slides="polaroid"]:focus-within{animation-play-state:paused}
 .flyer-price-card{cursor:default;text-align:left;padding:0}
 .rulito-widget{position:fixed;right:6px;bottom:96px;z-index:25;width:190px;display:flex;flex-direction:column;align-items:flex-end;pointer-events:none}
 .rulito-widget .mascota-float{position:static;width:145px;max-height:205px;pointer-events:none;animation:robot-float 3.2s ease-in-out infinite}
@@ -375,7 +376,7 @@ def imprenta_ruiz():
     var priceOrder=[0,1,2,3], priceCursor=0;
     function shufflePrices(){for(var i=priceOrder.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),tmp=priceOrder[i];priceOrder[i]=priceOrder[j];priceOrder[j]=tmp}}
     function showRandomPrice(){if(priceCursor>=priceOrder.length){shufflePrices();priceCursor=0}var pos=priceOrder[priceCursor++];priceTrack.style.transform='translateX(-'+(pos*25)+'%)'}
-    shufflePrices();showRandomPrice();window.setInterval(showRandomPrice,5200);
+    shufflePrices();showRandomPrice();window.setInterval(showRandomPrice,10000);
   }
   /* Respaldo para teléfonos: si la mascota o la imagen recibe el toque,
      detectamos igualmente las dos zonas del botón Cómo llegar. */
@@ -1075,11 +1076,15 @@ def _quote_catalog_item(description, quantity, supplied_unit):
 
     # Productos vendidos por paquete o volumen publicado.
     if "volante" in text:
-        if qty in (500, 1000):
-            return qty, 200.0
+        if qty == 500:
+            return qty, 180.0
+        if qty == 1000:
+            return qty, 170.0
     if "tarjet" in text:
-        if qty in (50, 100):
-            return qty, 1000.0
+        if qty == 50:
+            return qty, 900.0
+        if qty == 100:
+            return qty, 800.0
     if "polaroid" in text:
         if "pack" in text and ("10" in text or "diez" in text):
             return 1.0, 25000.0
