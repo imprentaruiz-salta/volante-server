@@ -172,7 +172,7 @@ def imprenta_ruiz():
     location_ui = '''
 <style>
 .plastificado-card,.tira-card{cursor:pointer;text-align:left;padding:0}
-.price-track[data-three-slides="polaroid"]{width:400%;animation:price-slide-four 48s ease-in-out infinite}
+.price-track[data-three-slides="polaroid"]{width:400%;animation:price-slide-four 60s ease-in-out infinite}
 .price-track[data-three-slides="polaroid"] .price-slide{width:25%;grid-template-columns:1fr 1fr}
 @keyframes price-slide-four{0%,18%{transform:translateX(0)}25%,43%{transform:translateX(-25%)}50%,68%{transform:translateX(-50%)}75%,93%{transform:translateX(-75%)}100%{transform:translateX(0)}}
 .price-track[data-three-slides="polaroid"]:hover,.price-track[data-three-slides="polaroid"]:focus-within{animation-play-state:paused}
@@ -370,15 +370,11 @@ def imprenta_ruiz():
   document.querySelectorAll('[data-close-modal]').forEach(function(b){b.addEventListener('click',closeAll)})
   document.querySelectorAll('.ruiz-modal').forEach(function(m){m.addEventListener('click',function(e){if(e.target===m)closeAll()})})
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeAll()})
-  /* Carrusel continuo y aleatorio: cambia de pantalla sin quedar fijo en una sola. */
+  /* Carrusel continuo, suave y lento para facilitar la lectura y los clics. */
   var priceTrack=document.querySelector('.price-track[data-three-slides="polaroid"]');
   if(priceTrack){
-    priceTrack.style.animation='none';
-    priceTrack.style.transition='transform .85s ease-in-out';
-    var priceOrder=[0,1,2,3], priceCursor=0;
-    function shufflePrices(){for(var i=priceOrder.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),tmp=priceOrder[i];priceOrder[i]=priceOrder[j];priceOrder[j]=tmp}}
-    function showRandomPrice(){if(priceCursor>=priceOrder.length){shufflePrices();priceCursor=0}var pos=priceOrder[priceCursor++];priceTrack.style.transform='translateX(-'+(pos*25)+'%)'}
-    shufflePrices();showRandomPrice();window.setInterval(showRandomPrice,10000);
+    priceTrack.style.animation='price-slide-four 60s ease-in-out infinite';
+    priceTrack.style.transition='none';
   }
   /* Respaldo para teléfonos: si la mascota o la imagen recibe el toque,
      detectamos igualmente las dos zonas del botón Cómo llegar. */
