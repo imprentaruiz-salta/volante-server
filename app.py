@@ -149,7 +149,7 @@ def imprenta_ruiz():
         plastificado_modal = '<div class="web-modal" id="precios-plastificado" role="dialog" aria-modal="true" aria-label="Precios de plastificado"><div class="web-box"><div class="web-head"><h2>Precios de plastificado</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-plastificado\').classList.remove(\'open\')">×</button></div><p class="web-sub">Plastificado en caliente. Valores por hoja, llevando el cliente la impresión lista.</p><div class="inkjet-prices"><div><span>6,7×9,8 cm</span><b>$2.000</b></div><div><span>7,6×11 cm</span><b>$2.500</b></div><div><span>A4</span><b>$4.000</b></div><div><span>Oficio</span><b>$5.000</b></div><div><span>A3</span><b>$7.500</b></div></div></div></div>'
         html = html.replace('</body>', plastificado_modal + '</body>', 1)
     if 'id="precios-tira"' not in html:
-        tira_modal = '<div class="web-modal" id="precios-tira" role="dialog" aria-modal="true" aria-label="Precio de tira vertical de 4 fotos"><div class="web-box"><div class="web-head"><h2>Tira vertical de 4 fotos</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tira\').classList.remove(\'open\')">×</button></div><p class="web-sub">Cuatro fotos en una tira vertical tipo cabina. Medida aproximada: 7×19 cm.</p><div class="inkjet-prices"><div><span>1 tira</span><b>$7.500</b></div><div><span>2 tiras</span><b>$10.000</b></div><div><span>Con diseño especial</span><b>$7.000</b></div></div></div></div>'
+        tira_modal = '<div class="web-modal" id="precios-tira" role="dialog" aria-modal="true" aria-label="Precio de tira vertical de 4 fotos"><div class="web-box"><div class="web-head"><h2>Tira vertical de 4 fotos</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tira\').classList.remove(\'open\')">×</button></div><p class="web-sub">Cuatro fotos en una tira vertical tipo cabina. Medida aproximada: 7×19 cm.</p><div class="inkjet-prices"><div><span>1 tira</span><b>$7.500</b></div><div><span>2 tiras</span><b>$10.000</b></div><div><span>Con diseño especial</span><b>$7.500</b></div></div></div></div>'
         html = html.replace('</body>', tira_modal + '</body>', 1)
     if 'id="precios-volantes"' not in html:
         volantes_modal = '<div class="web-modal" id="precios-volantes" role="dialog" aria-modal="true" aria-label="Precios de volantes"><div class="web-box"><div class="web-head"><h2>Precios de volantes</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-volantes\').classList.remove(\'open\')">×</button></div><p class="web-sub">Precios especiales por cantidad.</p><div class="inkjet-prices"><div><span>500 unidades</span><b>$180 c/u · $90.000</b></div><div><span>1.000 unidades</span><b>$170 c/u · $170.000</b></div></div></div></div>'
@@ -262,9 +262,9 @@ def imprenta_ruiz():
     <div class="rulito-price-grid">
       <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.250</b> por faz</p><p>Blanco y negro: <b>$900</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800</b> por faz</p><p>Color: <b>$1.100</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>Más de 5 ejemplares: precio especial</p></div>
-      <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$5.000</b> · 13×18: <b>$6.000</b></p><p>15×15: <b>$6.000</b> · 15×20: <b>$7.500</b></p><p>20×30: <b>$17.500</b> · A4: <b>$15.000</b></p></div>
+      <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$5.000</b> · 13×18: <b>$6.000</b></p><p>15×15: <b>$6.000</b> · 15×20: <b>$7.000</b></p><p>20×30: <b>$15.000</b> · A4: <b>$15.000</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$4.000</b> · 13×18: <b>$4.500</b></p><p>15×15: <b>$4.500</b> · 15×20: <b>$5.000</b></p><p>A4: <b>$7.500</b></p></div>
-      <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$5.500</b> · 15×15: <b>$6.500</b></p><p>15×20: <b>$8.500</b></p></div>
+      <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$5.500</b> · 15×15: <b>$6.500</b></p><p>15×20: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Polaroid Mitsubishi</h3><p>Individual: <b>$4.000</b></p><p>Pack de 4: <b>$12.000</b></p><p>Pack de 10: <b>$25.000</b></p><p>Medida: 8,5×10,5 cm</p></div>
       <div class="rulito-price-group"><h3>Almanaques</h3><p>5×8: <b>$2.500</b> · 9×6: <b>$3.000</b></p><p>A4: <b>$7.500</b> · A3: <b>$15.000</b> · A3+: <b>$18.000</b></p></div>
       <div class="rulito-price-group"><h3>Plastificado</h3><p>6,7×9,8 cm: <b>$2.000</b></p><p>7,6×11 cm: <b>$2.500</b></p><p>A4: <b>$4.000</b></p><p>Oficio: <b>$5.000</b></p><p>A3: <b>$7.500</b></p><p>Tira vertical de 4 fotos: <b>$7.500</b> · 7×19 cm</p><p>Diseños web: consultar según proyecto.</p></div>
@@ -335,8 +335,8 @@ def imprenta_ruiz():
     '📸 Mitsubishi 10×15: $5.000',
     '📸 Mitsubishi 13×18: $6.000',
     '📸 Mitsubishi 15×15: $6.000',
-    '📸 Mitsubishi 15×20: $7.500',
-    '📸 Mitsubishi 20×30: $17.500',
+    '📸 Mitsubishi 15×20: $7.000',
+    '📸 Mitsubishi 20×30: $15.000',
     '📸 Mitsubishi A4: $15.000',
     '🖼️ Inkjet 10×15: $4.000',
     '🖼️ Inkjet 13×18: $4.500',
@@ -345,7 +345,7 @@ def imprenta_ruiz():
     '🖼️ Inkjet A4: $7.500',
     '📷 Kodak 10×15: $5.500',
     '📷 Kodak 15×15: $6.500',
-    '📷 Kodak 15×20: $8.500',
+    '📷 Kodak 15×20: $7.500',
     '🖼️ Polaroid individual: $4.000 · 8,5×10,5 cm',
     '🖼️ Polaroid pack de 4: $12.000',
     '🖼️ Polaroid pack de 10: $25.000',
@@ -1094,7 +1094,7 @@ def _quote_catalog_item(description, quantity, supplied_unit):
             return qty, 4000.0
     if "tira" in text:
         if "diseño especial" in text or "diseno especial" in text:
-            return 1.0, 7000.0
+            return 1.0, 7500.0
         if qty == 2 or "2 tiras" in text or "dos tiras" in text:
             return 1.0, 10000.0
         if qty == 1:
@@ -1117,9 +1117,9 @@ def _quote_catalog_item(description, quantity, supplied_unit):
         return qty, 1250.0
 
     photo_prices = {
-        "mitsubishi": {"10x15": 5000, "13x18": 6000, "15x15": 6000, "15x20": 7500, "20x30": 17500, "a4": 15000},
+        "mitsubishi": {"10x15": 5000, "13x18": 6000, "15x15": 6000, "15x20": 7000, "20x30": 15000, "a4": 15000},
         "inkjet": {"10x15": 4000, "13x18": 4500, "15x15": 4500, "15x20": 5000, "a4": 7500},
-        "kodak": {"10x15": 5500, "15x15": 6500, "15x20": 8500},
+        "kodak": {"10x15": 5500, "15x15": 6500, "15x20": 7500},
     }
     for brand, sizes in photo_prices.items():
         if brand in text:
