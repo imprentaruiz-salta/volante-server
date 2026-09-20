@@ -213,7 +213,7 @@ def imprenta_ruiz():
 .send-carousel{top:calc(50% + 18px)}.belen-widget{bottom:calc(50% + 42px)}.belen-launcher{width:56px;height:56px}.belen-nudge{right:64px;bottom:10px;width:160px}.belen-panel{width:min(320px,calc(100vw - 88px));height:min(670px,calc(100vh - 55px))}.belen-live-frame{aspect-ratio:9/16}
 @media(max-width:620px){.send-carousel{top:calc(50% + 16px)}.belen-widget{bottom:calc(50% + 37px)}.belen-launcher{width:48px;height:48px}.belen-nudge{right:56px;bottom:7px;width:140px}.belen-panel{right:65px;width:min(300px,calc(100vw - 55px));height:min(620px,calc(100vh - 55px))}}
 /* Tres bloques equilibrados: marca, precios y cómo llegar. */
-.prices-overlay{top:33.8%;height:36.2%}.location-split{left:18.5%;top:72.55%;width:62.5%;height:7.2%}
+.prices-overlay{top:36%;height:34%}.location-split{left:18.5%;top:72.55%;width:62.5%;height:7.2%}
 /* Marco de Belen: contenido amplio para los controles, presentación más compacta. */
 .belen-panel{transform:translateY(-50%) scale(.88);transform-origin:right center}.belen-panel.is-open{animation:belen-fixed-in-compact .22s ease-out}@keyframes belen-fixed-in-compact{from{opacity:0;transform:translateY(-47%) scale(.84)}to{opacity:1;transform:translateY(-50%) scale(.88)}}
 @media(max-width:620px){.belen-panel{transform:translateY(-50%) scale(.82)}.belen-panel.is-open{animation:belen-fixed-in-compact-mobile .22s ease-out}@keyframes belen-fixed-in-compact-mobile{from{opacity:0;transform:translateY(-47%) scale(.78)}to{opacity:1;transform:translateY(-50%) scale(.82)}}}
