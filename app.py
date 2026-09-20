@@ -259,6 +259,7 @@ def imprenta_ruiz():
   <div class="rulito-prices-card"><button class="rulito-price-close" type="button" data-rulito-close>Cerrar ✕</button><h2 id="rulitoPricesTitle">🧾 Precios de Imprenta Ruiz</h2><p>Estos son los precios actuales. Si necesitás otro trabajo, preguntame.</p>
     <div class="rulito-price-grid">
       <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.250</b> por faz</p><p>Blanco y negro: <b>$900</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
+      <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800</b> por faz</p><p>Color: <b>$1.100</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>Más de 5 ejemplares: precio especial</p></div>
       <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$5.000</b> · 13×18: <b>$6.000</b></p><p>15×15: <b>$6.000</b> · 15×20: <b>$7.500</b></p><p>20×30: <b>$17.500</b> · A4: <b>$15.000</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$4.000</b> · 13×18: <b>$4.500</b></p><p>15×15: <b>$4.500</b> · 15×20: <b>$5.000</b></p><p>A4: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$5.500</b> · 15×15: <b>$6.500</b></p><p>15×20: <b>$8.500</b></p></div>
@@ -326,6 +327,7 @@ def imprenta_ruiz():
     'Soy Rulito, tu asistente.',
     '🖨️ Impresión color: $1.250 por faz',
     '📄 Blanco y negro: $900 por faz',
+    '📚 Libros PDF: desde $800 por faz',
     '🔩 Anillado: $4.000',
     '🏷️ A4 autoadhesivo: $7.500 por hoja',
     '📸 Mitsubishi 10×15: $5.000',
@@ -1099,6 +1101,12 @@ def _quote_catalog_item(description, quantity, supplied_unit):
             return 1.0, 10000.0
         if qty == 1:
             return 1.0, 7500.0
+
+    # Libros armados a partir de un PDF: la cantidad representa páginas/faces.
+    if "libro" in text:
+        if "color" in text:
+            return qty, 1100.0
+        return qty, 800.0
 
     # Productos por unidad, medida o faz.
     if "anillado" in text:
