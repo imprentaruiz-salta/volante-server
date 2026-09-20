@@ -137,7 +137,7 @@ def imprenta_ruiz():
         track_end += len(track_end_marker)
         three_slide_carousel = '''<div class="price-track" data-three-slides="polaroid">
 <!-- El cuarto casillero muestra los precios especiales por volumen de volantes. -->
-<div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$1.250</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$1.250</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$4.000</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$7.500</strong><small>por hoja</small></div></article></div>
+<div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$1.250</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$900</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$4.000</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$7.500</strong><small>por hoja</small></div></article></div>
 <div class="price-slide"><button class="price-card mitsubishi-card" type="button" onclick="document.getElementById('precios-mitsubishi').classList.add('open')"><div class="price-icon purple">🖼️</div><div class="price-info"><h2>Fotos Mitsubishi</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card inkjet-card" type="button" onclick="document.getElementById('precios-inkjet').classList.add('open')"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Fotos Inkjet</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card kodak-card" type="button" onclick="document.getElementById('precios-kodak').classList.add('open')"><div class="price-icon pink">📷</div><div class="price-info"><h2>Fotos Kodak</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card polaroid-card" type="button" onclick="document.getElementById('precios-polaroid').classList.add('open')"><div class="price-icon orange">🖼️</div><div class="price-info"><h2>Fotos Polaroid</h2><strong>Ver precios</strong><small>individual · packs</small></div></button></div>
 <div class="price-slide"><button class="price-card web-work-card" type="button" onclick="document.getElementById('trabajos-web').classList.add('open')"><div class="price-icon blue">🌐</div><div class="price-info"><h2>Trabajos web interactivos</h2><strong>Ver sitios</strong><small>Fleming · Abigail</small></div></button><button class="price-card plastificado-card" type="button" onclick="document.getElementById('precios-plastificado').classList.add('open')"><div class="price-icon yellow">🧊</div><div class="price-info"><h2>Plastificado</h2><strong>Ver precios</strong><small>6,7×9,8 · 7,6×11 · A4 · Oficio · A3</small></div></button><button class="price-card almanaques-card" type="button" onclick="document.getElementById('precios-almanaques').classList.add('open')"><div class="price-icon orange">📅</div><div class="price-info"><h2>Almanaques</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card tira-card" type="button" onclick="document.getElementById('precios-tira').classList.add('open')"><div class="price-icon pink">🎞️</div><div class="price-info"><h2>Tira de 4 fotos</h2><strong>$7.500</strong><small>7×19 cm vertical</small></div></button></div>
 <div class="price-slide"><button class="price-card flyer-price-card" type="button" onclick="document.getElementById('precios-volantes').classList.add('open')"><div class="price-icon blue">📄</div><div class="price-info"><h2>Volantes</h2><strong>$180 / $170 c/u</strong><small>500 / 1.000 unidades · tocá para ver precios</small></div></button><button class="price-card card-price-card" type="button" onclick="document.getElementById('precios-tarjetas').classList.add('open')"><div class="price-icon pink">💳</div><div class="price-info"><h2>Tarjetas 5×8 cm</h2><strong>$45.000 / $80.000</strong><small>50 / 100 u · tocá para ver características</small></div></button></div></div><div class="dots"><i></i><i></i><i></i><i></i></div>'''
@@ -258,7 +258,7 @@ def imprenta_ruiz():
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
   <div class="rulito-prices-card"><button class="rulito-price-close" type="button" data-rulito-close>Cerrar ✕</button><h2 id="rulitoPricesTitle">🧾 Precios de Imprenta Ruiz</h2><p>Estos son los precios actuales. Si necesitás otro trabajo, preguntame.</p>
     <div class="rulito-price-grid">
-      <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.250</b> por faz</p><p>Blanco y negro: <b>$1.250</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
+      <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.250</b> por faz</p><p>Blanco y negro: <b>$900</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$5.000</b> · 13×18: <b>$6.000</b></p><p>15×15: <b>$6.000</b> · 15×20: <b>$7.500</b></p><p>20×30: <b>$17.500</b> · A4: <b>$15.000</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$4.000</b> · 13×18: <b>$4.500</b></p><p>15×15: <b>$4.500</b> · 15×20: <b>$5.000</b></p><p>A4: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$5.500</b> · 15×15: <b>$6.500</b></p><p>15×20: <b>$8.500</b></p></div>
@@ -325,7 +325,7 @@ def imprenta_ruiz():
     '👋 Hola, bienvenidos a Imprenta Ruiz',
     'Soy Rulito, tu asistente.',
     '🖨️ Impresión color: $1.250 por faz',
-    '📄 Blanco y negro: $1.250 por faz',
+    '📄 Blanco y negro: $900 por faz',
     '🔩 Anillado: $4.000',
     '🏷️ A4 autoadhesivo: $7.500 por hoja',
     '📸 Mitsubishi 10×15: $5.000',
@@ -1106,7 +1106,7 @@ def _quote_catalog_item(description, quantity, supplied_unit):
     if "autoadhesivo" in text:
         return qty, 7500.0
     if ("impresión" in text or "impresion" in text) and ("blanco" in text or "b/n" in text or "bn" in text):
-        return qty, 1250.0
+        return qty, 900.0
     if ("impresión" in text or "impresion" in text) and "color" in text:
         return qty, 1250.0
 
