@@ -262,7 +262,7 @@ def imprenta_ruiz():
     <div class="rulito-price-grid">
       <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.250</b> por faz</p><p>Blanco y negro: <b>$900</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800</b> por faz</p><p>Color: <b>$1.100</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>Más de 5 ejemplares: precio especial</p></div>
-      <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$5.000</b> · 13×18: <b>$6.000</b></p><p>15×15: <b>$6.000</b> · 15×20: <b>$7.000</b></p><p>20×30: <b>$15.000</b> · A4: <b>$15.000</b></p></div>
+      <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$5.000</b> · 13×18: <b>$6.000</b></p><p>15×15: <b>$6.000</b> · 15×20: <b>$7.500</b></p><p>20×30: <b>$17.500</b> · A4: <b>$15.000</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$4.000</b> · 13×18: <b>$4.500</b></p><p>15×15: <b>$4.500</b> · 15×20: <b>$5.000</b></p><p>A4: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$5.500</b> · 15×15: <b>$6.500</b></p><p>15×20: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Polaroid Mitsubishi</h3><p>Individual: <b>$4.000</b></p><p>Pack de 4: <b>$12.000</b></p><p>Pack de 10: <b>$25.000</b></p><p>Medida: 8,5×10,5 cm</p></div>
@@ -335,8 +335,8 @@ def imprenta_ruiz():
     '📸 Mitsubishi 10×15: $5.000',
     '📸 Mitsubishi 13×18: $6.000',
     '📸 Mitsubishi 15×15: $6.000',
-    '📸 Mitsubishi 15×20: $7.000',
-    '📸 Mitsubishi 20×30: $15.000',
+    '📸 Mitsubishi 15×20: $7.500',
+    '📸 Mitsubishi 20×30: $17.500',
     '📸 Mitsubishi A4: $15.000',
     '🖼️ Inkjet 10×15: $4.000',
     '🖼️ Inkjet 13×18: $4.500',
@@ -1117,7 +1117,7 @@ def _quote_catalog_item(description, quantity, supplied_unit):
         return qty, 1250.0
 
     photo_prices = {
-        "mitsubishi": {"10x15": 5000, "13x18": 6000, "15x15": 6000, "15x20": 7000, "20x30": 15000, "a4": 15000},
+        "mitsubishi": {"10x15": 5000, "13x18": 6000, "15x15": 6000, "15x20": 7500, "20x30": 17500, "a4": 15000},
         "inkjet": {"10x15": 4000, "13x18": 4500, "15x15": 4500, "15x20": 5000, "a4": 7500},
         "kodak": {"10x15": 5500, "15x15": 6500, "15x20": 7500},
     }
