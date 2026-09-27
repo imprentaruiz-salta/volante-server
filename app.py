@@ -419,7 +419,7 @@ def imprenta_ruiz():
     html = html.replace('</body>', location_ui + quote_ui + '</body>', 1)
     social_preview = """
 <link rel="icon" type="image/png" href="https://volante-server.onrender.com/static/imprenta-ruiz-favicon.png">
-<link rel="preload" as="image" href="https://volante-server.onrender.com/static/impresiones-ruiz-portada-v2.jpg">
+<link rel="preload" as="image" href="https://volante-server.onrender.com/static/impresiones-ruiz-portada-v3.jpg">
 <meta name="theme-color" content="#071b3b">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Impresiones Ruiz">
