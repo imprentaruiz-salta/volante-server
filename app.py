@@ -223,6 +223,22 @@ def imprenta_ruiz():
 .send-carousel{top:calc(50% + 220px)!important}
 .belen-widget{right:11px!important;left:auto!important;top:calc(50% + 100px)!important;bottom:auto!important;transform:none!important}
 @media(max-width:620px){.send-carousel{top:calc(50% + 185px)!important}.belen-widget{right:10px!important;left:auto!important;top:calc(50% + 70px)!important;bottom:auto!important;transform:none!important}}
+/* Escritorio: afiche y acciones comparten una columna equilibrada. */
+@media(min-width:1000px){
+  body{background:radial-gradient(ellipse at 50% 35%,#123157 0%,#0b2444 54%,#071b3b 100%)}
+  .canvas{max-width:485px!important;margin-left:calc(50% - 433px)!important;margin-right:auto!important}
+  .belen-widget{left:calc(50% + 72px)!important;right:auto!important;top:calc(50% - 250px)!important;bottom:auto!important;transform:none!important}
+  .belen-launcher{width:72px!important;height:72px!important}
+  .belen-nudge{left:84px!important;right:auto!important;top:8px!important;bottom:auto!important;width:min(260px,calc(50vw - 170px))}
+  .belen-nudge:after{display:none}
+  .belen-panel{position:fixed!important;left:calc(50% + 72px)!important;right:auto!important;top:20px!important;bottom:auto!important;width:min(360px,calc(50vw - 105px))!important;height:min(700px,calc(100vh - 40px))!important;transform:none!important}
+  .send-carousel{position:fixed!important;left:calc(50% + 72px)!important;right:auto!important;top:calc(50% + 42px)!important;bottom:auto!important;transform:none!important;width:min(360px,calc(50vw - 105px))!important;height:auto!important;padding:14px!important;border:1px solid rgba(255,255,255,.8)!important;border-radius:18px!important;background:rgba(255,255,255,.95)!important;box-shadow:0 12px 32px rgba(0,0,0,.22)!important;backdrop-filter:blur(8px)}
+  .send-carousel:before{content:"También podés mandarnos tu archivo";display:block;margin:0 0 10px;color:#071b3b;font:900 14px Arial,sans-serif}
+  .send-carousel .send-track{align-items:stretch!important;gap:10px!important;width:100%!important}
+  .send-carousel .send-option{width:100%!important;height:52px!important;min-height:52px!important;justify-content:flex-start!important;gap:12px!important;padding:0 15px!important;border-radius:13px!important;font:900 14px Arial,sans-serif!important}
+  .send-carousel .send-option span{display:inline-block!important;font-size:14px}
+  .send-carousel .send-option svg{width:24px!important;height:24px!important}
+}
 </style>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
   <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Impresiones Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Impresiones Ruiz en Chacabuco 470"></div>
