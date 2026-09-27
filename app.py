@@ -129,7 +129,7 @@ def imprenta_ruiz():
     html = re.sub(r'src="data:image/[^;]+;base64,[^\"]+"', externalize_preview, html)
     html = html.replace('alt="Vista previa de ', 'loading="lazy" alt="Vista previa de ')
     # El avatar conversa en vivo; este botón abre el emisor de presupuesto PDF.
-    html = html.replace('<div class="belen-foot">Podés hablarle a Belen usando el micrófono.</div>', '<div class="belen-foot">Podés hablarle a Belen usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>', 1)
+    html = html.replace('<div class="belen-foot">Podés hablarle a Luz usando el micrófono.</div>', '<div class="belen-foot">Podés hablarle a Luz usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>', 1)
     # Carrusel de tres páginas: todas las tarjetas conservan el mismo tamaño.
     # La segunda página reúne las fotos y la tercera los servicios restantes.
     track_start = html.find('<div class="price-track">')
@@ -159,7 +159,7 @@ def imprenta_ruiz():
     if 'id="precios-tarjetas"' not in html:
         tarjetas_modal = '<div class="web-modal" id="precios-tarjetas" role="dialog" aria-modal="true" aria-label="Precios de tarjetas"><div class="web-box"><div class="web-head"><h2>Tarjetas 5×8 cm</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tarjetas\').classList.remove(\'open\')">×</button></div><p class="web-sub">Tarjetas en papel mate de 300 g, impresión una sola faz, color o blanco y negro.</p><div class="inkjet-prices"><div><span>50 unidades</span><b>$45.000</b></div><div><span>100 unidades</span><b>$80.000</b></div><div><span>Medida</span><b>5×8 cm</b></div></div></div></div>'
         html = html.replace('</body>', tarjetas_modal + '</body>', 1)
-    # Se retira la mascota anterior: el sitio usará a Belen como asistente virtual.
+    # Se retira la mascota anterior: el sitio usará a Luz como asistente virtual.
     mascot_start = html.find('<img class="mascota-float"')
     if mascot_start >= 0:
         mascot_end = html.find('>', mascot_start)
@@ -207,7 +207,7 @@ def imprenta_ruiz():
 .whatsapp-form-modal{display:none;position:fixed;inset:0;z-index:100;background:rgba(3,16,36,.82);align-items:center;justify-content:center;padding:12px}
 .whatsapp-form-modal.is-open{display:flex}.whatsapp-form-card{position:relative;width:min(560px,96vw);max-height:92vh;overflow:auto;border-radius:22px;padding:22px;background:#fff;box-shadow:0 20px 55px #0009;color:#071b3b;font-family:Arial,sans-serif}.whatsapp-form-card h2{margin:0 40px 5px 0;font-size:22px}.whatsapp-form-card>p{margin:0 0 15px;color:#516274;font-weight:700;font-size:13px}.whatsapp-form-close{position:absolute;right:12px;top:10px;border:0;border-radius:10px;background:#071b3b;color:#fff;padding:7px 10px;font-weight:900;cursor:pointer}.whatsapp-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left}.whatsapp-form-field{display:flex;flex-direction:column;gap:4px}.whatsapp-form-field.full{grid-column:1/-1}.whatsapp-form-field label{font-size:12px;font-weight:900;color:#071b3b}.whatsapp-form-field input,.whatsapp-form-field select,.whatsapp-form-field textarea{width:100%;box-sizing:border-box;border:1px solid #cbd5e1;border-radius:10px;padding:10px;font:600 13px Arial;color:#071b3b;background:#fff}.whatsapp-form-field textarea{min-height:70px;resize:vertical}.whatsapp-form-note{margin:10px 0 0;color:#64748b;font-size:11px;line-height:1.3}.whatsapp-form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:15px}.whatsapp-form-submit{border:0;border-radius:12px;background:linear-gradient(145deg,#27c768,#0a9f4d);color:#fff;padding:11px 17px;font:900 14px Arial;cursor:pointer}.whatsapp-form-cancel{border:1px solid #cbd5e1;border-radius:12px;background:#fff;color:#071b3b;padding:10px 15px;font:900 14px Arial;cursor:pointer}
 .belen-widget{position:fixed;right:10px;bottom:calc(50% + 45px);z-index:85;font-family:Arial,sans-serif}.belen-launcher{position:relative;width:70px;height:70px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;filter:drop-shadow(0 5px 8px rgba(0,0,0,.24));transition:transform .2s}.belen-launcher:hover{transform:translateY(-3px) scale(1.04)}.belen-launcher:focus-visible{outline:3px solid #25d366;outline-offset:3px}.belen-launcher img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 18%;border-radius:50%;border:3px solid #fff;box-sizing:border-box}.belen-launcher:after{content:'💬';position:absolute;right:-4px;top:-5px;width:23px;height:23px;display:grid;place-items:center;background:#25d366;color:#fff;border:2px solid #fff;border-radius:50%;font-size:11px}.belen-nudge{position:absolute;right:76px;bottom:22px;width:170px;padding:9px 11px;border:2px solid #173f48;border-radius:15px;background:#fff;color:#173f48;box-shadow:3px 4px 0 rgba(23,63,72,.16);font-size:11px;font-weight:800;line-height:1.25;text-align:center}.belen-nudge:after{content:'';position:absolute;right:-9px;bottom:11px;width:13px;height:13px;background:#fff;border-right:2px solid #173f48;border-top:2px solid #173f48;transform:skew(16deg) rotate(27deg)}.belen-panel{display:none;position:absolute;right:0;bottom:112px;width:min(250px,calc(100vw - 22px));height:min(390px,calc(100vh - 180px));overflow:hidden;border:1px solid #c8dfe2;border-radius:18px;background:#f7fbfb;box-shadow:0 18px 60px rgba(15,45,53,.3)}.belen-panel.is-open{display:flex;flex-direction:column;animation:belen-in .22s ease-out}.belen-widget.belen-open .belen-launcher,.belen-widget:has(.belen-panel.is-open) .belen-launcher{display:none}@keyframes belen-in{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}.belen-head{display:flex;align-items:center;gap:9px;padding:11px 13px;background:linear-gradient(135deg,#173f48,#236875);color:#fff}.belen-head img{width:42px;height:42px;object-fit:cover;object-position:50% 15%;border-radius:50%;border:2px solid rgba(255,255,255,.85)}.belen-head strong{display:block;font-size:14px}.belen-head span{display:block;margin-top:2px;color:#c9e8df;font-size:10px}.belen-close{margin-left:auto;width:28px;height:28px;border:1px solid rgba(255,255,255,.7);border-radius:50%;background:transparent;color:#fff;font-size:18px;line-height:1;cursor:pointer}.belen-messages{flex:1;min-height:0;overflow:auto;padding:13px 11px 7px;background:linear-gradient(#fff,#f7fbfb)}.belen-bubble{width:fit-content;max-width:88%;margin:0 0 9px;padding:9px 11px;border-radius:16px 16px 16px 5px;background:#e7f4f5;color:#173f48;font-size:12px;line-height:1.35}.belen-bubble.user{margin-left:auto;border-radius:16px 16px 5px 16px;background:#dcf7e5;color:#14532d}.belen-options{display:flex;gap:5px;overflow-x:auto;padding:5px 10px 8px;background:#fff;scrollbar-width:none}.belen-options::-webkit-scrollbar{display:none}.belen-options button{white-space:nowrap;border:1px solid #8bc5cc;border-radius:50px;background:#f2fbfb;color:#17606a;padding:7px 9px;font-size:10px;font-weight:800;cursor:pointer}.belen-form{display:flex;gap:6px;padding:8px 10px 10px;border-top:1px solid #d9eaec;background:#fff}.belen-form input{min-width:0;flex:1;border:1px solid #b9d4d8;border-radius:50px;padding:9px 11px;outline:none;font-size:12px}.belen-form input:focus{border-color:#2f95a2;box-shadow:0 0 0 3px rgba(47,149,162,.14)}.belen-form button{width:38px;height:38px;border:0;border-radius:50%;background:#25b463;color:#fff;font-size:17px;cursor:pointer}.belen-quote{display:block;width:100%;margin-top:5px;border:0;border-radius:10px;background:#25b463;color:#fff;padding:8px;font-size:11px;font-weight:900;cursor:pointer}.belen-live-frame{display:block;flex:1;min-height:0;width:100%;border:0;background:#102f35}.belen-foot{padding:8px 10px;background:#fff;color:#667579;font-size:10px;line-height:1.25;text-align:center;border-top:1px solid #d9eaec}
-/* Sector de contacto unificado: Belen arriba y canales debajo. */
+/* Sector de contacto unificado: Luz arriba y canales debajo. */
 .send-carousel{right:6px;width:66px;padding:7px 5px;border:1px solid rgba(255,255,255,.9);border-radius:38px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);box-shadow:0 7px 20px rgba(7,27,59,.2)}.send-carousel .send-track{gap:10px}.send-carousel .send-option{width:56px;height:56px;min-height:56px}
 .belen-widget{right:6px;bottom:calc(50% + 54px)}.belen-panel{position:fixed!important;right:78px;top:50%;bottom:auto;transform:translateY(-50%);width:min(250px,calc(100vw - 88px));height:min(390px,calc(100vh - 150px));z-index:86}.belen-panel.is-open{animation:belen-fixed-in .22s ease-out}@keyframes belen-fixed-in{from{opacity:0;transform:translateY(-47%) scale(.97)}to{opacity:1;transform:translateY(-50%) scale(1)}}
 @media(max-width:620px){.send-carousel{right:5px;width:58px;padding:6px 4px}.send-carousel .send-track{gap:8px}.send-carousel .send-option{width:48px;height:48px;min-height:48px}.belen-widget{right:5px;bottom:calc(50% + 43px)}.belen-panel{right:65px;width:min(240px,calc(100vw - 78px));height:min(380px,calc(100vh - 135px))}}
@@ -216,10 +216,10 @@ def imprenta_ruiz():
 @media(max-width:620px){.send-carousel{top:calc(50% + 16px)}.belen-widget{bottom:calc(50% + 37px)}.belen-launcher{width:48px;height:48px}.belen-nudge{right:56px;bottom:7px;width:140px}.belen-panel{right:65px;width:min(300px,calc(100vw - 55px));height:min(620px,calc(100vh - 55px))}}
 /* Tres bloques equilibrados: marca, precios y cómo llegar. */
 .prices-overlay{top:36%;height:34%}.location-split{left:18.5%;top:72.55%;width:62.5%;height:7.2%}
-/* Marco de Belen: contenido amplio para los controles, presentación más compacta. */
+/* Marco de Luz: contenido amplio para los controles, presentación más compacta. */
 .belen-panel{transform:translateY(-50%) scale(.88);transform-origin:right center}.belen-panel.is-open{animation:belen-fixed-in-compact .22s ease-out}@keyframes belen-fixed-in-compact{from{opacity:0;transform:translateY(-47%) scale(.84)}to{opacity:1;transform:translateY(-50%) scale(.88)}}
 @media(max-width:620px){.belen-panel{transform:translateY(-50%) scale(.82)}.belen-panel.is-open{animation:belen-fixed-in-compact-mobile .22s ease-out}@keyframes belen-fixed-in-compact-mobile{from{opacity:0;transform:translateY(-47%) scale(.78)}to{opacity:1;transform:translateY(-50%) scale(.82)}}}
-/* Belén queda claramente por encima de WhatsApp; ambos más arriba de Cómo llegar. */
+/* Luz queda claramente por encima de WhatsApp; ambos más arriba de Cómo llegar. */
 .send-carousel{top:calc(50% + 220px)!important}
 .belen-widget{right:11px!important;left:auto!important;top:calc(50% + 100px)!important;bottom:auto!important;transform:none!important}
 @media(max-width:620px){.send-carousel{top:calc(50% + 185px)!important}.belen-widget{right:10px!important;left:auto!important;top:calc(50% + 70px)!important;bottom:auto!important;transform:none!important}}
@@ -250,13 +250,13 @@ def imprenta_ruiz():
     </form>
   </div>
 </div>
-<div class="belen-widget" id="belenWidget" aria-label="Belen, asistente virtual de Impresiones Ruiz">
-  <div class="belen-nudge" id="belenNudge">👋 Hola, soy <b>Belen</b>.<br>Hablá conmigo sobre tu trabajo.</div>
-  <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir a Belen, asistente virtual" aria-expanded="false"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt="Belen, asistente virtual de Impresiones Ruiz"></button>
+<div class="belen-widget" id="belenWidget" aria-label="Luz, asistente virtual de Impresiones Ruiz">
+  <div class="belen-nudge" id="belenNudge">👋 Hola, soy <b>Luz</b>.<br>Hablá conmigo sobre tu trabajo.</div>
+  <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir a Luz, asistente virtual" aria-expanded="false"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt="Luz, asistente virtual de Impresiones Ruiz"></button>
   <section class="belen-panel" id="belenPanel" role="dialog" aria-modal="false" aria-labelledby="belenTitle">
-    <header class="belen-head"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt=""><div><strong id="belenTitle">Belen</strong><span>Asistente virtual · Impresiones Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Belen">×</button></header>
-    <iframe class="belen-live-frame" id="belenLiveFrame" title="Belen, asistente virtual de Impresiones Ruiz" data-src="https://embed.liveavatar.com/v1/fca1a3c1-88b5-47ac-9110-a1ff8f2fb7f2?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
-    <div class="belen-foot">Podés hablarle a Belen usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>
+    <header class="belen-head"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt=""><div><strong id="belenTitle">Luz</strong><span>Asistente virtual · Impresiones Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Luz">×</button></header>
+    <iframe class="belen-live-frame" id="belenLiveFrame" title="Luz, asistente virtual de Impresiones Ruiz" data-src="https://embed.liveavatar.com/v1/fca1a3c1-88b5-47ac-9110-a1ff8f2fb7f2?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
+    <div class="belen-foot">Podés hablarle a Luz usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>
   </section>
 </div>
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
@@ -399,7 +399,7 @@ def imprenta_ruiz():
 @media(max-width:620px){.quote-card{padding:16px}.quote-grid{grid-template-columns:1fr}.quote-field.full{grid-column:auto}.quote-row{grid-template-columns:minmax(0,1fr) 62px 90px 28px}.quote-row input{font-size:11px}.quote-actions button{flex:1}}
 </style>
 <div class="quote-modal" id="quoteModal" role="dialog" aria-modal="true" aria-labelledby="quoteTitle">
-  <div class="quote-card"><button class="quote-close" type="button" id="quoteClose">Cerrar ✕</button><h2 id="quoteTitle">📄 Presupuesto de Impresiones Ruiz</h2><p>Belén te ayuda a calcularlo; completá los renglones y generá el PDF para enviar.</p>
+  <div class="quote-card"><button class="quote-close" type="button" id="quoteClose">Cerrar ✕</button><h2 id="quoteTitle">📄 Presupuesto de Impresiones Ruiz</h2><p>Luz te ayuda a calcularlo; completá los renglones y generá el PDF para enviar.</p>
     <form id="quoteForm"><div class="quote-grid"><div class="quote-field"><label for="quoteName">Cliente *</label><input id="quoteName" required></div><div class="quote-field"><label for="quotePhone">WhatsApp</label><input id="quotePhone" type="tel" placeholder="387 210-1274"></div><div class="quote-field full"><label for="quoteNote">Observación</label><textarea id="quoteNote" placeholder="Detalles, medidas o plazo"></textarea></div></div>
       <div class="quote-items"><h3>Ítems del presupuesto</h3><div id="quoteRows"></div><button type="button" class="quote-add" id="quoteAdd">+ Agregar ítem</button></div>
       <div class="quote-actions"><button type="submit" class="quote-submit">Generar PDF</button></div>
@@ -1018,7 +1018,7 @@ def carnet_procesar():
 
 
 # ---------------------------------------------------------------------------
-# Presupuestos profesionales para Belén (backend propio)
+# Presupuestos profesionales para Luz (backend propio)
 # ---------------------------------------------------------------------------
 QUOTE_DIR = os.environ.get("QUOTE_DIR", "/tmp/ruiz_presupuestos")
 QUOTE_DB = os.environ.get("QUOTE_DB", os.path.join(QUOTE_DIR, "queue.sqlite3"))
@@ -1138,7 +1138,7 @@ def _quote_catalog_item(description, quantity, supplied_unit):
             if size in text.replace(" ", "") or size.replace(",", ".") in text.replace(" ", ""):
                 return qty, float(price)
 
-    # Para trabajos de consulta conserva el valor que Belén haya calculado.
+    # Para trabajos de consulta conserva el valor que Luz haya calculado.
     return qty, supplied
 
 
@@ -1164,7 +1164,7 @@ def _make_quote_pdf(payload, quote_id, path):
     total = sum(item["subtotal"] for item in normalized)
     nombre = str(payload.get("nombre", "Cliente")).strip() or "Cliente"
     telefono = str(payload.get("telefono", payload.get("phone", ""))).strip()
-    nota = str(payload.get("nota", "Presupuesto solicitado a través de Belén.")).strip()
+    nota = str(payload.get("nota", "Presupuesto solicitado a través de Luz.")).strip()
     blue = colors.HexColor("#1565C0")
     dark = colors.HexColor("#37474F")
     pale_blue = colors.HexColor("#E3F2FD")
@@ -1217,7 +1217,7 @@ def _make_quote_pdf(payload, quote_id, path):
     c.rect(65, 650, 475, 18, fill=1, stroke=0)
     c.setFillColor(colors.HexColor("#2E7D32"))
     c.setFont("Helvetica", 8.5)
-    c.drawString(74, 656, "Pedido preparado por Belén — Imprenta Ruiz")
+    c.drawString(74, 656, "Pedido preparado por Luz — Imprenta Ruiz")
     c.setFillColor(pale_green)
     c.rect(65, 628, 475, 18, fill=1, stroke=0)
     c.setFillColor(colors.HexColor("#2E7D32"))
@@ -1264,7 +1264,7 @@ def _make_quote_pdf(payload, quote_id, path):
     c.setFillColor(dark)
     c.setFont("Helvetica", 8.5)
     c.drawString(80, 392, "Los precios unitarios y subtotales fueron calculados según la lista oficial de Imprenta Ruiz.")
-    c.drawString(80, 376, "Para confirmar, revisá el detalle y respondé por WhatsApp o tocá el botón azul de Belén.")
+    c.drawString(80, 376, "Para confirmar, revisá el detalle y respondé por WhatsApp o tocá el botón azul de Luz.")
     c.setFillColor(blue)
     c.setFont("Helvetica-Bold", 11)
     c.drawString(80, 354, "Total del presupuesto: " + money(total))
@@ -1323,7 +1323,7 @@ def _make_quote_pdf(payload, quote_id, path):
 
 @app.route("/api/presupuesto", methods=["POST", "OPTIONS"])
 def api_presupuesto():
-    """Genera un PDF de presupuesto para el flujo de Belén."""
+    """Genera un PDF de presupuesto para el flujo de Luz."""
     if request.method == "OPTIONS":
         return _quote_cors(jsonify({"ok": True}))
     payload = request.get_json(silent=True) or {}
