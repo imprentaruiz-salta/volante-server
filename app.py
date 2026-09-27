@@ -107,10 +107,12 @@ def index():
     return render_template("index.html", imprenta_wpp=IMPRENTA_WHATSAPP)
 
 
+@app.route("/impresiones-ruiz")
+@app.route("/impresiones-ruiz/")
 @app.route("/imprenta-ruiz")
 @app.route("/imprenta-ruiz/")
 def imprenta_ruiz():
-    """Página pública de Imprenta Ruiz, con preview al compartir el enlace."""
+    """Página pública de Impresiones Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
     # Las previsualizaciones antiguas venían incrustadas en base64 y hacían
     # crecer la página más de medio megabyte. Se sirven como imágenes cacheables.
@@ -163,8 +165,8 @@ def imprenta_ruiz():
         mascot_end = html.find('>', mascot_start)
         if mascot_end >= 0:
             html = html[:mascot_start] + html[mascot_end + 1:]
-    location_anchor = '<a class="hit hit-map" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener" aria-label="Cómo llegar a Imprenta Ruiz"></a>'
-    location_buttons = '''<div class="location-split hit" aria-label="Ubicación de Imprenta Ruiz">
+    location_anchor = '<a class="hit hit-map" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener" aria-label="Cómo llegar a Impresiones Ruiz"></a>'
+    location_buttons = '''<div class="location-split hit" aria-label="Ubicación de Impresiones Ruiz">
       <button type="button" class="location-hotspot front-hotspot" data-open-modal="frontModal" title="Ver mi casa" aria-label="Ver mi casa"></button>
       <button type="button" class="location-hotspot map-hotspot" data-open-modal="mapModal" title="Cómo llegar y ver mapa" aria-label="Cómo llegar y ver mapa"></button>
     </div>'''
@@ -223,10 +225,10 @@ def imprenta_ruiz():
 @media(max-width:620px){.send-carousel{top:calc(50% + 185px)!important}.belen-widget{right:10px!important;left:auto!important;top:calc(50% + 70px)!important;bottom:auto!important;transform:none!important}}
 </style>
 <div class="ruiz-modal" id="frontModal" role="dialog" aria-modal="true" aria-labelledby="frontModalTitle">
-  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Imprenta Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Imprenta Ruiz en Chacabuco 470"></div>
+  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="frontModalTitle">Mi casa / Impresiones Ruiz</h2><img class="ruiz-front-image" src="/static/frente_casa_rejas_final.jpg" alt="Frente con rejas de Impresiones Ruiz en Chacabuco 470"></div>
 </div>
 <div class="ruiz-modal" id="mapModal" role="dialog" aria-modal="true" aria-labelledby="mapModalTitle">
-  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="mapModalTitle">Cómo llegar a Imprenta Ruiz</h2><iframe class="ruiz-map-frame" title="Mapa de Chacabuco 470, Salta" src="https://www.google.com/maps?q=Chacabuco%20470%2C%20Salta&output=embed" loading="lazy"></iframe><a class="ruiz-map-link" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener">Abrir ubicación en Google Maps</a></div>
+  <div class="ruiz-modal-card"><button class="ruiz-close" type="button" data-close-modal>Cerrar ✕</button><h2 id="mapModalTitle">Cómo llegar a Impresiones Ruiz</h2><iframe class="ruiz-map-frame" title="Mapa de Chacabuco 470, Salta" src="https://www.google.com/maps?q=Chacabuco%20470%2C%20Salta&output=embed" loading="lazy"></iframe><a class="ruiz-map-link" href="https://www.google.com/maps/search/?api=1&query=Chacabuco+470+Salta" target="_blank" rel="noopener">Abrir ubicación en Google Maps</a></div>
 </div>
 <div class="whatsapp-form-modal" id="whatsappFormModal" role="dialog" aria-modal="true" aria-labelledby="whatsappFormTitle">
   <div class="whatsapp-form-card">
@@ -248,17 +250,17 @@ def imprenta_ruiz():
     </form>
   </div>
 </div>
-<div class="belen-widget" id="belenWidget" aria-label="Belen, asistente virtual de Imprenta Ruiz">
+<div class="belen-widget" id="belenWidget" aria-label="Belen, asistente virtual de Impresiones Ruiz">
   <div class="belen-nudge" id="belenNudge">👋 Hola, soy <b>Belen</b>.<br>Hablá conmigo sobre tu trabajo.</div>
-  <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir a Belen, asistente virtual" aria-expanded="false"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt="Belen, asistente virtual de Imprenta Ruiz"></button>
+  <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir a Belen, asistente virtual" aria-expanded="false"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt="Belen, asistente virtual de Impresiones Ruiz"></button>
   <section class="belen-panel" id="belenPanel" role="dialog" aria-modal="false" aria-labelledby="belenTitle">
-    <header class="belen-head"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt=""><div><strong id="belenTitle">Belen</strong><span>Asistente virtual · Imprenta Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Belen">×</button></header>
-    <iframe class="belen-live-frame" id="belenLiveFrame" title="Belen, asistente virtual de Imprenta Ruiz" data-src="https://embed.liveavatar.com/v1/fca1a3c1-88b5-47ac-9110-a1ff8f2fb7f2?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
+    <header class="belen-head"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt=""><div><strong id="belenTitle">Belen</strong><span>Asistente virtual · Impresiones Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Belen">×</button></header>
+    <iframe class="belen-live-frame" id="belenLiveFrame" title="Belen, asistente virtual de Impresiones Ruiz" data-src="https://embed.liveavatar.com/v1/fca1a3c1-88b5-47ac-9110-a1ff8f2fb7f2?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
     <div class="belen-foot">Podés hablarle a Belen usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>
   </section>
 </div>
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
-  <div class="rulito-prices-card"><button class="rulito-price-close" type="button" data-rulito-close>Cerrar ✕</button><h2 id="rulitoPricesTitle">🧾 Precios de Imprenta Ruiz</h2><p>Estos son los precios actuales. Si necesitás otro trabajo, preguntame.</p>
+  <div class="rulito-prices-card"><button class="rulito-price-close" type="button" data-rulito-close>Cerrar ✕</button><h2 id="rulitoPricesTitle">🧾 Precios de Impresiones Ruiz</h2><p>Estos son los precios actuales. Si necesitás otro trabajo, preguntame.</p>
     <div class="rulito-price-grid">
       <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.250</b> por faz</p><p>Blanco y negro: <b>$900</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800</b> por faz</p><p>Color: <b>$1.100</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>Más de 5 ejemplares: precio especial</p></div>
@@ -303,7 +305,7 @@ def imprenta_ruiz():
     var detalle=document.getElementById('whatsappDetalle').value.trim()||'Sin detalles adicionales';
     var archivo=document.getElementById('whatsappArchivo').files[0];
     var archivoTexto=archivo?'Sí — '+archivo.name+' (lo adjunto en el chat)':'No';
-    var mensaje=['Hola Imprenta Ruiz, quiero hacer una consulta.','*Nombre:* '+nombre+' '+apellido,'*Celular:* '+celular,'*Producto o trabajo:* '+producto,'*Detalles:* '+detalle,'*¿Adjunto archivo?:* '+archivoTexto,'*Horario para llamarme:* '+horario].join('\\n');
+    var mensaje=['Hola Impresiones Ruiz, quiero hacer una consulta.','*Nombre:* '+nombre+' '+apellido,'*Celular:* '+celular,'*Producto o trabajo:* '+producto,'*Detalles:* '+detalle,'*¿Adjunto archivo?:* '+archivoTexto,'*Horario para llamarme:* '+horario].join('\\n');
     if(contactChannel==='telegram'){
       try{if(navigator.clipboard)navigator.clipboard.writeText(mensaje)}catch(err){}
       window.open('https://t.me/imptaruiz?text='+encodeURIComponent(mensaje),'_blank','noopener');
@@ -325,7 +327,7 @@ def imprenta_ruiz():
   document.addEventListener('keydown',function(e){if(e.key==='Escape')toggleBelen(false)});
   var rulitoMessage=document.querySelector('.rulito-message');
   var rulitoMessages=[
-    '👋 Hola, bienvenidos a Imprenta Ruiz',
+    '👋 Hola, bienvenidos a Impresiones Ruiz',
     'Soy Rulito, tu asistente.',
     '🖨️ Impresión color: $1.250 por faz',
     '📄 Blanco y negro: $900 por faz',
@@ -397,7 +399,7 @@ def imprenta_ruiz():
 @media(max-width:620px){.quote-card{padding:16px}.quote-grid{grid-template-columns:1fr}.quote-field.full{grid-column:auto}.quote-row{grid-template-columns:minmax(0,1fr) 62px 90px 28px}.quote-row input{font-size:11px}.quote-actions button{flex:1}}
 </style>
 <div class="quote-modal" id="quoteModal" role="dialog" aria-modal="true" aria-labelledby="quoteTitle">
-  <div class="quote-card"><button class="quote-close" type="button" id="quoteClose">Cerrar ✕</button><h2 id="quoteTitle">📄 Presupuesto de Imprenta Ruiz</h2><p>Belén te ayuda a calcularlo; completá los renglones y generá el PDF para enviar.</p>
+  <div class="quote-card"><button class="quote-close" type="button" id="quoteClose">Cerrar ✕</button><h2 id="quoteTitle">📄 Presupuesto de Impresiones Ruiz</h2><p>Belén te ayuda a calcularlo; completá los renglones y generá el PDF para enviar.</p>
     <form id="quoteForm"><div class="quote-grid"><div class="quote-field"><label for="quoteName">Cliente *</label><input id="quoteName" required></div><div class="quote-field"><label for="quotePhone">WhatsApp</label><input id="quotePhone" type="tel" placeholder="387 210-1274"></div><div class="quote-field full"><label for="quoteNote">Observación</label><textarea id="quoteNote" placeholder="Detalles, medidas o plazo"></textarea></div></div>
       <div class="quote-items"><h3>Ítems del presupuesto</h3><div id="quoteRows"></div><button type="button" class="quote-add" id="quoteAdd">+ Agregar ítem</button></div>
       <div class="quote-actions"><button type="submit" class="quote-submit">Generar PDF</button></div>
@@ -410,7 +412,7 @@ def imprenta_ruiz():
   function closeQuote(){if(modal)modal.classList.remove("is-open")}
   function addRow(desc,qty,unit){var row=document.createElement("div");row.className="quote-row";row.innerHTML='<input class="q-desc" placeholder="Descripción" value="'+(desc||"")+'" required><input class="q-qty" type="number" min="1" step="1" value="'+(qty||1)+'" required><input class="q-unit" type="number" min="0" step="1" placeholder="$ unit." value="'+(unit||"")+'" required><button type="button" class="quote-remove" aria-label="Quitar ítem">×</button>';row.querySelector(".quote-remove").addEventListener("click",function(){row.remove()});rows.appendChild(row)}
   if(open)open.addEventListener("click",function(){modal.classList.add("is-open");if(!rows.children.length)addRow()});if(close)close.addEventListener("click",closeQuote);if(modal)modal.addEventListener("click",function(e){if(e.target===modal)closeQuote()});if(add)add.addEventListener("click",function(){addRow()});
-  if(form)form.addEventListener("submit",async function(e){e.preventDefault();var items=[];rows.querySelectorAll(".quote-row").forEach(function(row){items.push({descripcion:row.querySelector(".q-desc").value.trim(),cantidad:Number(row.querySelector(".q-qty").value),precio_unit:Number(row.querySelector(".q-unit").value)})});if(!items.length)return;var payload={nombre:document.getElementById("quoteName").value.trim(),telefono:document.getElementById("quotePhone").value.trim(),nota:document.getElementById("quoteNote").value.trim(),items:items};result.classList.add("is-visible");result.textContent="Generando presupuesto…";try{var r=await fetch("/api/presupuesto",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"No se pudo generar");var wa="Hola, te envío el presupuesto de Imprenta Ruiz. Total: $"+Number(d.total).toLocaleString("es-AR")+". PDF: "+d.pdf_url;var phone=(payload.telefono||"").replace(/[^0-9]/g,"");if(phone.length===10)phone="549"+phone;result.innerHTML="Presupuesto generado. Total: $"+Number(d.total).toLocaleString("es-AR")+"<br><a href='"+d.pdf_url+"' target='_blank'>Abrir o descargar PDF</a>"+(payload.telefono?"<br><button type='button' class='quote-wa quote-send' id='quoteSend'>Confirmar y enviar por WhatsApp</button>":"");if(payload.telefono){document.getElementById("quoteSend").addEventListener("click",async function(){var btn=this;btn.disabled=true;btn.textContent="Registrando envío…";try{var sr=await fetch("/api/presupuesto/"+d.quote_id+"/enviar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telefono:payload.telefono,total:d.total})}),sd=await sr.json();if(!sr.ok||!sd.ok)throw new Error(sd.error||"No se pudo registrar");btn.textContent="✅ Envío confirmado";result.insertAdjacentHTML("beforeend","<br>El PDF quedó confirmado para enviarse al WhatsApp indicado.")}catch(x){btn.disabled=false;btn.textContent="Confirmar y enviar por WhatsApp";alert("No se pudo registrar el envío. Revisá el número e intentá nuevamente.")}})}}catch(err){result.textContent="No se pudo generar el PDF. Revisá los datos e intentá nuevamente."}})
+  if(form)form.addEventListener("submit",async function(e){e.preventDefault();var items=[];rows.querySelectorAll(".quote-row").forEach(function(row){items.push({descripcion:row.querySelector(".q-desc").value.trim(),cantidad:Number(row.querySelector(".q-qty").value),precio_unit:Number(row.querySelector(".q-unit").value)})});if(!items.length)return;var payload={nombre:document.getElementById("quoteName").value.trim(),telefono:document.getElementById("quotePhone").value.trim(),nota:document.getElementById("quoteNote").value.trim(),items:items};result.classList.add("is-visible");result.textContent="Generando presupuesto…";try{var r=await fetch("/api/presupuesto",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"No se pudo generar");var wa="Hola, te envío el presupuesto de Impresiones Ruiz. Total: $"+Number(d.total).toLocaleString("es-AR")+". PDF: "+d.pdf_url;var phone=(payload.telefono||"").replace(/[^0-9]/g,"");if(phone.length===10)phone="549"+phone;result.innerHTML="Presupuesto generado. Total: $"+Number(d.total).toLocaleString("es-AR")+"<br><a href='"+d.pdf_url+"' target='_blank'>Abrir o descargar PDF</a>"+(payload.telefono?"<br><button type='button' class='quote-wa quote-send' id='quoteSend'>Confirmar y enviar por WhatsApp</button>":"");if(payload.telefono){document.getElementById("quoteSend").addEventListener("click",async function(){var btn=this;btn.disabled=true;btn.textContent="Registrando envío…";try{var sr=await fetch("/api/presupuesto/"+d.quote_id+"/enviar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telefono:payload.telefono,total:d.total})}),sd=await sr.json();if(!sr.ok||!sd.ok)throw new Error(sd.error||"No se pudo registrar");btn.textContent="✅ Envío confirmado";result.insertAdjacentHTML("beforeend","<br>El PDF quedó confirmado para enviarse al WhatsApp indicado.")}catch(x){btn.disabled=false;btn.textContent="Confirmar y enviar por WhatsApp";alert("No se pudo registrar el envío. Revisá el número e intentá nuevamente.")}})}}catch(err){result.textContent="No se pudo generar el PDF. Revisá los datos e intentá nuevamente."}})
 })();
 </script>
 '''
@@ -420,13 +422,13 @@ def imprenta_ruiz():
 <link rel="preload" as="image" href="https://volante-server.onrender.com/static/volante-ruiz-sin-hamburguesa.jpg">
 <meta name="theme-color" content="#071b3b">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Imprenta Ruiz">
-<meta property="og:description" content="Precios y trabajos web de Imprenta Ruiz.">
+<meta property="og:title" content="Impresiones Ruiz">
+<meta property="og:description" content="Precios y trabajos web de Impresiones Ruiz.">
 <meta property="og:image" content="https://volante-server.onrender.com/static/imprenta-ruiz-preview-v3.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
-<meta property="og:url" content="https://volante-server.onrender.com/imprenta-ruiz">
+<meta property="og:url" content="https://volante-server.onrender.com/impresiones-ruiz">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://volante-server.onrender.com/static/imprenta-ruiz-preview-v3.jpg">
 """
