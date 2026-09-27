@@ -119,13 +119,13 @@ def imprenta_ruiz():
     preview_assets = [
         "/static/web-preview-fleming.jpg",
         "/static/web-preview-abigail.jpg",
-        "/static/imprenta-ruiz-preview-card.jpg",
+        "/static/impresiones-ruiz-card.jpg",
     ]
     preview_index = {"value": 0}
     def externalize_preview(match):
         i = preview_index["value"]
         preview_index["value"] += 1
-        return 'src="' + (preview_assets[i] if i < len(preview_assets) else "/static/imprenta-ruiz-preview-card.jpg") + '"'
+        return 'src="' + (preview_assets[i] if i < len(preview_assets) else "/static/impresiones-ruiz-card.jpg") + '"'
     html = re.sub(r'src="data:image/[^;]+;base64,[^\"]+"', externalize_preview, html)
     html = html.replace('alt="Vista previa de ', 'loading="lazy" alt="Vista previa de ')
     # El avatar conversa en vivo; este botón abre el emisor de presupuesto PDF.
@@ -419,18 +419,18 @@ def imprenta_ruiz():
     html = html.replace('</body>', location_ui + quote_ui + '</body>', 1)
     social_preview = """
 <link rel="icon" type="image/png" href="https://volante-server.onrender.com/static/imprenta-ruiz-favicon.png">
-<link rel="preload" as="image" href="https://volante-server.onrender.com/static/volante-ruiz-sin-hamburguesa.jpg">
+<link rel="preload" as="image" href="https://volante-server.onrender.com/static/impresiones-ruiz-portada.jpg">
 <meta name="theme-color" content="#071b3b">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Impresiones Ruiz">
 <meta property="og:description" content="Precios y trabajos web de Impresiones Ruiz.">
-<meta property="og:image" content="https://volante-server.onrender.com/static/imprenta-ruiz-preview-v3.jpg">
+<meta property="og:image" content="https://volante-server.onrender.com/static/impresiones-ruiz-preview.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:url" content="https://volante-server.onrender.com/impresiones-ruiz">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://volante-server.onrender.com/static/imprenta-ruiz-preview-v3.jpg">
+<meta name="twitter:image" content="https://volante-server.onrender.com/static/impresiones-ruiz-preview.jpg">
 """
     return html.replace("</head>", social_preview + "</head>", 1)
 
