@@ -271,7 +271,7 @@ def imprenta_ruiz():
   <button class="belen-launcher" id="belenLauncher" type="button" aria-label="Abrir a Luz, asistente virtual" aria-expanded="false"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt="Luz, asistente virtual de Impresiones Ruiz"></button>
   <section class="belen-panel" id="belenPanel" role="dialog" aria-modal="false" aria-labelledby="belenTitle">
     <header class="belen-head"><img src="https://files2.heygen.ai/avatar/v3/75e0a87b7fd94f0981ff398b593dd47f_45570/preview_talk_4.webp" alt=""><div><strong id="belenTitle">Luz</strong><span>Asistente virtual · Impresiones Ruiz</span></div><button class="belen-close" id="belenClose" type="button" aria-label="Cerrar Luz">×</button></header>
-    <iframe class="belen-live-frame" id="belenLiveFrame" title="Luz, asistente virtual de Impresiones Ruiz" data-src="https://embed.liveavatar.com/v1/fca1a3c1-88b5-47ac-9110-a1ff8f2fb7f2?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
+    <iframe class="belen-live-frame" id="belenLiveFrame" title="Luz, asistente virtual de Impresiones Ruiz" data-src="https://embed.liveavatar.com/v1/78e3a548-0725-4957-856e-d14b4e15c816?orientation=vertical" src="about:blank" allow="microphone; autoplay" allowfullscreen></iframe>
     <div class="belen-foot">Podés hablarle a Luz usando el micrófono.<button type="button" class="belen-quote-open" id="belenQuoteOpen">📄 Generar presupuesto PDF</button></div>
   </section>
 </div>
