@@ -278,7 +278,7 @@ def imprenta_ruiz():
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
   <div class="rulito-prices-card"><button class="rulito-price-close" type="button" data-rulito-close>Cerrar ✕</button><h2 id="rulitoPricesTitle">🧾 Precios de Impresiones Ruiz</h2><p>Estos son los precios actuales. Si necesitás otro trabajo, preguntame.</p>
     <div class="rulito-price-grid">
-      <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.000</b> por faz</p><p>Blanco y negro: <b>$500</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
+      <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.500</b> por faz</p><p>Blanco y negro: <b>$1.000</b> por faz<p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
       <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800</b> por faz</p><p>Color: <b>$1.100</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>Más de 5 ejemplares: precio especial</p></div>
       <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$4.000</b> · 13×18: <b>$5.000</b></p><p>15×15: <b>$5.000</b> · 15×20: <b>$6.500</b></p><p>20×30: <b>$17.000</b> · A4: <b>$14.500</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$3.500</b> · 13×18: <b>$4.000</b></p><p>15×15: <b>$4.000</b> · 15×20: <b>$4.500</b></p><p>A4: <b>$7.000</b></p></div>
@@ -345,8 +345,8 @@ def imprenta_ruiz():
   var rulitoMessages=[
     '👋 Hola, bienvenidos a Impresiones Ruiz',
     'Soy Rulito, tu asistente.',
-    '🖨️ Impresión color: $1.000 por faz',
-    '📄 Blanco y negro: $500 por faz',
+    '🖨️ Impresión color: $1.500 por faz',
+    '📄 Blanco y negro: $1.000 por faz',
     '📚 Libros PDF: desde $800 por faz',
     '🔩 Anillado: $4.000',
     '🏷️ A4 autoadhesivo: $7.500 por hoja',
@@ -1130,9 +1130,9 @@ def _quote_catalog_item(description, quantity, supplied_unit):
     if "autoadhesivo" in text:
         return qty, 7500.0
     if ("impresión" in text or "impresion" in text) and ("blanco" in text or "b/n" in text or "b&n" in text or "bn" in text or "byn" in text):
-        return qty, 500.0
-    if ("impresión" in text or "impresion" in text) and "color" in text:
         return qty, 1000.0
+    if ("impresión" in text or "impresion" in text) and "color" in text:
+        return qty, 1500.0
 
     photo_prices = {
         "mitsubishi": {"10x15": 4000, "13x18": 5000, "15x15": 5000, "15x20": 6500, "20x30": 17000, "a4": 14500},
