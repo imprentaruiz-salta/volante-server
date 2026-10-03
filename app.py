@@ -1098,11 +1098,13 @@ def _quote_catalog_item(description, quantity, supplied_unit):
             return qty, 180.0
         if qty == 1000:
             return qty, 170.0
+        raise ValueError("Solo hay precio publicado para 500 o 1.000 volantes; otras cantidades deben consultarse.")
     if "tarjet" in text:
         if qty == 50:
-            return qty, 500.0
+            return qty, 900.0
         if qty == 100:
             return qty, 800.0
+        raise ValueError("Solo hay precio publicado para 50 o 100 tarjetas; otras cantidades deben consultarse.")
     if "polaroid" in text:
         if "pack" in text and ("10" in text or "diez" in text):
             return 1.0, 25000.0
@@ -1110,13 +1112,17 @@ def _quote_catalog_item(description, quantity, supplied_unit):
             return 1.0, 12000.0
         if "individual" in text:
             return qty, 4000.0
+        raise ValueError("Solo hay precios publicados para Polaroid individual, pack de 4 o pack de 10.")
     if "tira" in text:
         if "diseño especial" in text or "diseno especial" in text:
+            if qty != 1:
+                raise ValueError("El precio publicado de diseño especial cubre una tira; para otra cantidad, consultá.")
             return 1.0, 7500.0
         if qty == 2 or "2 tiras" in text or "dos tiras" in text:
             return 1.0, 10000.0
         if qty == 1:
             return 1.0, 7500.0
+        raise ValueError("Para tiras, solo están publicados los precios de 1 o 2 unidades por pedido.")
 
     # Libros armados a partir de un PDF: la cantidad representa páginas/faces.
     if "libro" in text:
@@ -1129,9 +1135,9 @@ def _quote_catalog_item(description, quantity, supplied_unit):
         return qty, 4000.0
     if "autoadhesivo" in text:
         return qty, 7500.0
-    if ("impresión" in text or "impresion" in text) and ("blanco" in text or "b/n" in text or "b&n" in text or "bn" in text or "byn" in text):
+    if "foto" not in text and ("impresión" in text or "impresion" in text) and ("blanco" in text or "b/n" in text or "b&n" in text or "bn" in text or "byn" in text):
         return qty, 1000.0
-    if ("impresión" in text or "impresion" in text) and "color" in text:
+    if "foto" not in text and ("impresión" in text or "impresion" in text) and "color" in text:
         return qty, 1500.0
 
     photo_prices = {
@@ -1139,22 +1145,30 @@ def _quote_catalog_item(description, quantity, supplied_unit):
         "inkjet": {"10x15": 3500, "13x18": 4000, "15x15": 4000, "15x20": 4500, "a4": 7000},
         "kodak": {"10x15": 4500, "15x15": 5500, "15x20": 6500},
     }
+    normalized_text = text.replace(" ", "")
     for brand, sizes in photo_prices.items():
         if brand in text:
             for size, price in sizes.items():
-                if size in text.replace(" ", ""):
+                if size in normalized_text:
                     return qty, float(price)
+            raise ValueError(f"No hay precio publicado para {brand} en esa medida; consultá antes de presupuestar.")
+    if "foto" in text or "fotografía" in text:
+        raise ValueError("Para presupuestar una foto, indicá Mitsubishi, Inkjet o Kodak y una medida publicada.")
 
     if "almanaque" in text:
+        normalized_text = text.replace(" ", "")
         for size, price in {"5x8": 2500, "9x6": 3000, "a4": 7500, "a3+": 18000, "a3": 15000}.items():
-            if size in text.replace(" ", ""):
+            if size in normalized_text:
                 return qty, float(price)
+        raise ValueError("No hay precio publicado para el tamaño de almanaque indicado; consultá antes de presupuestar.")
     if "plastific" in text:
+        normalized_text = text.replace(" ", "")
         for size, price in {"6,7x9,8": 2000, "7,6x11": 2500, "a4": 4000, "oficio": 5000, "a3": 7500}.items():
-            if size in text.replace(" ", "") or size.replace(",", ".") in text.replace(" ", ""):
+            if size in normalized_text or size.replace(",", ".") in normalized_text:
                 return qty, float(price)
+        raise ValueError("No hay precio publicado para ese tamaño de plastificado; consultá antes de presupuestar.")
 
-    # Para trabajos de consulta conserva el valor que Luz haya calculado.
+    # Para trabajos no publicados conserva el valor confirmado manualmente.
     return qty, supplied
 
 
