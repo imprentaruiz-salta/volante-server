@@ -139,25 +139,25 @@ def imprenta_ruiz():
         track_end += len(track_end_marker)
         three_slide_carousel = '''<div class="price-track" data-three-slides="polaroid">
 <!-- El cuarto casillero muestra los precios especiales por volumen de volantes. -->
-<div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$1.500</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$1.000</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$4.000</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$7.500</strong><small>por hoja</small></div></article></div>
+<div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$1.500 ARS</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$1.000 ARS</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$4.000 ARS</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$7.500 ARS</strong><small>por hoja</small></div></article></div>
 <div class="price-slide"><button class="price-card mitsubishi-card" type="button" onclick="document.getElementById('precios-mitsubishi').classList.add('open')"><div class="price-icon purple">🖼️</div><div class="price-info"><h2>Fotos Mitsubishi</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card inkjet-card" type="button" onclick="document.getElementById('precios-inkjet').classList.add('open')"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Fotos Inkjet</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card kodak-card" type="button" onclick="document.getElementById('precios-kodak').classList.add('open')"><div class="price-icon pink">📷</div><div class="price-info"><h2>Fotos Kodak</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card polaroid-card" type="button" onclick="document.getElementById('precios-polaroid').classList.add('open')"><div class="price-icon orange">🖼️</div><div class="price-info"><h2>Fotos Polaroid</h2><strong>Ver precios</strong><small>individual · packs</small></div></button></div>
-<div class="price-slide services-slide"><button class="price-card web-work-card" type="button" onclick="document.getElementById('trabajos-web').classList.add('open')"><div class="price-icon blue">🌐</div><div class="price-info"><h2>Catálogos digitales</h2><strong>Ver catálogos</strong><small>5 páginas interactivas</small></div></button><button class="price-card books-card" type="button" onclick="document.getElementById('rulitoPricesModal').classList.add('is-open')"><div class="price-icon purple">📚</div><div class="price-info"><h2>Libros PDF</h2><strong>Desde $800</strong><small>B/N · color · anillado</small></div></button><button class="price-card plastificado-card" type="button" onclick="document.getElementById('precios-plastificado').classList.add('open')"><div class="price-icon yellow">🧊</div><div class="price-info"><h2>Plastificado</h2><strong>Ver precios</strong><small>6,7×9,8 · 7,6×11 · A4 · Oficio · A3</small></div></button><button class="price-card almanaques-card" type="button" onclick="document.getElementById('precios-almanaques').classList.add('open')"><div class="price-icon orange">📅</div><div class="price-info"><h2>Almanaques</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card tira-card" type="button" onclick="document.getElementById('precios-tira').classList.add('open')"><div class="price-icon pink">🎞️</div><div class="price-info"><h2>Tira de 4 fotos</h2><strong>$7.500</strong><small>7×19 cm vertical</small></div></button></div>
-<div class="price-slide"><button class="price-card flyer-price-card" type="button" onclick="document.getElementById('precios-volantes').classList.add('open')"><div class="price-icon blue">📄</div><div class="price-info"><h2>Volantes</h2><strong>$180 / $170 c/u</strong><small>500 / 1.000 unidades · tocá para ver precios</small></div></button><button class="price-card card-price-card" type="button" onclick="document.getElementById('precios-tarjetas').classList.add('open')"><div class="price-icon pink">💳</div><div class="price-info"><h2>Tarjetas 5×8 cm</h2><strong>$45.000 / $80.000</strong><small>50 / 100 u · tocá para ver características</small></div></button></div></div><div class="dots"><i></i><i></i><i></i><i></i></div>'''
+<div class="price-slide services-slide"><button class="price-card web-work-card" type="button" onclick="document.getElementById('trabajos-web').classList.add('open')"><div class="price-icon blue">🌐</div><div class="price-info"><h2>Catálogos digitales</h2><strong>Ver catálogos</strong><small>5 páginas interactivas</small></div></button><button class="price-card books-card" type="button" onclick="document.getElementById('rulitoPricesModal').classList.add('is-open')"><div class="price-icon purple">📚</div><div class="price-info"><h2>Libros PDF</h2><strong>Desde $800 ARS</strong><small>B/N · color · anillado</small></div></button><button class="price-card plastificado-card" type="button" onclick="document.getElementById('precios-plastificado').classList.add('open')"><div class="price-icon yellow">🧊</div><div class="price-info"><h2>Plastificado</h2><strong>Ver precios</strong><small>6,7×9,8 · 7,6×11 · A4 · Oficio · A3</small></div></button><button class="price-card almanaques-card" type="button" onclick="document.getElementById('precios-almanaques').classList.add('open')"><div class="price-icon orange">📅</div><div class="price-info"><h2>Almanaques</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card tira-card" type="button" onclick="document.getElementById('precios-tira').classList.add('open')"><div class="price-icon pink">🎞️</div><div class="price-info"><h2>Tira de 4 fotos</h2><strong>$7.500 ARS</strong><small>7×19 cm vertical</small></div></button></div>
+<div class="price-slide"><button class="price-card flyer-price-card" type="button" onclick="document.getElementById('precios-volantes').classList.add('open')"><div class="price-icon blue">📄</div><div class="price-info"><h2>Volantes</h2><strong>$180 ARS / $170 ARS c/u</strong><small>500 / 1.000 unidades · tocá para ver precios</small></div></button><button class="price-card card-price-card" type="button" onclick="document.getElementById('precios-tarjetas').classList.add('open')"><div class="price-icon pink">💳</div><div class="price-info"><h2>Tarjetas 5×8 cm</h2><strong>$45.000 ARS / $80.000 ARS</strong><small>50 / 100 u · tocá para ver características</small></div></button></div></div><div class="dots"><i></i><i></i><i></i><i></i></div>'''
         html = html[:track_start] + three_slide_carousel + html[track_end:]
     if 'id="precios-polaroid"' not in html:
-        polaroid_modal = '<div class="web-modal" id="precios-polaroid" role="dialog" aria-modal="true" aria-label="Precios Fotos Polaroid"><div class="web-box"><div class="web-head"><h2>Precios Fotos Polaroid</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-polaroid\').classList.remove(\'open\')">×</button></div><p class="web-sub">Fotos estilo Polaroid Mitsubishi. Medida final: 8,5×10,5 cm.</p><div class="inkjet-prices"><div><span>Individual</span><b>$4.000</b></div><div><span>Pack de 4</span><b>$12.000</b></div><div><span>Pack de 10</span><b>$25.000</b></div></div></div></div>'
+        polaroid_modal = '<div class="web-modal" id="precios-polaroid" role="dialog" aria-modal="true" aria-label="Precios Fotos Polaroid"><div class="web-box"><div class="web-head"><h2>Precios Fotos Polaroid</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-polaroid\').classList.remove(\'open\')">×</button></div><p class="web-sub">Fotos estilo Polaroid Mitsubishi. Medida final: 8,5×10,5 cm.</p><div class="inkjet-prices"><div><span>Individual</span><b>$4.000 ARS</b></div><div><span>Pack de 4</span><b>$12.000 ARS</b></div><div><span>Pack de 10</span><b>$25.000 ARS</b></div></div></div></div>'
         html = html.replace('</body>', polaroid_modal + '</body>', 1)
     if 'id="precios-plastificado"' not in html:
-        plastificado_modal = '<div class="web-modal" id="precios-plastificado" role="dialog" aria-modal="true" aria-label="Precios de plastificado"><div class="web-box"><div class="web-head"><h2>Precios de plastificado</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-plastificado\').classList.remove(\'open\')">×</button></div><p class="web-sub">Plastificado en caliente. Valores por hoja, llevando el cliente la impresión lista.</p><div class="inkjet-prices"><div><span>6,7×9,8 cm</span><b>$2.000</b></div><div><span>7,6×11 cm</span><b>$2.500</b></div><div><span>A4</span><b>$4.000</b></div><div><span>Oficio</span><b>$5.000</b></div><div><span>A3</span><b>$7.500</b></div></div></div></div>'
+        plastificado_modal = '<div class="web-modal" id="precios-plastificado" role="dialog" aria-modal="true" aria-label="Precios de plastificado"><div class="web-box"><div class="web-head"><h2>Precios de plastificado</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-plastificado\').classList.remove(\'open\')">×</button></div><p class="web-sub">Plastificado en caliente. Valores por hoja, llevando el cliente la impresión lista.</p><div class="inkjet-prices"><div><span>6,7×9,8 cm</span><b>$2.000 ARS</b></div><div><span>7,6×11 cm</span><b>$2.500 ARS</b></div><div><span>A4</span><b>$4.000 ARS</b></div><div><span>Oficio</span><b>$5.000 ARS</b></div><div><span>A3</span><b>$7.500 ARS</b></div></div></div></div>'
         html = html.replace('</body>', plastificado_modal + '</body>', 1)
     if 'id="precios-tira"' not in html:
-        tira_modal = '<div class="web-modal" id="precios-tira" role="dialog" aria-modal="true" aria-label="Precio de tira vertical de 4 fotos"><div class="web-box"><div class="web-head"><h2>Tira vertical de 4 fotos</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tira\').classList.remove(\'open\')">×</button></div><p class="web-sub">Cuatro fotos en una tira vertical tipo cabina. Medida aproximada: 7×19 cm.</p><div class="inkjet-prices"><div><span>1 tira</span><b>$7.500</b></div><div><span>2 tiras</span><b>$10.000</b></div><div><span>Con diseño especial</span><b>$7.500</b></div></div></div></div>'
+        tira_modal = '<div class="web-modal" id="precios-tira" role="dialog" aria-modal="true" aria-label="Precio de tira vertical de 4 fotos"><div class="web-box"><div class="web-head"><h2>Tira vertical de 4 fotos</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tira\').classList.remove(\'open\')">×</button></div><p class="web-sub">Cuatro fotos en una tira vertical tipo cabina. Medida aproximada: 7×19 cm.</p><div class="inkjet-prices"><div><span>1 tira</span><b>$7.500 ARS</b></div><div><span>2 tiras</span><b>$10.000 ARS</b></div><div><span>Con diseño especial</span><b>$7.500 ARS</b></div></div></div></div>'
         html = html.replace('</body>', tira_modal + '</body>', 1)
     if 'id="precios-volantes"' not in html:
-        volantes_modal = '<div class="web-modal" id="precios-volantes" role="dialog" aria-modal="true" aria-label="Precios de volantes"><div class="web-box"><div class="web-head"><h2>Precios de volantes</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-volantes\').classList.remove(\'open\')">×</button></div><p class="web-sub">Precios especiales por cantidad.</p><div class="inkjet-prices"><div><span>500 unidades</span><b>$180 c/u · $90.000</b></div><div><span>1.000 unidades</span><b>$170 c/u · $170.000</b></div></div></div></div>'
+        volantes_modal = '<div class="web-modal" id="precios-volantes" role="dialog" aria-modal="true" aria-label="Precios de volantes"><div class="web-box"><div class="web-head"><h2>Precios de volantes</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-volantes\').classList.remove(\'open\')">×</button></div><p class="web-sub">Precios especiales por cantidad.</p><div class="inkjet-prices"><div><span>500 unidades</span><b>$180 ARS c/u · $90.000 ARS</b></div><div><span>1.000 unidades</span><b>$170 ARS c/u · $170.000 ARS</b></div></div></div></div>'
         html = html.replace('</body>', volantes_modal + '</body>', 1)
     if 'id="precios-tarjetas"' not in html:
-        tarjetas_modal = '<div class="web-modal" id="precios-tarjetas" role="dialog" aria-modal="true" aria-label="Precios de tarjetas"><div class="web-box"><div class="web-head"><h2>Tarjetas 5×8 cm</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tarjetas\').classList.remove(\'open\')">×</button></div><p class="web-sub">Tarjetas en papel mate de 300 g, impresión una sola faz, color o blanco y negro.</p><div class="inkjet-prices"><div><span>50 unidades</span><b>$45.000</b></div><div><span>100 unidades</span><b>$80.000</b></div><div><span>Medida</span><b>5×8 cm</b></div></div></div></div>'
+        tarjetas_modal = '<div class="web-modal" id="precios-tarjetas" role="dialog" aria-modal="true" aria-label="Precios de tarjetas"><div class="web-box"><div class="web-head"><h2>Tarjetas 5×8 cm</h2><button class="web-close" type="button" aria-label="Cerrar" onclick="document.getElementById(\'precios-tarjetas\').classList.remove(\'open\')">×</button></div><p class="web-sub">Tarjetas en papel mate de 300 g, impresión una sola faz, color o blanco y negro.</p><div class="inkjet-prices"><div><span>50 unidades</span><b>$45.000 ARS</b></div><div><span>100 unidades</span><b>$80.000 ARS</b></div><div><span>Medida</span><b>5×8 cm</b></div></div></div></div>'
         html = html.replace('</body>', tarjetas_modal + '</body>', 1)
     # Se retira la mascota anterior: el sitio usará a Luz como asistente virtual.
     mascot_start = html.find('<img class="mascota-float"')
@@ -278,14 +278,14 @@ def imprenta_ruiz():
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
   <div class="rulito-prices-card"><button class="rulito-price-close" type="button" data-rulito-close>Cerrar ✕</button><h2 id="rulitoPricesTitle">🧾 Precios de Impresiones Ruiz</h2><p>Estos son los precios actuales. Si necesitás otro trabajo, preguntame.</p>
     <div class="rulito-price-grid">
-      <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.500</b> por faz</p><p>Blanco y negro: <b>$1.000</b> por faz<p>Anillado: <b>$4.000</b></p><p>A4 autoadhesivo: <b>$7.500</b></p></div>
-      <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800</b> por faz</p><p>Color: <b>$1.100</b> por faz</p><p>Anillado: <b>$4.000</b></p><p>Más de 5 ejemplares: precio especial</p></div>
-      <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$4.000</b> · 13×18: <b>$5.000</b></p><p>15×15: <b>$5.000</b> · 15×20: <b>$6.500</b></p><p>20×30: <b>$17.000</b> · A4: <b>$14.500</b></p></div>
-      <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$3.500</b> · 13×18: <b>$4.000</b></p><p>15×15: <b>$4.000</b> · 15×20: <b>$4.500</b></p><p>A4: <b>$7.000</b></p></div>
-      <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$4.500</b> · 15×15: <b>$5.500</b></p><p>15×20: <b>$6.500</b></p></div>
-      <div class="rulito-price-group"><h3>Polaroid Mitsubishi</h3><p>Individual: <b>$4.000</b></p><p>Pack de 4: <b>$12.000</b></p><p>Pack de 10: <b>$25.000</b></p><p>Medida: 8,5×10,5 cm</p></div>
-      <div class="rulito-price-group"><h3>Almanaques</h3><p>5×8: <b>$2.500</b> · 9×6: <b>$3.000</b></p><p>A4: <b>$7.500</b> · A3: <b>$15.000</b> · A3+: <b>$18.000</b></p></div>
-      <div class="rulito-price-group"><h3>Plastificado</h3><p>6,7×9,8 cm: <b>$2.000</b></p><p>7,6×11 cm: <b>$2.500</b></p><p>A4: <b>$4.000</b></p><p>Oficio: <b>$5.000</b></p><p>A3: <b>$7.500</b></p><p>Tira vertical de 4 fotos: <b>$7.500</b> · 7×19 cm</p><p>Diseños web: consultar según proyecto.</p></div>
+      <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.500 ARS</b> por faz</p><p>Blanco y negro: <b>$1.000 ARS</b> por faz<p>Anillado: <b>$4.000 ARS</b></p><p>A4 autoadhesivo: <b>$7.500 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800 ARS</b> por faz</p><p>Color: <b>$1.100 ARS</b> por faz</p><p>Anillado: <b>$4.000 ARS</b></p><p>Más de 5 ejemplares: precio especial</p></div>
+      <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$4.000 ARS</b> · 13×18: <b>$5.000 ARS</b></p><p>15×15: <b>$5.000 ARS</b> · 15×20: <b>$6.500 ARS</b></p><p>20×30: <b>$17.000 ARS</b> · A4: <b>$14.500 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$3.500 ARS</b> · 13×18: <b>$4.000 ARS</b></p><p>15×15: <b>$4.000 ARS</b> · 15×20: <b>$4.500 ARS</b></p><p>A4: <b>$7.000 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$4.500 ARS</b> · 15×15: <b>$5.500 ARS</b></p><p>15×20: <b>$6.500 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Polaroid Mitsubishi</h3><p>Individual: <b>$4.000 ARS</b></p><p>Pack de 4: <b>$12.000 ARS</b></p><p>Pack de 10: <b>$25.000 ARS</b></p><p>Medida: 8,5×10,5 cm</p></div>
+      <div class="rulito-price-group"><h3>Almanaques</h3><p>5×8: <b>$2.500 ARS</b> · 9×6: <b>$3.000 ARS</b></p><p>A4: <b>$7.500 ARS</b> · A3: <b>$15.000 ARS</b> · A3+: <b>$18.000 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Plastificado</h3><p>6,7×9,8 cm: <b>$2.000 ARS</b></p><p>7,6×11 cm: <b>$2.500 ARS</b></p><p>A4: <b>$4.000 ARS</b></p><p>Oficio: <b>$5.000 ARS</b></p><p>A3: <b>$7.500 ARS</b></p><p>Tira vertical de 4 fotos: <b>$7.500 ARS</b> · 7×19 cm</p><p>Diseños web: consultar según proyecto.</p></div>
     </div>
   </div>
 </div>
@@ -345,39 +345,39 @@ def imprenta_ruiz():
   var rulitoMessages=[
     '👋 Hola, bienvenidos a Impresiones Ruiz',
     'Soy Rulito, tu asistente.',
-    '🖨️ Impresión color: $1.500 por faz',
-    '📄 Blanco y negro: $1.000 por faz',
-    '📚 Libros PDF: desde $800 por faz',
-    '🔩 Anillado: $4.000',
-    '🏷️ A4 autoadhesivo: $7.500 por hoja',
-    '📸 Mitsubishi 10×15: $4.000',
-    '📸 Mitsubishi 13×18: $5.000',
-    '📸 Mitsubishi 15×15: $5.000',
-    '📸 Mitsubishi 15×20: $6.500',
-    '📸 Mitsubishi 20×30: $17.000',
-    '📸 Mitsubishi A4: $14.500',
-    '🖼️ Inkjet 10×15: $3.500',
-    '🖼️ Inkjet 13×18: $4.000',
-    '🖼️ Inkjet 15×15: $4.000',
-    '🖼️ Inkjet 15×20: $4.500',
-    '🖼️ Inkjet A4: $7.000',
-    '📷 Kodak 10×15: $4.500',
-    '📷 Kodak 15×15: $5.500',
-    '📷 Kodak 15×20: $6.500',
-    '🖼️ Polaroid individual: $4.000 · 8,5×10,5 cm',
-    '🖼️ Polaroid pack de 4: $12.000',
-    '🖼️ Polaroid pack de 10: $25.000',
-    '📅 Almanaque 5×8: $2.500',
-    '📅 Almanaque 9×6: $3.000',
-    '📅 Almanaque A4: $7.500',
-    '📅 Almanaque A3: $15.000',
-    '📅 Almanaque A3+: $18.000',
-    '🧊 Plastificado 6,7×9,8 cm: $2.000',
-    '🧊 Plastificado 7,6×11 cm: $2.500',
-    '🧊 Plastificado A4: $4.000',
-    '🧊 Plastificado Oficio: $5.000',
-    '🧊 Plastificado A3: $7.500',
-    '🎞️ Tira vertical de 4 fotos: $7.500 · 7×19 cm',
+    '🖨️ Impresión color: $1.500 ARS por faz',
+    '📄 Blanco y negro: $1.000 ARS por faz',
+    '📚 Libros PDF: desde $800 ARS por faz',
+    '🔩 Anillado: $4.000 ARS',
+    '🏷️ A4 autoadhesivo: $7.500 ARS por hoja',
+    '📸 Mitsubishi 10×15: $4.000 ARS',
+    '📸 Mitsubishi 13×18: $5.000 ARS',
+    '📸 Mitsubishi 15×15: $5.000 ARS',
+    '📸 Mitsubishi 15×20: $6.500 ARS',
+    '📸 Mitsubishi 20×30: $17.000 ARS',
+    '📸 Mitsubishi A4: $14.500 ARS',
+    '🖼️ Inkjet 10×15: $3.500 ARS',
+    '🖼️ Inkjet 13×18: $4.000 ARS',
+    '🖼️ Inkjet 15×15: $4.000 ARS',
+    '🖼️ Inkjet 15×20: $4.500 ARS',
+    '🖼️ Inkjet A4: $7.000 ARS',
+    '📷 Kodak 10×15: $4.500 ARS',
+    '📷 Kodak 15×15: $5.500 ARS',
+    '📷 Kodak 15×20: $6.500 ARS',
+    '🖼️ Polaroid individual: $4.000 ARS · 8,5×10,5 cm',
+    '🖼️ Polaroid pack de 4: $12.000 ARS',
+    '🖼️ Polaroid pack de 10: $25.000 ARS',
+    '📅 Almanaque 5×8: $2.500 ARS',
+    '📅 Almanaque 9×6: $3.000 ARS',
+    '📅 Almanaque A4: $7.500 ARS',
+    '📅 Almanaque A3: $15.000 ARS',
+    '📅 Almanaque A3+: $18.000 ARS',
+    '🧊 Plastificado 6,7×9,8 cm: $2.000 ARS',
+    '🧊 Plastificado 7,6×11 cm: $2.500 ARS',
+    '🧊 Plastificado A4: $4.000 ARS',
+    '🧊 Plastificado Oficio: $5.000 ARS',
+    '🧊 Plastificado A3: $7.500 ARS',
+    '🎞️ Tira vertical de 4 fotos: $7.500 ARS · 7×19 cm',
     '💻 Diseños web: consultar'
   ];
   var rulitoIndex=0;
@@ -426,9 +426,9 @@ def imprenta_ruiz():
 (function(){
   var modal=document.getElementById("quoteModal"), open=document.getElementById("belenQuoteOpen"), close=document.getElementById("quoteClose"), rows=document.getElementById("quoteRows"), add=document.getElementById("quoteAdd"), form=document.getElementById("quoteForm"), result=document.getElementById("quoteResult");
   function closeQuote(){if(modal)modal.classList.remove("is-open")}
-  function addRow(desc,qty,unit){var row=document.createElement("div");row.className="quote-row";row.innerHTML='<input class="q-desc" placeholder="Descripción" value="'+(desc||"")+'" required><input class="q-qty" type="number" min="1" step="1" value="'+(qty||1)+'" required><input class="q-unit" type="number" min="0" step="1" placeholder="$ unit." value="'+(unit||"")+'" required><button type="button" class="quote-remove" aria-label="Quitar ítem">×</button>';row.querySelector(".quote-remove").addEventListener("click",function(){row.remove()});rows.appendChild(row)}
+  function addRow(desc,qty,unit){var row=document.createElement("div");row.className="quote-row";row.innerHTML='<input class="q-desc" placeholder="Descripción" value="'+(desc||"")+'" required><input class="q-qty" type="number" min="1" step="1" value="'+(qty||1)+'" required><input class="q-unit" type="number" min="0" step="1" placeholder="Precio unitario (ARS)" value="'+(unit||"")+'" required><button type="button" class="quote-remove" aria-label="Quitar ítem">×</button>';row.querySelector(".quote-remove").addEventListener("click",function(){row.remove()});rows.appendChild(row)}
   if(open)open.addEventListener("click",function(){modal.classList.add("is-open");if(!rows.children.length)addRow()});if(close)close.addEventListener("click",closeQuote);if(modal)modal.addEventListener("click",function(e){if(e.target===modal)closeQuote()});if(add)add.addEventListener("click",function(){addRow()});
-  if(form)form.addEventListener("submit",async function(e){e.preventDefault();var items=[];rows.querySelectorAll(".quote-row").forEach(function(row){items.push({descripcion:row.querySelector(".q-desc").value.trim(),cantidad:Number(row.querySelector(".q-qty").value),precio_unit:Number(row.querySelector(".q-unit").value)})});if(!items.length)return;var payload={nombre:document.getElementById("quoteName").value.trim(),telefono:document.getElementById("quotePhone").value.trim(),nota:document.getElementById("quoteNote").value.trim(),items:items};result.classList.add("is-visible");result.textContent="Generando presupuesto…";try{var r=await fetch("/api/presupuesto",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"No se pudo generar");var wa="Hola, te envío el presupuesto de Impresiones Ruiz. Total: $"+Number(d.total).toLocaleString("es-AR")+". PDF: "+d.pdf_url;var phone=(payload.telefono||"").replace(/[^0-9]/g,"");if(phone.length===10)phone="549"+phone;result.innerHTML="Presupuesto generado. Total: $"+Number(d.total).toLocaleString("es-AR")+"<br><a href='"+d.pdf_url+"' target='_blank'>Abrir o descargar PDF</a>"+(payload.telefono?"<br><button type='button' class='quote-wa quote-send' id='quoteSend'>Confirmar y enviar por WhatsApp</button>":"");if(payload.telefono){document.getElementById("quoteSend").addEventListener("click",async function(){var btn=this;btn.disabled=true;btn.textContent="Registrando envío…";try{var sr=await fetch("/api/presupuesto/"+d.quote_id+"/enviar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telefono:payload.telefono,total:d.total})}),sd=await sr.json();if(!sr.ok||!sd.ok)throw new Error(sd.error||"No se pudo registrar");btn.textContent="✅ Envío confirmado";result.insertAdjacentHTML("beforeend","<br>El PDF quedó confirmado para enviarse al WhatsApp indicado.")}catch(x){btn.disabled=false;btn.textContent="Confirmar y enviar por WhatsApp";alert("No se pudo registrar el envío. Revisá el número e intentá nuevamente.")}})}}catch(err){result.textContent="No se pudo generar el PDF. Revisá los datos e intentá nuevamente."}})
+  if(form)form.addEventListener("submit",async function(e){e.preventDefault();var items=[];rows.querySelectorAll(".quote-row").forEach(function(row){items.push({descripcion:row.querySelector(".q-desc").value.trim(),cantidad:Number(row.querySelector(".q-qty").value),precio_unit:Number(row.querySelector(".q-unit").value)})});if(!items.length)return;var payload={nombre:document.getElementById("quoteName").value.trim(),telefono:document.getElementById("quotePhone").value.trim(),nota:document.getElementById("quoteNote").value.trim(),items:items};result.classList.add("is-visible");result.textContent="Generando presupuesto…";try{var r=await fetch("/api/presupuesto",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)}),d=await r.json();if(!r.ok||!d.ok)throw new Error(d.error||"No se pudo generar");var wa="Hola, te envío el presupuesto de Impresiones Ruiz. Total: $"+Number(d.total).toLocaleString("es-AR")+" ARS. PDF: "+d.pdf_url;var phone=(payload.telefono||"").replace(/[^0-9]/g,"");if(phone.length===10)phone="549"+phone;result.innerHTML="Presupuesto generado. Total: $"+Number(d.total).toLocaleString("es-AR")+" ARS<br><a href='"+d.pdf_url+"' target='_blank'>Abrir o descargar PDF</a>"+(payload.telefono?"<br><button type='button' class='quote-wa quote-send' id='quoteSend'>Confirmar y enviar por WhatsApp</button>":"");if(payload.telefono){document.getElementById("quoteSend").addEventListener("click",async function(){var btn=this;btn.disabled=true;btn.textContent="Registrando envío…";try{var sr=await fetch("/api/presupuesto/"+d.quote_id+"/enviar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({telefono:payload.telefono,total:d.total})}),sd=await sr.json();if(!sr.ok||!sd.ok)throw new Error(sd.error||"No se pudo registrar");btn.textContent="✅ Envío confirmado";result.insertAdjacentHTML("beforeend","<br>El PDF quedó confirmado para enviarse al WhatsApp indicado.")}catch(x){btn.disabled=false;btn.textContent="Confirmar y enviar por WhatsApp";alert("No se pudo registrar el envío. Revisá el número e intentá nuevamente.")}})}}catch(err){result.textContent="No se pudo generar el PDF. Revisá los datos e intentá nuevamente."}})
 })();
 </script>
 '''
@@ -1083,7 +1083,7 @@ def _quote_cors(resp):
 
 
 def _money(value):
-    return f"${float(value):,.0f}".replace(",", ".")
+    return f"${float(value):,.0f}".replace(",", ".") + " ARS"
 
 
 def _quote_catalog_item(description, quantity, supplied_unit):
@@ -1261,8 +1261,8 @@ def _make_quote_pdf(payload, quote_id, path):
     c.setFont("Helvetica-Bold", 8.5)
     c.drawString(73, y + 9, "Descripción")
     c.drawRightString(x2 - 8, y + 9, "Cant.")
-    c.drawRightString(x3 - 8, y + 9, "P. Unit.")
-    c.drawRightString(x4 - 8, y + 9, "Subtotal")
+    c.drawRightString(x3 - 8, y + 9, "P. Unit. (ARS)")
+    c.drawRightString(x4 - 8, y + 9, "Subtotal (ARS)")
     row_y = y - 24
     c.setFont("Helvetica", 8)
     for index, item in enumerate(normalized[:10]):
@@ -1282,7 +1282,7 @@ def _make_quote_pdf(payload, quote_id, path):
     c.line(360, row_y - 5, 540, row_y - 5)
     c.setFillColor(dark)
     c.setFont("Helvetica", 9)
-    c.drawRightString(470, row_y - 22, "TOTAL")
+    c.drawRightString(470, row_y - 22, "TOTAL (ARS)")
     c.setFillColor(blue)
     c.setFont("Helvetica-Bold", 13)
     c.drawRightString(535, row_y - 22, money(total))
