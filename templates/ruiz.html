@@ -33,7 +33,9 @@
     <a class="web-card catalog-card" href="https://volante-server.onrender.com/impresiones-ruiz" target="_blank" rel="noopener"><img src="https://volante-server.onrender.com/static/impresiones-ruiz-preview-v2.jpg" alt="Banner de Impresiones Ruiz"><strong>Catálogo Impresiones Ruiz</strong><small>Abrir catálogo interactivo ↗</small></a>
   </div></div></div>
   </main>
+  {% if request.path == "/impresiones-ruiz" or request.path == "/impresiones-ruiz/" %}
   <footer class="visit-counter" aria-label="Contador público de visitas"><span>Visitas a la página</span><img src="https://hitscounter.dev/api/hit?url=https%3A%2F%2Fvolante-server.onrender.com%2Fimpresiones-ruiz&amp;label=Visitas&amp;icon=eye&amp;color=%23084298&amp;message=&amp;style=flat&amp;tz=America%2FArgentina%2FSalta" alt="Contador de visitas: hoy y total" referrerpolicy="no-referrer"></footer>
+  {% endif %}
   <img class="mascota-float" src="https://share.zapia.com/364edisw4oof6c0bxul0tz" alt="Mascota animada de Impresiones Ruiz">
 </body>
 </html>
