@@ -114,6 +114,9 @@ def index():
 def imprenta_ruiz():
     """Página pública de Impresiones Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
+    # This page must not expose the separate real-estate catalog; keep the remaining catalog cards intact.
+    html = re.sub(r'<a\b[^>]*href=["\'][^"\']*fleming[^"\']*["\'][^>]*>.*?</a>', '', html, flags=re.I | re.S)
+    html = re.sub(r'fleming', 'gráfica', html, flags=re.I)
     # Las previsualizaciones antiguas venían incrustadas en base64 y hacían
     # crecer la página más de medio megabyte. Se sirven como imágenes cacheables.
     preview_assets = [
@@ -459,7 +462,26 @@ def imprenta_ruiz():
     @media(max-width:560px){.canvas{padding:0 10px 20px}.fast-header{margin:0 -10px 10px;padding:19px 14px}.prices-overlay.fast-prices{grid-template-columns:1fr;gap:8px}.price-group{padding:12px}.price-group h2{font-size:15px}.price-list p{font-size:13px}.price-list b{font-size:14px}.fast-actions{display:grid;grid-template-columns:1fr 1fr}.fast-actions>*{width:100%}.fast-actions button:last-child{grid-column:1/-1}.belen-widget{align-items:center}.belen-nudge{max-width:175px}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
     </style>"""
-    html = html.replace("</head>", fast_style + "</head>", 1)
+    print_identity_style = """<style>
+    /* Impresiones Ruiz: identidad de gráfica, construida en CSS para no sumar imágenes ni requests. */
+    html,body{background:#f2f0e9;color:#142238}
+    .fast-header{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 92% 12%,#ffffff1f 0 2px,transparent 2.8px) 0 0/14px 14px,linear-gradient(118deg,#102b4a 0%,#163b61 60%,#0c2441 100%);padding:28px 22px 24px;border-radius:0 0 18px 18px;box-shadow:0 8px 22px #10243c24}
+    .fast-header:after{content:"";position:absolute;left:0;right:0;bottom:0;height:7px;background:linear-gradient(90deg,#04a6d2 0 25%,#ec315b 25% 50%,#f4c533 50% 75%,#202c3c 75%)}
+    .fast-header:before{content:"✳";position:absolute;right:20px;top:6px;color:#ffffff18;font-size:96px;line-height:1;font-weight:900;z-index:-1}
+    .fast-header p:first-child{display:inline-block;margin:0 0 11px;padding:6px 9px;border:1px solid #ffffff50;border-radius:4px;background:#ffffff12;font-size:11px;letter-spacing:.17em}
+    .fast-header h1{max-width:620px;font-weight:900;letter-spacing:-.035em;text-shadow:0 2px 0 #0002}
+    .fast-header p:last-child{max-width:480px;color:#e3edf5}
+    .price-note{background:#fff8dc;border:1px solid #f0df9b;border-left:4px solid #efc433;color:#39495c}
+    .price-group{position:relative;border:1px solid #d9dedf;border-radius:12px;background:linear-gradient(145deg,#fff 0%,#fff 80%,#faf9f5 100%);box-shadow:0 4px 12px #132b4510;transition:transform .18s ease,box-shadow .18s ease}
+    .price-group h2{padding-bottom:8px;border-bottom:2px solid #e6ebef;color:#15375a;font-weight:800}
+    .price-group h2:first-letter{color:#e73b64}
+    .price-list b{color:#0a679e;font-size:15px;font-weight:900}
+    .fast-actions{margin-top:2px}
+    @media(min-width:561px){.fast-header{padding-left:26px;padding-right:26px}.price-group:hover{transform:translateY(-2px);box-shadow:0 8px 18px #132b4519}}
+    @media(max-width:560px){.fast-header{padding-top:22px;padding-bottom:22px;border-radius:0 0 14px 14px}.fast-header:before{right:12px;top:4px;font-size:76px}.fast-header h1{max-width:310px}.price-group{border-radius:11px}.price-list b{font-size:15px}}
+    @media(prefers-reduced-motion:reduce){.price-group{transition:none}}
+    </style>"""
+    html = html.replace("</head>", fast_style + print_identity_style + "</head>", 1)
     html = html.replace('<link rel="preload" as="image" href="">','')
     html = html.replace('<link rel="preload" as="image" href="">','')
     html = re.sub(r'(<img class="web-card[^>]*)(>)', r'\1 loading="lazy"\2', html)
