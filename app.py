@@ -468,7 +468,7 @@ def imprenta_ruiz():
     @media(prefers-reduced-motion:reduce){.price-group{transition:none}}
     </style>"""
     luz_mobile_style = """<style>@media(max-width:560px){.belen-panel,.belen-panel.is-open{position:fixed!important;inset:8px!important;right:8px!important;left:8px!important;top:8px!important;bottom:8px!important;width:auto!important;max-width:none!important;height:auto!important;max-height:none!important;transform:none!important;border-radius:16px!important;z-index:1100!important}.belen-live-frame{flex:1 1 auto!important;min-height:0!important;height:auto!important;width:100%!important}.belen-head{flex:0 0 auto!important;padding:10px 12px!important}.belen-foot{flex:0 0 auto!important}}</style>"""
-    html = html.replace("</head>", fast_style + print_identity_style + "</head>", 1)
+    html = html.replace("</head>", fast_style + print_identity_style + luz_mobile_style + "</head>", 1)
     html = html.replace('<link rel="preload" as="image" href="">','')
     html = html.replace('<link rel="preload" as="image" href="">','')
     html = re.sub(r'(<img class="web-card[^>]*)(>)', r'\1 loading="lazy"\2', html)
