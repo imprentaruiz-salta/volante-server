@@ -114,6 +114,9 @@ def index():
 def imprenta_ruiz():
     """Página pública de Impresiones Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
+    # Keep the detailed price list synchronized with the approved per-side rates.
+    html = html.replace("Impresión color A4</span><b>$1.500 ARS</b>", "Impresión color A4</span><b>$500 ARS</b>")
+    html = html.replace("Blanco y negro A4</span><b>$1.500 ARS</b>", "Blanco y negro A4</span><b>$500 ARS</b>")
     # This page must not expose the separate real-estate catalog; keep the remaining catalog cards intact.
     html = re.sub(r'<a\b[^>]*href=["\'][^"\']*fleming[^"\']*["\'][^>]*>.*?</a>', '', html, flags=re.I | re.S)
     html = re.sub(r'fleming', 'gráfica', html, flags=re.I)
