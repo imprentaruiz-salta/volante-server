@@ -273,9 +273,9 @@ def imprenta_ruiz():
     <div class="rulito-price-grid">
       <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.500 ARS</b> por faz</p><p>Blanco y negro: <b>$1.500 ARS</b> por faz<p>Anillado: <b>$4.000 ARS</b></p><p>A4 autoadhesivo: <b>$10.000 ARS</b></p></div>
       <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800 ARS</b> por faz</p><p>Color: <b>$1.100 ARS</b> por faz</p><p>Anillado: <b>$4.000 ARS</b></p><p>Más de 5 ejemplares: precio especial</p></div>
-      <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$4.000 ARS</b> · 13×18: <b>$5.000 ARS</b></p><p>15×15: <b>$5.000 ARS</b> · 15×20: <b>$6.500 ARS</b></p><p>20×30: <b>$17.000 ARS</b> · A4: <b>$14.500 ARS</b></p></div>
-      <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$3.500 ARS</b> · 13×18: <b>$4.000 ARS</b></p><p>15×15: <b>$4.000 ARS</b> · 15×20: <b>$4.500 ARS</b></p><p>A4: <b>$7.000 ARS</b></p></div>
-      <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$4.500 ARS</b> · 15×15: <b>$5.500 ARS</b></p><p>15×20: <b>$6.500 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Fotos Mitsubishi</h3><p>10×15: <b>$5.000 ARS</b> · 13×18: <b>$6.000 ARS</b></p><p>15×15: <b>$6.000 ARS</b> · 15×20: <b>$8.000 ARS</b></p><p>20×30: <b>$21.000 ARS</b> · A4: <b>$18.000 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Fotos Inkjet</h3><p>10×15: <b>$4.500 ARS</b> · 13×18: <b>$5.000 ARS</b></p><p>15×15: <b>$5.000 ARS</b> · 15×20: <b>$5.500 ARS</b></p><p>A4: <b>$8.500 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Fotos Kodak</h3><p>10×15: <b>$5.500 ARS</b> · 15×15: <b>$7.000 ARS</b></p><p>15×20: <b>$8.000 ARS</b></p></div>
       <div class="rulito-price-group"><h3>Polaroid Mitsubishi</h3><p>Individual: <b>$4.000 ARS</b></p><p>Pack de 4: <b>$12.000 ARS</b></p><p>Pack de 10: <b>$25.000 ARS</b></p><p>Medida: 8,5×10,5 cm</p></div>
       <div class="rulito-price-group"><h3>Almanaques</h3><p>5×8: <b>$2.500 ARS</b> · 9×6: <b>$3.000 ARS</b></p><p>A4: <b>$7.500 ARS</b> · A3: <b>$15.000 ARS</b> · A3+: <b>$18.000 ARS</b></p></div>
       <div class="rulito-price-group"><h3>Plastificado</h3><p>6,7×9,8 cm: <b>$2.000 ARS</b></p><p>7,6×11 cm: <b>$2.500 ARS</b></p><p>A4: <b>$4.000 ARS</b></p><p>Oficio: <b>$5.000 ARS</b></p><p>A3: <b>$7.500 ARS</b></p><p>Tira vertical de 4 fotos: <b>$7.500 ARS</b> · 7×19 cm</p><p>Diseños web: consultar según proyecto.</p></div>
@@ -343,20 +343,20 @@ def imprenta_ruiz():
     '📚 Libros PDF: desde $800 ARS por faz',
     '🔩 Anillado: $4.000 ARS',
     '🏷️ A4 autoadhesivo: $10.000 ARS por hoja',
-    '📸 Mitsubishi 10×15: $4.000 ARS',
-    '📸 Mitsubishi 13×18: $5.000 ARS',
-    '📸 Mitsubishi 15×15: $5.000 ARS',
-    '📸 Mitsubishi 15×20: $6.500 ARS',
-    '📸 Mitsubishi 20×30: $17.000 ARS',
-    '📸 Mitsubishi A4: $14.500 ARS',
-    '🖼️ Inkjet 10×15: $3.500 ARS',
-    '🖼️ Inkjet 13×18: $4.000 ARS',
-    '🖼️ Inkjet 15×15: $4.000 ARS',
-    '🖼️ Inkjet 15×20: $4.500 ARS',
-    '🖼️ Inkjet A4: $7.000 ARS',
-    '📷 Kodak 10×15: $4.500 ARS',
-    '📷 Kodak 15×15: $5.500 ARS',
-    '📷 Kodak 15×20: $6.500 ARS',
+    '📸 Mitsubishi 10×15: $5.000 ARS',
+    '📸 Mitsubishi 13×18: $6.000 ARS',
+    '📸 Mitsubishi 15×15: $6.000 ARS',
+    '📸 Mitsubishi 15×20: $8.000 ARS',
+    '📸 Mitsubishi 20×30: $21.000 ARS',
+    '📸 Mitsubishi A4: $18.000 ARS',
+    '🖼️ Inkjet 10×15: $4.500 ARS',
+    '🖼️ Inkjet 13×18: $5.000 ARS',
+    '🖼️ Inkjet 15×15: $5.000 ARS',
+    '🖼️ Inkjet 15×20: $5.500 ARS',
+    '🖼️ Inkjet A4: $8.500 ARS',
+    '📷 Kodak 10×15: $5.500 ARS',
+    '📷 Kodak 15×15: $7.000 ARS',
+    '📷 Kodak 15×20: $8.000 ARS',
     '🖼️ Polaroid individual: $4.000 ARS · 8,5×10,5 cm',
     '🖼️ Polaroid pack de 4: $12.000 ARS',
     '🖼️ Polaroid pack de 10: $25.000 ARS',
@@ -431,9 +431,9 @@ def imprenta_ruiz():
     static_prices = r'''<section class="prices-overlay fast-prices" aria-label="Lista de precios de Impresiones Ruiz">
       <p class="price-note">Precios expresados en pesos argentinos (ARS).</p>
       <section class="price-group"><h2>🖨️ Impresiones y libros PDF</h2><div class="price-list"><p><span>Impresión color · por faz</span><b>$1.500</b></p><p><span>Blanco y negro · por faz</span><b>$1.500</b></p><p><span>Anillado</span><b>$4.000</b></p><p><span>A4 autoadhesivo fotográfico · por hoja</span><b>$10.000</b></p><p><span>Libro PDF B/N · por faz</span><b>$800</b></p><p><span>Libro PDF color · por faz</span><b>$1.100</b></p><p><span>Anillado de libro PDF</span><b>$4.000</b></p></div><small>Más de 5 ejemplares: precio especial.</small></section>
-      <section class="price-group"><h2>📸 Fotos Mitsubishi</h2><div class="price-list"><p><span>10×15 cm</span><b>$4.000</b></p><p><span>13×18 cm</span><b>$5.000</b></p><p><span>15×15 cm</span><b>$5.000</b></p><p><span>15×20 cm</span><b>$6.500</b></p><p><span>20×30 cm</span><b>$17.000</b></p><p><span>A4</span><b>$14.500</b></p></div></section>
-      <section class="price-group"><h2>📷 Fotos Inkjet</h2><div class="price-list"><p><span>10×15 cm</span><b>$3.500</b></p><p><span>13×18 cm</span><b>$4.000</b></p><p><span>15×15 cm</span><b>$4.000</b></p><p><span>15×20 cm</span><b>$4.500</b></p><p><span>A4</span><b>$7.000</b></p></div></section>
-      <section class="price-group"><h2>📷 Fotos Kodak</h2><div class="price-list"><p><span>10×15 cm</span><b>$4.500</b></p><p><span>15×15 cm</span><b>$5.500</b></p><p><span>15×20 cm</span><b>$6.500</b></p></div></section>
+      <section class="price-group"><h2>📸 Fotos Mitsubishi</h2><div class="price-list"><p><span>10×15 cm</span><b>$5.000</b></p><p><span>13×18 cm</span><b>$6.000</b></p><p><span>15×15 cm</span><b>$6.000</b></p><p><span>15×20 cm</span><b>$8.000</b></p><p><span>20×30 cm</span><b>$21.000</b></p><p><span>A4</span><b>$18.000</b></p></div></section>
+      <section class="price-group"><h2>📷 Fotos Inkjet</h2><div class="price-list"><p><span>10×15 cm</span><b>$4.500</b></p><p><span>13×18 cm</span><b>$5.000</b></p><p><span>15×15 cm</span><b>$5.000</b></p><p><span>15×20 cm</span><b>$5.500</b></p><p><span>A4</span><b>$8.500</b></p></div></section>
+      <section class="price-group"><h2>📷 Fotos Kodak</h2><div class="price-list"><p><span>10×15 cm</span><b>$5.500</b></p><p><span>15×15 cm</span><b>$7.000</b></p><p><span>15×20 cm</span><b>$8.000</b></p></div></section>
       <section class="price-group"><h2>🖼️ Polaroid Mitsubishi · 8,5×10,5 cm</h2><div class="price-list"><p><span>Individual</span><b>$4.000</b></p><p><span>Pack de 4</span><b>$12.000</b></p><p><span>Pack de 10</span><b>$25.000</b></p></div></section>
       <section class="price-group"><h2>🧊 Plastificado · por hoja</h2><div class="price-list"><p><span>6,7×9,8 cm</span><b>$2.000</b></p><p><span>7,6×11 cm</span><b>$2.500</b></p><p><span>A4</span><b>$4.000</b></p><p><span>Oficio</span><b>$5.000</b></p><p><span>A3</span><b>$7.500</b></p></div></section>
       <section class="price-group"><h2>📅 Almanaques · por unidad, diseño preparado</h2><div class="price-list"><p><span>5×8 cm</span><b>$2.500</b></p><p><span>9×6 cm</span><b>$3.000</b></p><p><span>A4</span><b>$7.500</b></p><p><span>A3</span><b>$15.000</b></p><p><span>A3+</span><b>$18.000</b></p></div></section>
@@ -1184,9 +1184,9 @@ def _quote_catalog_item(description, quantity, supplied_unit):
         return qty, 1500.0
 
     photo_prices = {
-        "mitsubishi": {"10x15": 4000, "13x18": 5000, "15x15": 5000, "15x20": 6500, "20x30": 17000, "a4": 14500},
-        "inkjet": {"10x15": 3500, "13x18": 4000, "15x15": 4000, "15x20": 4500, "a4": 7000},
-        "kodak": {"10x15": 4500, "15x15": 5500, "15x20": 6500},
+        "mitsubishi": {"10x15": 5000, "13x18": 6000, "15x15": 6000, "15x20": 8000, "20x30": 21000, "a4": 18000},
+        "inkjet": {"10x15": 4500, "13x18": 5000, "15x15": 5000, "15x20": 5500, "a4": 8500},
+        "kodak": {"10x15": 5500, "15x15": 7000, "15x20": 8000},
     }
     normalized_text = text.replace(" ", "")
     for brand, sizes in photo_prices.items():
