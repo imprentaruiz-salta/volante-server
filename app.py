@@ -15,6 +15,7 @@ import base64
 import requests
 import re
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from PIL import Image
 from werkzeug.utils import secure_filename
@@ -491,6 +492,15 @@ def imprenta_ruiz():
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://volante-server.onrender.com/static/impresiones-ruiz-preview-v2.jpg">
 """
+    # Fecha y horario local de atención, siempre en la zona horaria de Salta.
+    ahora_salta = datetime.now(ZoneInfo("America/Argentina/Salta"))
+    dias_es = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+    meses_es = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+    fecha_salta = f"{dias_es[ahora_salta.weekday()]}, {ahora_salta.day} de {meses_es[ahora_salta.month - 1]} de {ahora_salta.year} · Salta, Argentina"
+    horario_visitas = '''<section class="ruiz-hours" aria-label="Fecha y horarios de atención" style="max-width:820px;margin:18px auto 8px;padding:16px 18px;text-align:center;border:1px solid #dce5ef;border-radius:14px;background:#fff;color:#18324d;font:14px/1.55 Arial,sans-serif;box-shadow:0 2px 7px #0c2c5010"><strong style="display:block;font-size:15px">{fecha_salta}</strong><span style="display:block;margin-top:7px"><b>Horario de atención</b><br>Lunes a viernes: 16:30 a 22:30<br>Sábados y domingos: 10:30 a 22:30<br>Días feriados: 10:30 a 22:30</span></section>'''.format(fecha_salta=fecha_salta)
+    html = html.replace('<footer class="visit-counter"', horario_visitas + '<footer class="visit-counter"', 1)
+    html = html.replace('<span>Visitas a la página</span>', '<span>Visitas registradas · hoy / total</span>', 1)
+    html = html.replace('alt="Contador de visitas: hoy y total"', 'alt="Visitas registradas hoy y visitas acumuladas"', 1)
     return html.replace("</head>", social_preview + "</head>", 1)
 
 
