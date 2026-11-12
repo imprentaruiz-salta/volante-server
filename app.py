@@ -116,8 +116,8 @@ def imprenta_ruiz():
     """Página pública de Impresiones Ruiz, con preview al compartir el enlace."""
     html = render_template("ruiz.html")
     # Keep the detailed price list synchronized with approved A4 rates.
-    html = html.replace("Impresión color A4</span><b>$500 ARS</b>", "Impresión color A4</span><b>$1.500 ARS</b>")
-    html = html.replace("Blanco y negro A4</span><b>$500 ARS</b>", "Blanco y negro A4</span><b>$1.500 ARS</b>")
+    html = html.replace("Impresión color A4</span><b>$500 ARS</b>", "Impresión color A4</span><b>$2.000 ARS</b>")
+    html = html.replace("Blanco y negro A4</span><b>$500 ARS</b>", "Blanco y negro A4</span><b>$2.000 ARS</b>")
     html = html.replace("A4 autoadhesivo · por hoja</span><b>$7.500 ARS</b>", "A4 autoadhesivo fotográfico · por hoja</span><b>$10.000 ARS</b>")
     # This page must not expose the separate real-estate catalog; keep the remaining catalog cards intact.
     html = re.sub(r'<a\b[^>]*href=["\'][^"\']*fleming[^"\']*["\'][^>]*>.*?</a>', '', html, flags=re.I | re.S)
@@ -147,7 +147,7 @@ def imprenta_ruiz():
         track_end += len(track_end_marker)
         three_slide_carousel = '''<div class="price-track" data-three-slides="polaroid">
 <!-- El cuarto casillero muestra los precios especiales por volumen de volantes. -->
-<div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$1.500 ARS</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$1.500 ARS</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$4.000 ARS</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$10.000 ARS</strong><small>por hoja</small></div></article></div>
+<div class="price-slide"><article class="price-card"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Impresión color</h2><strong>$2.000 ARS</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon pink">📄</div><div class="price-info"><h2>Blanco y negro</h2><strong>$2.000 ARS</strong><small>por faz</small></div></article><article class="price-card"><div class="price-icon yellow">🔩</div><div class="price-info"><h2>Anillado</h2><strong>$4.000 ARS</strong><small>todos</small></div></article><article class="price-card"><div class="price-icon purple">🏷️</div><div class="price-info"><h2>A4 autoadhesivo</h2><strong>$10.000 ARS</strong><small>por hoja</small></div></article></div>
 <div class="price-slide"><button class="price-card mitsubishi-card" type="button" onclick="document.getElementById('precios-mitsubishi').classList.add('open')"><div class="price-icon purple">🖼️</div><div class="price-info"><h2>Fotos Mitsubishi</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card inkjet-card" type="button" onclick="document.getElementById('precios-inkjet').classList.add('open')"><div class="price-icon blue">🖨️</div><div class="price-info"><h2>Fotos Inkjet</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card kodak-card" type="button" onclick="document.getElementById('precios-kodak').classList.add('open')"><div class="price-icon pink">📷</div><div class="price-info"><h2>Fotos Kodak</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card polaroid-card" type="button" onclick="document.getElementById('precios-polaroid').classList.add('open')"><div class="price-icon orange">🖼️</div><div class="price-info"><h2>Fotos Polaroid</h2><strong>Ver precios</strong><small>individual · packs</small></div></button></div>
 <div class="price-slide services-slide"><button class="price-card web-work-card" type="button" onclick="document.getElementById('trabajos-web').classList.add('open')"><div class="price-icon blue">🌐</div><div class="price-info"><h2>Catálogos digitales</h2><strong>Ver catálogos</strong><small>5 páginas interactivas</small></div></button><button class="price-card books-card" type="button" onclick="document.getElementById('rulitoPricesModal').classList.add('is-open')"><div class="price-icon purple">📚</div><div class="price-info"><h2>Libros PDF</h2><strong>Desde $800 ARS</strong><small>B/N · color · anillado</small></div></button><button class="price-card plastificado-card" type="button" onclick="document.getElementById('precios-plastificado').classList.add('open')"><div class="price-icon yellow">🧊</div><div class="price-info"><h2>Plastificado</h2><strong>Ver precios</strong><small>6,7×9,8 · 7,6×11 · A4 · Oficio · A3</small></div></button><button class="price-card almanaques-card" type="button" onclick="document.getElementById('precios-almanaques').classList.add('open')"><div class="price-icon orange">📅</div><div class="price-info"><h2>Almanaques</h2><strong>Ver precios</strong><small>tocá para ver precios</small></div></button><button class="price-card tira-card" type="button" onclick="document.getElementById('precios-tira').classList.add('open')"><div class="price-icon pink">🎞️</div><div class="price-info"><h2>Tira de 4 fotos</h2><strong>$7.500 ARS</strong><small>7×19 cm vertical</small></div></button></div>
 <div class="price-slide"><button class="price-card flyer-price-card" type="button" onclick="document.getElementById('precios-volantes').classList.add('open')"><div class="price-icon blue">📄</div><div class="price-info"><h2>Volantes</h2><strong>$180 ARS / $170 ARS c/u</strong><small>500 / 1.000 unidades · tocá para ver precios</small></div></button><button class="price-card card-price-card" type="button" onclick="document.getElementById('precios-tarjetas').classList.add('open')"><div class="price-icon pink">💳</div><div class="price-info"><h2>Tarjetas 5×8 cm</h2><strong>$45.000 ARS / $80.000 ARS</strong><small>50 / 100 u · tocá para ver características</small></div></button></div></div><div class="dots"><i></i><i></i><i></i><i></i></div>'''
@@ -272,7 +272,7 @@ def imprenta_ruiz():
 <div class="rulito-prices-modal" id="rulitoPricesModal" role="dialog" aria-modal="true" aria-labelledby="rulitoPricesTitle">
   <div class="rulito-prices-card"><button class="rulito-price-close" type="button" data-rulito-close>Cerrar ✕</button><h2 id="rulitoPricesTitle">🧾 Precios de Impresiones Ruiz</h2><p>Estos son los precios actuales. Si necesitás otro trabajo, preguntame.</p>
     <div class="rulito-price-grid">
-      <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$1.500 ARS</b> por faz</p><p>Blanco y negro: <b>$1.500 ARS</b> por faz<p>Anillado: <b>$4.000 ARS</b></p><p>A4 autoadhesivo: <b>$10.000 ARS</b></p></div>
+      <div class="rulito-price-group"><h3>Impresiones</h3><p>Color: <b>$2.000 ARS</b> por faz</p><p>Blanco y negro: <b>$2.000 ARS</b> por faz<p>Anillado: <b>$4.000 ARS</b></p><p>A4 autoadhesivo: <b>$10.000 ARS</b></p></div>
       <div class="rulito-price-group"><h3>Libros PDF</h3><p>B/N: <b>$800 ARS</b> por faz</p><p>Color: <b>$1.100 ARS</b> por faz</p><p>Anillado: <b>$4.000 ARS</b></p><p>Más de 5 ejemplares: precio especial</p></div>
       <div class="rulito-price-group"><h3>Fotos Mitsubishi · térmica premium</h3><p>Térmica premium · alta durabilidad; con buen cuidado, tus recuerdos pueden acompañar generaciones.</p><p>10×15: <b>$5.500 ARS</b> · 13×18: <b>$6.500 ARS</b></p><p>15×15: <b>$6.500 ARS</b> · 15×20: <b>$9.000 ARS</b></p><p>20×30: <b>$23.500 ARS</b> · A4: <b>$20.000 ARS</b></p></div>
       <div class="rulito-price-group"><h3>Fotos Inkjet · opción económica</h3><p>Opción económica no térmica · para uso temporal; la imagen puede perder calidad con el tiempo, sobre todo con luz, sol o humedad.</p><p>10×15: <b>$4.000 ARS</b> · 13×18: <b>$4.500 ARS</b></p><p>15×15: <b>$4.500 ARS</b> · 15×20: <b>$5.000 ARS</b></p><p>A4: <b>$7.500 ARS</b></p></div>
@@ -339,8 +339,8 @@ def imprenta_ruiz():
   var rulitoMessages=[
     '👋 Hola, bienvenidos a Impresiones Ruiz',
     'Soy Rulito, tu asistente.',
-    '🖨️ Impresión color: $1.500 ARS por faz',
-    '📄 Blanco y negro: $1.500 ARS por faz',
+    '🖨️ Impresión color: $2.000 ARS por faz',
+    '📄 Blanco y negro: $2.000 ARS por faz',
     '📚 Libros PDF: desde $800 ARS por faz',
     '🔩 Anillado: $4.000 ARS',
     '🏷️ A4 autoadhesivo: $10.000 ARS por hoja',
@@ -431,7 +431,7 @@ def imprenta_ruiz():
     html = re.sub(r'<img class="reference"[^>]*>', '<header class="fast-header"><p>IMPRESIONES RUIZ · SALTA</p><h1>Precios claros, impresión fácil</h1><p>Elegí tu trabajo y consultanos por WhatsApp.</p></header>', html, count=1)
     static_prices = r'''<section class="prices-overlay fast-prices" aria-label="Lista de precios de Impresiones Ruiz">
       <p class="price-note">Precios expresados en pesos argentinos (ARS).</p>
-      <section class="price-group"><h2>🖨️ Impresiones y libros PDF</h2><div class="price-list"><p><span>Impresión color · por faz</span><b>$1.500</b></p><p><span>Blanco y negro · por faz</span><b>$1.500</b></p><p><span>Anillado</span><b>$4.000</b></p><p><span>A4 autoadhesivo fotográfico · por hoja</span><b>$10.000</b></p><p><span>Libro PDF B/N · por faz</span><b>$800</b></p><p><span>Libro PDF color · por faz</span><b>$1.100</b></p><p><span>Anillado de libro PDF</span><b>$4.000</b></p></div><small>Más de 5 ejemplares: precio especial.</small></section>
+      <section class="price-group"><h2>🖨️ Impresiones y libros PDF</h2><div class="price-list"><p><span>Impresión color · por faz</span><b>$2.000</b></p><p><span>Blanco y negro · por faz</span><b>$2.000</b></p><p><span>Anillado</span><b>$4.000</b></p><p><span>A4 autoadhesivo fotográfico · por hoja</span><b>$10.000</b></p><p><span>Libro PDF B/N · por faz</span><b>$800</b></p><p><span>Libro PDF color · por faz</span><b>$1.100</b></p><p><span>Anillado de libro PDF</span><b>$4.000</b></p></div><small>Más de 5 ejemplares: precio especial.</small></section>
       <section class="price-group"><h2>📸 Fotos Mitsubishi · térmica premium</h2><small>Térmica premium · alta durabilidad; con buen cuidado, tus recuerdos pueden acompañar generaciones.</small><div class="price-list"><p><span>10×15 cm</span><b>$5.500</b></p><p><span>13×18 cm</span><b>$6.500</b></p><p><span>15×15 cm</span><b>$6.500</b></p><p><span>15×20 cm</span><b>$9.000</b></p><p><span>20×30 cm</span><b>$23.500</b></p><p><span>A4</span><b>$20.000</b></p></div></section>
       <section class="price-group"><h2>📷 Fotos Inkjet · opción económica</h2><small>Opción económica no térmica · para uso temporal; la imagen puede perder calidad con el tiempo, sobre todo con luz, sol o humedad.</small><div class="price-list"><p><span>10×15 cm</span><b>$4.000</b></p><p><span>13×18 cm</span><b>$4.500</b></p><p><span>15×15 cm</span><b>$4.500</b></p><p><span>15×20 cm</span><b>$5.000</b></p><p><span>A4</span><b>$7.500</b></p></div></section>
       <section class="price-group"><h2>📷 Fotos Kodak · térmica premium</h2><small>Térmica premium · alta durabilidad; con buen cuidado, tus recuerdos pueden acompañar generaciones.</small><div class="price-list"><p><span>10×15 cm</span><b>$6.000</b></p><p><span>15×15 cm</span><b>$8.000</b></p><p><span>15×20 cm</span><b>$9.000</b></p></div></section>
@@ -1189,9 +1189,9 @@ def _quote_catalog_item(description, quantity, supplied_unit):
     if "autoadhesivo" in text:
         return qty, 10000.0
     if "foto" not in text and ("impresión" in text or "impresion" in text) and ("blanco" in text or "b/n" in text or "b&n" in text or "bn" in text or "byn" in text):
-        return qty, 1500.0
+        return qty, 2000.0
     if "foto" not in text and ("impresión" in text or "impresion" in text) and "color" in text:
-        return qty, 1500.0
+        return qty, 2000.0
 
     photo_prices = {
         "mitsubishi": {"10x15": 5500, "13x18": 6500, "15x15": 6500, "15x20": 9000, "20x30": 23500, "a4": 20000},
