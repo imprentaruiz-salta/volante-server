@@ -484,13 +484,13 @@ def imprenta_ruiz():
 <meta property="og:type" content="website">
 <meta property="og:title" content="Impresiones Ruiz">
 <meta property="og:description" content="Precios y trabajos web de Impresiones Ruiz.">
-<meta property="og:image" content="https://volante-server.onrender.com/static/impresiones-ruiz-preview-v3.jpg">
+<meta property="og:image" content="https://volante-server.onrender.com/static/impresiones-ruiz-preview-v4.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:url" content="https://volante-server.onrender.com/impresiones-ruiz">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://volante-server.onrender.com/static/impresiones-ruiz-preview-v3.jpg">
+<meta name="twitter:image" content="https://volante-server.onrender.com/static/impresiones-ruiz-preview-v4.jpg">
 """
     # Fecha y horario local de atención, siempre en la zona horaria de Salta.
     ahora_salta = datetime.now(ZoneInfo("America/Argentina/Salta"))
